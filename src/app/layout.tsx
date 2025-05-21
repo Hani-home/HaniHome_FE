@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={suit.className}>
       <body>
-        <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px] pt-12">
+        <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px]">
           {children}
         </div>
       </body>
