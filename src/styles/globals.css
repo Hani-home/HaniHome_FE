@@ -1,9 +1,7 @@
 @import "tailwindcss";
-@import "./fonts.css";
+@import "./typography.css";
 
 @theme {
-  --font-suit: "SUIT", sans-serif;
-
   /* Primary Colors */
   --color-green: #30dc86;
   --color-green-light: #ccffe6;
@@ -38,7 +36,6 @@
 
 @layer base {
   body {
-    font-family: var(--font-suit);
     width: 100%;
     height: 100%;
     display: flex;
@@ -48,44 +45,6 @@
 }
 
 @layer utilities {
-  /* Heading */
-  .text-heading1 {
-    @apply font-suit text-[22px] leading-[135%] font-extrabold tracking-[-0.02em];
-  }
-  .text-heading2 {
-    @apply font-suit text-[20px] leading-[135%] font-bold tracking-[-0.02em];
-  }
-  .text-heading3 {
-    @apply font-suit text-[18px] leading-[135%] font-bold tracking-[-0.02em];
-  }
-
-  /* Body */
-  .text-body1-sb {
-    @apply font-suit text-[16px] leading-[135%] font-semibold tracking-[-0.02em];
-  }
-  .text-body1-med {
-    @apply font-suit text-[16px] leading-[135%] font-medium tracking-[-0.02em];
-  }
-  .text-body2-med {
-    @apply font-suit text-[14px] leading-[150%] font-medium tracking-[-0.02em];
-  }
-
-  /* Label */
-  .text-lab1-b {
-    @apply font-suit text-[14px] leading-[135%] font-bold tracking-[-0.02em];
-  }
-  .text-lab1-sb {
-    @apply font-suit text-[14px] leading-[135%] font-semibold tracking-[-0.02em];
-  }
-
-  /* Caption */
-  .text-cap1-b {
-    @apply font-suit text-[12px] leading-[135%] font-bold tracking-[-0.02em];
-  }
-  .text-cap1-med {
-    @apply font-suit text-[12px] leading-[135%] font-medium tracking-[-0.02em];
-  }
-
   /* scrollbar hide */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
