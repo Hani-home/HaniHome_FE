@@ -1,0 +1,68 @@
+import clsx from "clsx";
+
+import { AgreementTerm } from "@/constants/AgreementTerm";
+
+import DownArrow from "@/public/svgs/signup/down-arrow.svg";
+
+import AgreementItem from "./AgreementItem";
+import CheckIcon from "./CheckIcon";
+
+interface AgreementGroupProps {
+  title: string;
+  terms: typeof AgreementTerm;
+  isOpen: boolean;
+  isAllChecked: boolean;
+  onToggleOpen: () => void;
+  onToggleGroup: () => void;
+  isChecked: (id: number) => boolean;
+  onToggleItem: (id: number) => void;
+  gap?: string;
+}
+
+const AgreementGroup = ({
+  title,
+  terms,
+  isOpen,
+  isAllChecked,
+  onToggleOpen,
+  onToggleGroup,
+  isChecked,
+  onToggleItem,
+  gap,
+}: AgreementGroupProps) => {
+  return (
+    <>
+      <div className="mt-3 flex items-center justify-between">
+        <button
+          onClick={onToggleGroup}
+          className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
+        >
+          <CheckIcon checked={isAllChecked} />
+          {title}
+        </button>
+        <button
+          onClick={onToggleOpen}
+          className={clsx("cursor-pointer", isOpen && "rotate-180")}
+        >
+          <DownArrow className="h-[18px] w-[18px] object-contain" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className={clsx("mt-3 flex flex-col", gap)}>
+          {terms.map(term => (
+            <AgreementItem
+              key={term.id}
+              id={term.id}
+              label={term.label}
+              checked={isChecked(term.id)}
+              onClick={() => onToggleItem(term.id)}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
+export default AgreementGroup;

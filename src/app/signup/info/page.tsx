@@ -49,7 +49,7 @@ const SignupInfoPage = () => {
     allRequiredChecked;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col pb-16">
       <div className="flex flex-col gap-1 py-3">
         <h1 className="text-heading2 text-gray-900">정보를 입력해주세요</h1>
         <span className="text-cap1-med text-gray-700">
@@ -78,7 +78,7 @@ const SignupInfoPage = () => {
         error={errors.phone}
       />
       <AgreementList onChange={setAgreed} />
-      <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col">
+      <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
         <div className="h-[1px] w-full bg-gray-300" />
         <button
           onClick={handleSubmit}
