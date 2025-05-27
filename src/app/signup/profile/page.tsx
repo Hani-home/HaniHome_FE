@@ -137,7 +137,7 @@ const SignupProfilePage = () => {
         onChange={val => setForm(prev => ({ ...prev, region: val }))}
       />
 
-      <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
+      <div className="fixed bottom-0 left-1/2 z-20 flex w-[343px] -translate-x-1/2 flex-col bg-white">
         <div className="w-full border-t border-gray-300" />
         <button
           onClick={handleSubmit}
