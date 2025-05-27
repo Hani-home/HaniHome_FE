@@ -1,5 +1,3 @@
-"use client";
-
 import CheckIcon from "./CheckIcon";
 
 interface AgreementItemProps {
@@ -10,18 +8,16 @@ interface AgreementItemProps {
 }
 
 const AgreementItem = ({ id, label, checked, onClick }: AgreementItemProps) => {
+  const isRequired = label.includes("[필수]");
+
   return (
     <button
       key={id}
       onClick={onClick}
-      className="text-cap1-med flex cursor-pointer items-center gap-1 text-left"
+      className="flex cursor-pointer items-center gap-1 text-left"
     >
-      <CheckIcon checked={checked} />
-      <span
-        className={label.includes("[필수]") ? "text-gray-700" : "text-gray-500"}
-      >
-        {label}
-      </span>
+      {!isRequired && <CheckIcon checked={checked} />}
+      <span className="text-cap1-med text-gray-500">{label}</span>
     </button>
   );
 };

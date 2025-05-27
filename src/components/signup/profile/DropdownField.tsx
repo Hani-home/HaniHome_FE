@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import clsx from "clsx";
 
-import DropdownArrow from "@/public/svgs/signup/dropdown-arrow.svg";
+import DropdownArrow from "@/public/svgs/signup/down-arrow.svg";
 
 interface DropdownOption {
   label: string;
@@ -61,7 +61,11 @@ const DropdownField = ({
           >
             {selectedLabel}
           </span>
-          <DropdownArrow className={clsx(isDropdownOpen && "rotate-180")} />
+          <DropdownArrow
+            width={24}
+            height={24}
+            className={clsx(isDropdownOpen && "rotate-180")}
+          />
         </div>
 
         {isDropdownOpen && (
