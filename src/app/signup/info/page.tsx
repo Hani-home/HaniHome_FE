@@ -20,11 +20,11 @@ const SignupInfoPage = () => {
   const {
     register,
     handleSubmit,
-    getValues,
-    formState: { errors, touchedFields },
+    watch,
+    formState: { errors, touchedFields, isValid },
   } = useForm<SignupInfoInput>({
     resolver: zodResolver(signupInfoSchema),
-    mode: "onBlur",
+    mode: "onChange",
     shouldFocusError: false,
   });
 
@@ -40,14 +40,13 @@ const SignupInfoPage = () => {
     console.log("제출 성공", { ...data, agreed });
     router.push("/signup/profile");
   };
-  const values = getValues();
-
+  const values = watch();
   const isFormReady =
     allRequiredChecked &&
     values.name?.trim() &&
     values.email?.trim() &&
     values.phone?.trim() &&
-    Object.keys(errors).length === 0;
+    isValid;
 
   return (
     <form
@@ -85,7 +84,7 @@ const SignupInfoPage = () => {
       <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
         <div className="h-[1px] w-full bg-gray-300" />
         <button
-          type="submit"
+          type="button"
           onClick={handleSubmit(onSubmit)}
           disabled={!isFormReady}
           className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
