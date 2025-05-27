@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
-import InputField from "@/components/signup/InputField";
+import InputField from "@/components/common/InputField";
 import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
 import SearchField from "@/components/signup/profile/SearchField";

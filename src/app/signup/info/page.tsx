@@ -3,19 +3,29 @@
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { validateForm } from "@/utils/validationForm";
+import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import InputField from "@/components/signup/InputField";
+import InputField from "@/components/common/InputField";
 import AgreementList from "@/components/signup/info/AgreementList";
 
 import { AgreementTerm } from "@/constants/AgreementTerm";
 
 const SignupInfoPage = () => {
   const router = useRouter();
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
-  const [errors, setErrors] = useState({ name: "", email: "", phone: "" });
-  const [agreed, setAgreed] = useState<number[]>([]); // 약관 체크 상태
+  const [agreed, setAgreed] = useState<number[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm<SignupInfoInput>({
+    resolver: zodResolver(signupInfoSchema),
+    mode: "onBlur",
+    shouldFocusError: false,
+  });
 
   const requiredTermIds = AgreementTerm.filter(term =>
     term.label.includes("[필수]"),
@@ -23,65 +33,53 @@ const SignupInfoPage = () => {
 
   const allRequiredChecked = requiredTermIds.every(id => agreed.includes(id));
 
-  const handleChange =
-    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm(prev => ({ ...prev, [key]: e.target.value }));
-      if (errors[key]) {
-        setErrors(prev => ({ ...prev, [key]: "" }));
-      }
-    };
+  const onSubmit = (data: SignupInfoInput) => {
+    if (!allRequiredChecked) return;
 
-  const handleSubmit = () => {
-    const newErrors = validateForm(form);
-    setErrors(newErrors);
-
-    const isFormValid = !Object.values(newErrors).some(Boolean);
-    if (isFormValid && allRequiredChecked) {
-      console.log("제출 성공", { ...form, agreed });
-      router.push("/signup/profile");
-    }
+    console.log("제출 성공", { ...data, agreed });
+    router.push("/signup/profile");
   };
 
-  const isFormReady =
-    form.name.trim() !== "" &&
-    form.email.trim() !== "" &&
-    form.phone.trim() !== "" &&
-    allRequiredChecked;
+  const isFormReady = allRequiredChecked && Object.keys(errors).length === 0;
 
   return (
-    <div className="flex w-full flex-col pb-16">
+    <form
+      onSubmit={e => e.preventDefault()}
+      className="flex w-full flex-col pb-16"
+    >
       <div className="flex flex-col gap-1 py-3">
         <h1 className="text-heading2 text-gray-900">정보를 입력해주세요</h1>
         <span className="text-cap1-med text-gray-700">
           서비스 이용에 필요한 정보 입력 및 약관에 동의해주세요
         </span>
       </div>
+
       <InputField
         label="이름"
         placeholder="이름을 입력해주세요"
-        value={form.name}
-        onChange={handleChange("name")}
-        error={errors.name}
+        {...register("name")}
+        error={touchedFields.name ? errors.name?.message : undefined}
       />
       <InputField
         label="이메일"
         placeholder="이메일을 입력해주세요"
-        value={form.email}
-        onChange={handleChange("email")}
-        error={errors.email}
+        {...register("email")}
+        error={touchedFields.email ? errors.email?.message : undefined}
       />
       <InputField
         label="전화번호"
         placeholder="전화번호를 입력해주세요"
-        value={form.phone}
-        onChange={handleChange("phone")}
-        error={errors.phone}
+        {...register("phone")}
+        error={touchedFields.phone ? errors.phone?.message : undefined}
       />
+
       <AgreementList onChange={setAgreed} />
+
       <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
         <div className="h-[1px] w-full bg-gray-300" />
         <button
-          onClick={handleSubmit}
+          type="submit"
+          onClick={handleSubmit(onSubmit)}
           disabled={!isFormReady}
           className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
             isFormReady ? "bg-violet" : "cursor-not-allowed bg-gray-300"
@@ -90,7 +88,8 @@ const SignupInfoPage = () => {
           다음
         </button>
       </div>
-    </div>
+    </form>
   );
 };
+
 export default SignupInfoPage;

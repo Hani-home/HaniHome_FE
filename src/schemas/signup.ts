@@ -1,0 +1,26 @@
+import { z } from "zod";
+
+export const signupInfoSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "이름을 올바르게 입력해주세요")
+    .max(20, "이름을 올바르게 입력해주세요"),
+
+  email: z.string().trim().email("이메일을 올바르게 입력해주세요"),
+
+  phone: z
+    .string()
+    .trim()
+    .refine(
+      phone =>
+        phone.replace(/-/g, "").length >= 10 &&
+        phone.replace(/-/g, "").length <= 11 &&
+        phone.startsWith("01"),
+      {
+        message: "전화번호를 올바르게 입력해주세요",
+      },
+    ),
+});
+
+export type SignupInfoInput = z.infer<typeof signupInfoSchema>;
