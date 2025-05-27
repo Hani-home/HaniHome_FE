@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
@@ -15,6 +16,8 @@ const Lottie = dynamic(
 const CompletePage = () => {
   const [isLottieReady, setIsLottieReady] = useState(false);
   const [hasError, setHasError] = useState(false);
+
+  const router = useRouter();
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center gap-5">
@@ -45,7 +48,10 @@ const CompletePage = () => {
       <span className="text-heading1 text-green">가입이 완료되었어요!</span>
 
       {/* 버튼 */}
-      <button className="bg-violet text-heading3 fixed bottom-4 left-1/2 w-[343px] -translate-x-1/2 rounded-sm p-3 text-white">
+      <button
+        className="bg-violet text-heading3 fixed bottom-4 left-1/2 w-[343px] -translate-x-1/2 cursor-pointer rounded-sm p-3 text-white"
+        onClick={() => router.push("/home")}
+      >
         시작하기
       </button>
     </div>

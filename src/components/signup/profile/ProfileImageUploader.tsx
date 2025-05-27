@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 
 import { useSignupStore } from "@/stores/signupStore";
+import clsx from "clsx";
 
 import PlusIcon from "@/public/svgs/signup/plus-icon.svg";
 
@@ -43,7 +44,10 @@ const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
   return (
     <div className="flex flex-col items-center pt-10 pb-12">
       <div
-        className="h-[114px] w-[114px] cursor-pointer overflow-hidden rounded-[57px] border border-gray-300 bg-white"
+        className={clsx(
+          "h-[114px] w-[114px] cursor-pointer overflow-hidden rounded-[57px] bg-white",
+          previewUrl ? "border border-gray-600" : "border border-gray-300",
+        )}
         onClick={() => inputRef.current?.click()}
       >
         {previewUrl ? (
