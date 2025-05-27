@@ -20,6 +20,7 @@ const SignupInfoPage = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, touchedFields },
   } = useForm<SignupInfoInput>({
     resolver: zodResolver(signupInfoSchema),
@@ -39,8 +40,14 @@ const SignupInfoPage = () => {
     console.log("제출 성공", { ...data, agreed });
     router.push("/signup/profile");
   };
+  const values = getValues();
 
-  const isFormReady = allRequiredChecked && Object.keys(errors).length === 0;
+  const isFormReady =
+    allRequiredChecked &&
+    values.name?.trim() &&
+    values.email?.trim() &&
+    values.phone?.trim() &&
+    Object.keys(errors).length === 0;
 
   return (
     <form
@@ -58,19 +65,19 @@ const SignupInfoPage = () => {
         label="이름"
         placeholder="이름을 입력해주세요"
         {...register("name")}
-        error={touchedFields.name ? errors.name?.message : undefined}
+        errorMessage={touchedFields.name ? errors.name?.message : undefined}
       />
       <InputField
         label="이메일"
         placeholder="이메일을 입력해주세요"
         {...register("email")}
-        error={touchedFields.email ? errors.email?.message : undefined}
+        errorMessage={touchedFields.email ? errors.email?.message : undefined}
       />
       <InputField
         label="전화번호"
         placeholder="전화번호를 입력해주세요"
         {...register("phone")}
-        error={touchedFields.phone ? errors.phone?.message : undefined}
+        errorMessage={touchedFields.phone ? errors.phone?.message : undefined}
       />
 
       <AgreementList onChange={setAgreed} />
