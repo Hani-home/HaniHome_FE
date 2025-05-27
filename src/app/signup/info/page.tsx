@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
+import { useSignupStore } from "@/stores/signupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import InputField from "@/components/common/InputField";
@@ -15,7 +16,7 @@ import { AgreementTerm } from "@/constants/AgreementTerm";
 
 const SignupInfoPage = () => {
   const router = useRouter();
-  const [agreed, setAgreed] = useState<number[]>([]);
+  const { name, email, phone, agreed, setField, setAgreed } = useSignupStore();
 
   const {
     register,
@@ -48,6 +49,19 @@ const SignupInfoPage = () => {
     values.phone?.trim() &&
     isValid;
 
+  useEffect(() => {
+    const subscription = watch((value, { name: changedName }) => {
+      if (!changedName) return;
+      const fieldValue = value[changedName as keyof SignupInfoInput];
+
+      if (typeof fieldValue === "string") {
+        setField(changedName, fieldValue);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setField]);
+
   return (
     <form
       onSubmit={e => e.preventDefault()}
@@ -63,23 +77,26 @@ const SignupInfoPage = () => {
       <InputField
         label="이름"
         placeholder="이름을 입력해주세요"
+        value={name}
         {...register("name")}
         errorMessage={touchedFields.name ? errors.name?.message : undefined}
       />
       <InputField
         label="이메일"
         placeholder="이메일을 입력해주세요"
+        value={email}
         {...register("email")}
         errorMessage={touchedFields.email ? errors.email?.message : undefined}
       />
       <InputField
         label="전화번호"
         placeholder="전화번호를 입력해주세요"
+        value={phone}
         {...register("phone")}
         errorMessage={touchedFields.phone ? errors.phone?.message : undefined}
       />
 
-      <AgreementList onChange={setAgreed} />
+      <AgreementList onChange={setAgreed} defaultChecked={agreed} />
 
       <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
         <div className="h-[1px] w-full bg-gray-300" />

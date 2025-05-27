@@ -9,14 +9,18 @@ import CheckIcon from "./CheckIcon";
 
 interface AgreementListProps {
   onChange: (checked: number[]) => void;
+  defaultChecked?: number[];
   onRequiredValidChange?: (valid: boolean) => void;
 }
 
 const AgreementList = ({
   onChange,
+  defaultChecked,
   onRequiredValidChange,
 }: AgreementListProps) => {
-  const [checkedItems, setCheckedItems] = useState<number[]>([]);
+  const [checkedItems, setCheckedItems] = useState<number[]>(
+    defaultChecked ?? [],
+  );
   const [openGroup, setOpenGroup] = useState<{
     required: boolean;
     optional: boolean;
