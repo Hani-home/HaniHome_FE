@@ -2,9 +2,10 @@
 
 import { useRouter } from "next/navigation";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { nicknameSchema } from "@/schemas/nickname";
+import { useSignupStore } from "@/stores/signupStore";
 
 import InputField from "@/components/common/InputField";
 import DropdownField from "@/components/signup/profile/DropdownField";
@@ -22,36 +23,28 @@ const SignupProfilePage = () => {
     "default" | "available" | "unavailable"
   >("default");
 
-  const [form, setForm] = useState({
-    profileimg: "",
-    nickname: "",
-    gender: "",
-    region: "",
-  });
+  const { nickname, gender, region, setField } = useSignupStore();
+  useEffect(() => {
+    if (!nickname) return;
 
-  const handleChange =
-    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setForm(prev => ({ ...prev, [key]: value }));
+    const result = nicknameSchema.safeParse(nickname);
+    setIsValidNickname(result.success);
+  }, [nickname]);
 
-      if (key === "nickname") {
-        setCheckResult("default");
-        setNicknameMessage(undefined);
-      }
-    };
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setField("nickname", e.target.value);
+    setCheckResult("default");
+    setNicknameMessage(undefined);
+  };
 
-  const handleBlur = (key: keyof typeof form) => () => {
-    const value = form[key];
-
-    if (key === "nickname") {
-      const result = nicknameSchema.safeParse(value);
-      if (!result.success) {
-        setNicknameMessage(result.error.errors[0].message);
-        setIsValidNickname(false);
-      } else {
-        setNicknameMessage(undefined);
-        setIsValidNickname(true);
-      }
+  const handleBlur = () => {
+    const result = nicknameSchema.safeParse(nickname);
+    if (!result.success) {
+      setNicknameMessage(result.error.errors[0].message);
+      setIsValidNickname(false);
+    } else {
+      setNicknameMessage(undefined);
+      setIsValidNickname(true);
     }
   };
 
@@ -60,7 +53,7 @@ const SignupProfilePage = () => {
 
     setIsChecking(true);
     try {
-      const res = await fetch(`/api/check-nickname?value=${form.nickname}`);
+      const res = await fetch(`/api/check-nickname?value=${nickname}`);
       const { available } = await res.json();
 
       if (available) {
@@ -79,7 +72,7 @@ const SignupProfilePage = () => {
   };
 
   const handleSubmit = () => {
-    if (!form.nickname || !form.gender || !form.region) return;
+    if (!nickname || !gender || !region) return;
 
     if (checkResult === "default") {
       setNicknameMessage("닉네임 중복 확인 버튼을 클릭해주세요");
@@ -89,17 +82,12 @@ const SignupProfilePage = () => {
 
     if (checkResult !== "available") return;
 
-    console.log("회원가입 제출!", form);
     router.push("/signup-complete");
   };
 
   const isFormReady = useMemo(
-    () =>
-      form.nickname &&
-      form.gender &&
-      form.region &&
-      checkResult === "available",
-    [form, checkResult],
+    () => nickname && gender && region && checkResult === "available",
+    [nickname, gender, region, checkResult],
   );
 
   return (
@@ -111,16 +99,16 @@ const SignupProfilePage = () => {
       <ProfileImageUploader
         onUpload={file => {
           const url = URL.createObjectURL(file);
-          setForm(prev => ({ ...prev, profileimg: url }));
+          setField("profileimg", url);
         }}
       />
 
       <InputField
         label="닉네임"
         placeholder="한영문, 숫자로 5 - 12글자"
-        value={form.nickname}
-        onChange={handleChange("nickname")}
-        onBlur={handleBlur("nickname")}
+        value={nickname}
+        onChange={handleNicknameChange}
+        onBlur={handleBlur}
         actionLabel="닉네임 중복 확인"
         actionClickable={isValidNickname}
         onActionClick={checkDuplicate}
@@ -136,8 +124,8 @@ const SignupProfilePage = () => {
 
       <DropdownField
         label="성별"
-        value={form.gender}
-        onChange={val => setForm(prev => ({ ...prev, gender: val }))}
+        value={gender}
+        onChange={val => setField("gender", val)}
         options={[
           { label: "남성", value: "male" },
           { label: "여성", value: "female" },
@@ -145,8 +133,9 @@ const SignupProfilePage = () => {
       />
 
       <SearchField
-        value={form.region}
-        onChange={val => setForm(prev => ({ ...prev, region: val }))}
+        value={region}
+        onChange={val => setField("region", val)}
+        isSelected={!!region}
       />
 
       <div className="fixed bottom-0 left-1/2 z-20 flex w-[343px] -translate-x-1/2 flex-col bg-white">

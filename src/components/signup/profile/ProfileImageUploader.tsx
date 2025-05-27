@@ -2,32 +2,41 @@
 
 import { useRef, useState } from "react";
 
+import { useSignupStore } from "@/stores/signupStore";
+
 import PlusIcon from "@/public/svgs/signup/plus-icon.svg";
+
+import ImageAlertModal from "./ImageAlertModal";
 
 interface ProfileImageUploaderProps {
   onUpload?: (file: File) => void;
-  initialImageUrl?: string;
 }
 
-const ProfileImageUploader = ({
-  onUpload,
-  initialImageUrl,
-}: ProfileImageUploaderProps) => {
+const MAX_SIZE_MB = 5;
+const ALLOWED_TYPES = ["image/jpeg", "image/png"];
+
+const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [previewUrl, setPreviewUrl] = useState(initialImageUrl || "");
+  const { profileimg, setField } = useSignupStore();
+  const [previewUrl, setPreviewUrl] = useState(profileimg || "");
+
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("이미지 파일만 업로드할 수 있어요!");
+    const isValidType = ALLOWED_TYPES.includes(file.type);
+    const isValidSize = file.size / 1024 / 1024 <= MAX_SIZE_MB;
+
+    if (!isValidType || !isValidSize) {
+      setShowErrorModal(true);
       return;
     }
 
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+    setField("profileimg", url);
     onUpload?.(file);
   };
 
@@ -57,6 +66,10 @@ const ProfileImageUploader = ({
         className="hidden"
         onChange={handleChange}
       />
+
+      {showErrorModal && (
+        <ImageAlertModal onClose={() => setShowErrorModal(false)} />
+      )}
     </div>
   );
 };

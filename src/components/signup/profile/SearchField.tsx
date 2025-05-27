@@ -20,17 +20,26 @@ interface SearchFieldProps {
   value: string;
   onChange: (val: string) => void;
   placeholder?: string;
+  isSelected?: boolean;
 }
 
 const SearchField = ({
   value,
   onChange,
   placeholder = "소문자, 영어로 입력해주세요",
+  isSelected: isSelectedProp,
 }: SearchFieldProps) => {
   const [results, setResults] = useState<PlacePrediction[]>([]);
+
   const isSelectedRef = useRef(false);
-  const isSelected = isSelectedRef.current;
   const controllerRef = useRef<AbortController | null>(null);
+  const [isSelected, setIsSelected] = useState<boolean>(
+    isSelectedProp ?? false,
+  );
+
+  useEffect(() => {
+    setIsSelected(isSelectedProp ?? false);
+  }, [isSelectedProp]);
 
   const { highlightedIndex, setHighlightedIndex, handleKeyDown } =
     useKeyboardNavigation(results.length, index => {
@@ -38,7 +47,7 @@ const SearchField = ({
     });
 
   const fetchPlaces = useCallback(async () => {
-    if (!value.trim() || isSelectedRef.current) {
+    if (!value.trim() || isSelected) {
       setResults([]);
       return;
     }
@@ -59,12 +68,16 @@ const SearchField = ({
   }, [value]);
 
   useEffect(() => {
-    const debounce = setTimeout(fetchPlaces, 300);
+    const debounce = setTimeout(() => {
+      fetchPlaces();
+    }, 300);
+
     return () => clearTimeout(debounce);
   }, [fetchPlaces]);
 
   const handleSelect = (text: string) => {
     isSelectedRef.current = true;
+    setIsSelected(true);
     onChange(text);
     setResults([]);
     setHighlightedIndex(-1);
@@ -87,6 +100,7 @@ const SearchField = ({
             value={value}
             onChange={e => {
               isSelectedRef.current = false;
+              setIsSelected(false);
               onChange(e.target.value);
             }}
             onKeyDown={handleKeyDown}
@@ -94,7 +108,7 @@ const SearchField = ({
           <button
             type="button"
             onClick={fetchPlaces}
-            className="absolute top-1/2 right-4 -translate-y-1/2"
+            className="absolute top-1/2 -translate-y-1/2"
           >
             {!isSelected && (
               <SearchIcon className="absolute top-1/2 right-4 h-6 w-6 -translate-y-1/2" />
