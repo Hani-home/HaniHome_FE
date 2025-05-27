@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { nicknameSchema } from "@/schemas/nickname";
-import { useSignupStore } from "@/stores/signupStore";
+import { useSignupStore } from "@/stores/useSignupStore";
 
 import InputField from "@/components/common/InputField";
 import DropdownField from "@/components/signup/profile/DropdownField";

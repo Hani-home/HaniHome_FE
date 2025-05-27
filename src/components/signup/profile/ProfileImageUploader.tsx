@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 
-import { useSignupStore } from "@/stores/signupStore";
+import { useSignupStore } from "@/stores/useSignupStore";
 import clsx from "clsx";
 
 import PlusIcon from "@/public/svgs/signup/plus-icon.svg";

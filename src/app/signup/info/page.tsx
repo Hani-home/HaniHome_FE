@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
-import { useSignupStore } from "@/stores/signupStore";
+import { useSignupStore } from "@/stores/useSignupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import InputField from "@/components/common/InputField";
