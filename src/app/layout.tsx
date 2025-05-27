@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 
 import "@/styles/globals.css";
 
+import ReactQueryProvider from "@/utils/reactQueryProvider";
+
 const suit = localFont({
   src: "../../public/fonts/SUIT-Variable.woff2",
   display: "swap",
@@ -35,7 +37,7 @@ export default function RootLayout({
     <html lang="ko" className={suit.className}>
       <body>
         <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px]">
-          {children}
+          <ReactQueryProvider>{children}</ReactQueryProvider>
         </div>
       </body>
     </html>

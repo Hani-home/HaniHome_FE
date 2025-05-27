@@ -47,7 +47,7 @@ export const useAuth = () => {
     onSuccess: () => {
       clearAuth();
       queryClient.clear();
-      router.push("/login");
+      router.push("/");
     },
     onError: () => console.error("로그아웃 실패"),
   });
@@ -58,7 +58,7 @@ export const useAuth = () => {
     onSuccess: ({ accessToken }) => setAccessToken(accessToken),
     onError: () => {
       clearAuth();
-      router.push("/home");
+      router.push("/");
     },
   });
 
