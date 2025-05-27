@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useCallback } from "react";
+
+import clsx from "clsx";
 
 import { fetchPlaceSuggestions } from "@/apis/googlePlaces";
 
@@ -26,31 +29,39 @@ const SearchField = ({
 }: SearchFieldProps) => {
   const [results, setResults] = useState<PlacePrediction[]>([]);
   const isSelectedRef = useRef(false);
+  const isSelected = isSelectedRef.current;
+  const controllerRef = useRef<AbortController | null>(null);
 
   const { highlightedIndex, setHighlightedIndex, handleKeyDown } =
     useKeyboardNavigation(results.length, index => {
       handleSelect(results[index].text);
     });
 
-  useEffect(() => {
+  const fetchPlaces = useCallback(async () => {
+    if (!value.trim() || isSelectedRef.current) {
+      setResults([]);
+      return;
+    }
+
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
     const controller = new AbortController();
+    controllerRef.current = controller;
 
-    const fetchPlaces = async () => {
-      if (!value.trim() || isSelectedRef.current) {
-        setResults([]);
-        return;
-      }
-
+    try {
       const suggestions = await fetchPlaceSuggestions(value, controller.signal);
       setResults(suggestions);
-    };
-
-    const debounce = setTimeout(fetchPlaces, 300);
-    return () => {
-      clearTimeout(debounce);
-      controller.abort();
-    };
+    } catch {
+      // silent fail
+    }
   }, [value]);
+
+  useEffect(() => {
+    const debounce = setTimeout(fetchPlaces, 300);
+    return () => clearTimeout(debounce);
+  }, [fetchPlaces]);
 
   const handleSelect = (text: string) => {
     isSelectedRef.current = true;
@@ -66,7 +77,12 @@ const SearchField = ({
       <div className="flex max-w-[343px] flex-col">
         <div className="relative w-full">
           <input
-            className="text-body1-med h-[44px] w-full rounded-sm border border-gray-600 px-4 py-3 pr-12 placeholder:text-gray-500 focus:border-gray-900 focus:outline-none"
+            className={clsx(
+              "text-body1-med h-[44px] w-full rounded-sm border py-3 placeholder:text-gray-500 focus:outline-none",
+              isSelected
+                ? "border-gray-900 px-4 text-gray-900"
+                : "border-gray-600 pr-12 pl-4 focus:border-gray-900",
+            )}
             placeholder={placeholder}
             value={value}
             onChange={e => {
@@ -75,7 +91,15 @@ const SearchField = ({
             }}
             onKeyDown={handleKeyDown}
           />
-          <SearchIcon className="absolute top-1/2 right-4 h-6 w-6 -translate-y-1/2" />
+          <button
+            type="button"
+            onClick={fetchPlaces}
+            className="absolute top-1/2 right-4 -translate-y-1/2"
+          >
+            {!isSelected && (
+              <SearchIcon className="absolute top-1/2 right-4 h-6 w-6 -translate-y-1/2" />
+            )}
+          </button>
         </div>
 
         {results.length > 0 && (

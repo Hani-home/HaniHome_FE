@@ -48,10 +48,12 @@ export const fetchPlaceSuggestions = async (
 
     const data = res.data as GooglePlacesAPIResponse;
 
-    return data.suggestions.map(s => ({
-      placeId: s.placePrediction.placeId,
-      text: s.placePrediction.text.text,
-    }));
+    return (
+      data?.suggestions?.map(s => ({
+        placeId: s.placePrediction.placeId,
+        text: s.placePrediction.text.text,
+      })) ?? []
+    );
   } catch (err: unknown) {
     if (
       typeof err === "object" &&

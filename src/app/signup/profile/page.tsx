@@ -14,6 +14,7 @@ import SearchField from "@/components/signup/profile/SearchField";
 const SignupProfilePage = () => {
   const router = useRouter();
   const [nicknameMessage, setNicknameMessage] = useState<string | undefined>();
+  const [isValidNickname, setIsValidNickname] = useState(false);
 
   const setIsChecking = useState(false)[1];
 
@@ -46,14 +47,16 @@ const SignupProfilePage = () => {
       const result = nicknameSchema.safeParse(value);
       if (!result.success) {
         setNicknameMessage(result.error.errors[0].message);
+        setIsValidNickname(false);
       } else {
         setNicknameMessage(undefined);
+        setIsValidNickname(true);
       }
     }
   };
 
   const checkDuplicate = async () => {
-    if (nicknameMessage) return;
+    if (!isValidNickname) return;
 
     setIsChecking(true);
     try {
@@ -76,16 +79,19 @@ const SignupProfilePage = () => {
   };
 
   const handleSubmit = () => {
-    if (!isFormReady) return;
+    if (!form.nickname || !form.gender || !form.region) return;
+
+    if (checkResult === "default") {
+      setNicknameMessage("닉네임 중복 확인 버튼을 클릭해주세요");
+      setCheckResult("unavailable");
+      return;
+    }
+
+    if (checkResult !== "available") return;
+
     console.log("회원가입 제출!", form);
     router.push("/signup-complete");
   };
-
-  const isSuccess = useMemo(() => checkResult === "available", [checkResult]);
-  const isError = useMemo(
-    () => checkResult === "unavailable" || checkResult === "default",
-    [checkResult],
-  );
 
   const isFormReady = useMemo(
     () =>
@@ -116,10 +122,16 @@ const SignupProfilePage = () => {
         onChange={handleChange("nickname")}
         onBlur={handleBlur("nickname")}
         actionLabel="닉네임 중복 확인"
-        actionClickable={form.nickname.trim().length >= 5}
+        actionClickable={isValidNickname}
         onActionClick={checkDuplicate}
-        errorMessage={isError ? nicknameMessage : undefined}
-        successMessage={isSuccess ? nicknameMessage : undefined}
+        errorMessage={
+          checkResult === "unavailable" || checkResult === "default"
+            ? nicknameMessage
+            : undefined
+        }
+        successMessage={
+          checkResult === "available" ? nicknameMessage : undefined
+        }
       />
 
       <DropdownField
@@ -141,9 +153,8 @@ const SignupProfilePage = () => {
         <div className="w-full border-t border-gray-300" />
         <button
           onClick={handleSubmit}
-          disabled={!isFormReady}
           className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-violet" : "cursor-not-allowed bg-gray-300"
+            isFormReady ? "bg-violet" : "bg-gray-300"
           }`}
         >
           완료
