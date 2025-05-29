@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import { nicknameSchema } from "@/schemas/nickname";
 import { useSignupStore } from "@/stores/useSignupStore";
+
+import { useNickname } from "@/hooks/signup/useNickname";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import InputField from "@/components/common/InputField";
@@ -20,86 +21,43 @@ const GENDER_OPTIONS = [
 
 const SignupProfilePage = () => {
   const router = useRouter();
-  const [nicknameMessage, setNicknameMessage] = useState<string | undefined>();
-  const [isValidNickname, setIsValidNickname] = useState(false);
-  const [isChecking, setIsChecking] = useState(false);
-
-  const [checkResult, setCheckResult] = useState<
-    "default" | "available" | "unavailable"
-  >("default");
-
+  const {
+    message,
+    isValid,
+    isChecking,
+    result,
+    validate,
+    checkDuplicate,
+    reset,
+  } = useNickname();
+  const { nickname, gender, region, setField } = useSignupStore();
   const [alerts, setAlerts] = useState<string[]>([]);
 
   const showAlert = (message: string) => {
     setAlerts(prev => [...prev, message]);
   };
 
-  const { nickname, gender, region, setField } = useSignupStore();
-  useEffect(() => {
-    if (!nickname) return;
-
-    const result = nicknameSchema.safeParse(nickname);
-    setIsValidNickname(result.success);
-  }, [nickname]);
-
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setField("nickname", e.target.value);
-    setCheckResult("default");
-    setNicknameMessage(undefined);
-  };
-
-  const handleBlur = () => {
-    const result = nicknameSchema.safeParse(nickname);
-    if (!result.success) {
-      setNicknameMessage(result.error.errors[0].message);
-      setIsValidNickname(false);
-    } else {
-      setNicknameMessage(undefined);
-      setIsValidNickname(true);
-    }
-  };
-
-  const checkDuplicate = async () => {
-    if (!isValidNickname) return;
-
-    setIsChecking(true);
-    try {
-      const res = await fetch(`/api/check-nickname?value=${nickname}`);
-      const { available } = await res.json();
-
-      if (available) {
-        setNicknameMessage("사용 가능한 닉네임입니다");
-        setCheckResult("available");
-      } else {
-        setNicknameMessage("중복된 닉네임입니다");
-        setCheckResult("unavailable");
-      }
-    } catch {
-      setNicknameMessage("중복 확인에 실패했습니다");
-      setCheckResult("unavailable");
-    } finally {
-      setIsChecking(false);
-    }
+    reset();
   };
 
   const handleSubmit = () => {
-    if (!isValidNickname || !nickname || !gender || !region) {
+    if (!isValid || !nickname || !gender || !region) {
       showAlert("모든 항목에 답변해주세요");
       return;
     }
-
-    if (checkResult === "default") {
+    if (result === "default") {
       showAlert("닉네임 중복 확인 버튼을 눌러주세요");
       return;
     }
-
-    if (checkResult !== "available") return;
+    if (result !== "available") return;
     router.push("/signup-complete");
   };
 
   const isFormReady = useMemo(
-    () => nickname && gender && region && checkResult === "available",
-    [nickname, gender, region, checkResult],
+    () => nickname && gender && region && result === "available",
+    [nickname, gender, region, result],
   );
 
   return (
@@ -120,18 +78,14 @@ const SignupProfilePage = () => {
         placeholder="한영문, 숫자로 5 - 12글자"
         value={nickname}
         onChange={handleNicknameChange}
-        onBlur={handleBlur}
+        onBlur={() => validate(nickname)}
         actionLabel="중복 확인"
-        actionClickable={isValidNickname && !isChecking}
-        onActionClick={checkDuplicate}
+        actionClickable={isValid && !isChecking}
+        onActionClick={() => checkDuplicate(nickname)}
         errorMessage={
-          checkResult === "unavailable" || checkResult === "default"
-            ? nicknameMessage
-            : undefined
+          result === "unavailable" || result === "default" ? message : undefined
         }
-        successMessage={
-          checkResult === "available" ? nicknameMessage : undefined
-        }
+        successMessage={result === "available" ? message : undefined}
       />
 
       <DropdownField
@@ -152,7 +106,7 @@ const SignupProfilePage = () => {
         <button
           onClick={handleSubmit}
           className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-violet" : "bg-gray-300"
+            isFormReady ? "bg-mint" : "bg-gray-300"
           }`}
         >
           완료

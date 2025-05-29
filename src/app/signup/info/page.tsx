@@ -105,7 +105,7 @@ const SignupInfoPage = () => {
           onClick={handleSubmit(onSubmit)}
           disabled={!isFormReady}
           className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-violet" : "cursor-not-allowed bg-gray-300"
+            isFormReady ? "bg-mint" : "cursor-not-allowed bg-gray-300"
           }`}
         >
           다음

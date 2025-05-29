@@ -51,7 +51,7 @@ const CompletePage = () => {
 
       {/* 버튼 */}
       <button
-        className="bg-violet text-heading3 fixed bottom-4 left-1/2 w-[343px] -translate-x-1/2 cursor-pointer rounded-sm p-3 text-white"
+        className="bg-mint text-heading3 fixed bottom-4 left-1/2 w-[343px] -translate-x-1/2 cursor-pointer rounded-sm p-3 text-white"
         onClick={() => router.push("/home")}
       >
         시작하기

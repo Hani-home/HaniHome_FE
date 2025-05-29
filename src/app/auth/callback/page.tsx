@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const GoogleCallbackPage = () => {
   const { login, loginError } = useAuth();
