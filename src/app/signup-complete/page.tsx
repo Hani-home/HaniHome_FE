@@ -45,7 +45,9 @@ const CompletePage = () => {
       </div>
 
       {/* 텍스트 */}
-      <span className="text-heading1 text-green">가입이 완료되었어요!</span>
+      <span className="text-heading1 text-mint-contrast">
+        가입이 완료되었어요!
+      </span>
 
       {/* 버튼 */}
       <button

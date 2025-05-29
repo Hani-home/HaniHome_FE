@@ -78,7 +78,7 @@ const AgreementList = ({
   }, [checkedItems]);
 
   return (
-    <div className="flex flex-col py-6">
+    <div className="flex flex-col py-8">
       {/* 전체 동의 */}
       <button
         onClick={() =>

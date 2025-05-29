@@ -46,14 +46,14 @@ const LoginPage = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-[10px] px-4 py-3">
+      <div className="flex flex-col gap-4 px-4 py-3">
         <GoogleLoginButton />
         <button
           onClick={handleGuestClick}
-          className="border-violet flex h-12 w-[343px] cursor-pointer items-center justify-center gap-1 rounded-sm border bg-white py-[10px]"
+          className="flex h-6 w-[343px] cursor-pointer items-center justify-center gap-2 bg-white py-[10px]"
         >
           <GuestIcon />
-          <span className="text-body1-sb text-violet">
+          <span className="text-lab1-b text-mint underline">
             게스트 모드로 시작하기
           </span>
         </button>

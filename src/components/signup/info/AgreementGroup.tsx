@@ -44,7 +44,7 @@ const AgreementGroup = ({
           onClick={onToggleOpen}
           className={clsx("cursor-pointer", isOpen && "rotate-180")}
         >
-          <DownArrow className="h-[18px] w-[18px] object-contain" />
+          <DownArrow className="h-[18px] w-[18px] object-contain text-gray-700" />
         </button>
       </div>
 

@@ -84,8 +84,8 @@ const SearchField = ({
   };
 
   return (
-    <div className="flex w-full flex-col gap-2 py-3">
-      <label className="text-body1-sb text-gray-900">관심 지역 검색</label>
+    <div className="flex w-full flex-col gap-2 py-4">
+      <label className="text-body1-sb text-gray-800">관심 지역 검색</label>
 
       <div className="flex max-w-[343px] flex-col">
         <div className="relative w-full">
@@ -93,8 +93,8 @@ const SearchField = ({
             className={clsx(
               "text-body1-med h-[44px] w-full rounded-sm border py-3 placeholder:text-gray-500 focus:outline-none",
               isSelected
-                ? "border-gray-900 px-4 text-gray-900"
-                : "border-gray-600 pr-12 pl-4 focus:border-gray-900",
+                ? "border-gray-600 px-4 text-gray-900"
+                : "border-gray-400 pr-12 pl-4 focus:border-gray-900",
             )}
             placeholder={placeholder}
             value={value}
@@ -111,7 +111,7 @@ const SearchField = ({
             className="absolute top-1/2 -translate-y-1/2"
           >
             {!isSelected && (
-              <SearchIcon className="absolute top-1/2 right-4 h-6 w-6 -translate-y-1/2" />
+              <SearchIcon className="absolute top-1/2 right-4 h-6 w-6 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-600" />
             )}
           </button>
         </div>

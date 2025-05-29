@@ -92,7 +92,7 @@ const SignupProfilePage = () => {
 
   return (
     <div className="relative flex h-full flex-col">
-      <h1 className="text-heading2 py-3 text-gray-900">
+      <h1 className="text-heading2 py-4 text-gray-900">
         프로필을 만들어주세요
       </h1>
 
@@ -109,7 +109,7 @@ const SignupProfilePage = () => {
         value={nickname}
         onChange={handleNicknameChange}
         onBlur={handleBlur}
-        actionLabel="닉네임 중복 확인"
+        actionLabel="중복 확인"
         actionClickable={isValidNickname}
         onActionClick={checkDuplicate}
         errorMessage={

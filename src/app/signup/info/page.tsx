@@ -67,7 +67,7 @@ const SignupInfoPage = () => {
       onSubmit={e => e.preventDefault()}
       className="flex w-full flex-col pb-16"
     >
-      <div className="flex flex-col gap-1 py-3">
+      <div className="flex flex-col gap-1 py-4">
         <h1 className="text-heading2 text-gray-900">정보를 입력해주세요</h1>
         <span className="text-cap1-med text-gray-700">
           서비스 이용에 필요한 정보 입력 및 약관에 동의해주세요
