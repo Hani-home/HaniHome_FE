@@ -7,21 +7,32 @@ import { useEffect, useMemo, useState } from "react";
 import { nicknameSchema } from "@/schemas/nickname";
 import { useSignupStore } from "@/stores/useSignupStore";
 
+import AlertMessage from "@/components/common/AlertMessage";
 import InputField from "@/components/common/InputField";
 import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
 import SearchField from "@/components/signup/profile/SearchField";
 
+const GENDER_OPTIONS = [
+  { label: "남성", value: "male" },
+  { label: "여성", value: "female" },
+];
+
 const SignupProfilePage = () => {
   const router = useRouter();
   const [nicknameMessage, setNicknameMessage] = useState<string | undefined>();
   const [isValidNickname, setIsValidNickname] = useState(false);
-
-  const setIsChecking = useState(false)[1];
+  const [isChecking, setIsChecking] = useState(false);
 
   const [checkResult, setCheckResult] = useState<
     "default" | "available" | "unavailable"
   >("default");
+
+  const [alerts, setAlerts] = useState<string[]>([]);
+
+  const showAlert = (message: string) => {
+    setAlerts(prev => [...prev, message]);
+  };
 
   const { nickname, gender, region, setField } = useSignupStore();
   useEffect(() => {
@@ -72,16 +83,17 @@ const SignupProfilePage = () => {
   };
 
   const handleSubmit = () => {
-    if (!nickname || !gender || !region) return;
+    if (!isValidNickname || !nickname || !gender || !region) {
+      showAlert("모든 항목에 답변해주세요");
+      return;
+    }
 
     if (checkResult === "default") {
-      setNicknameMessage("닉네임 중복 확인 버튼을 클릭해주세요");
-      setCheckResult("unavailable");
+      showAlert("닉네임 중복 확인 버튼을 눌러주세요");
       return;
     }
 
     if (checkResult !== "available") return;
-
     router.push("/signup-complete");
   };
 
@@ -110,7 +122,7 @@ const SignupProfilePage = () => {
         onChange={handleNicknameChange}
         onBlur={handleBlur}
         actionLabel="중복 확인"
-        actionClickable={isValidNickname}
+        actionClickable={isValidNickname && !isChecking}
         onActionClick={checkDuplicate}
         errorMessage={
           checkResult === "unavailable" || checkResult === "default"
@@ -126,10 +138,7 @@ const SignupProfilePage = () => {
         label="성별"
         value={gender}
         onChange={val => setField("gender", val)}
-        options={[
-          { label: "남성", value: "male" },
-          { label: "여성", value: "female" },
-        ]}
+        options={GENDER_OPTIONS}
       />
 
       <SearchField
@@ -149,6 +158,13 @@ const SignupProfilePage = () => {
           완료
         </button>
       </div>
+
+      {alerts.length > 0 && (
+        <AlertMessage
+          message={alerts.at(-1)!}
+          onDone={() => setAlerts(prev => prev.slice(0, prev.length - 1))}
+        />
+      )}
     </div>
   );
 };
