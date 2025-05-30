@@ -1,37 +1,40 @@
 "use client";
 
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 
-import { useState } from "react";
+// import { useState } from "react";
 
 import GoogleLoginButton from "@/components/login/GoogleLoginButton";
 
-import logoLottie from "@/public/lotties/logo-lottie.json";
+import LogoSymbol from "@/public/svgs/common/logo-symbol.svg";
+import LogoWordmark from "@/public/svgs/common/logo-wordmark.svg";
+// import logoLottie from "@/public/lotties/logo-lottie.json";
 import GuestIcon from "@/public/svgs/login/guest-icon.svg";
-import LogoFallback from "@/public/svgs/login/lottie-default.svg";
 
-const Lottie = dynamic(
-  () => import("react-lottie-player").then(mod => mod.default),
-  { ssr: false },
-);
+// const Lottie = dynamic(
+//   () => import("react-lottie-player").then(mod => mod.default),
+//   { ssr: false },
+// );
 
 const LoginPage = () => {
   const router = useRouter();
-  const [isLottieReady, setIsLottieReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  // const [isLottieReady, setIsLottieReady] = useState(false);
+  // const [hasError, setHasError] = useState(false);
 
   const handleGuestClick = () => {
     router.push("/home");
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center">
-      <div className="min-h-[307px] w-[307px]">
-        {!isLottieReady || hasError ? (
-          <LogoFallback width={307} height={307} />
-        ) : null}
-
+    <div className="flex min-h-screen w-full flex-col items-center pt-52">
+      <div className="flex min-h-[155px] w-[225px] flex-col items-center gap-5 pb-27">
+        {/* {!isLottieReady || hasError ? (
+          <LogoFallback width={225} height={155} />
+        ) : null} */}
+        <LogoSymbol width={147} height={104} />
+        <LogoWordmark width={225} height={31} />
+        {/* 
         <Lottie
           animationData={logoLottie}
           play
@@ -43,7 +46,7 @@ const LoginPage = () => {
           }}
           onLoad={() => setIsLottieReady(true)}
           onError={() => setHasError(true)}
-        />
+        /> */}
       </div>
 
       <div className="flex flex-col gap-4 px-4 py-3">
