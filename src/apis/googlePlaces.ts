@@ -48,6 +48,15 @@ export const fetchPlaceSuggestions = async (
       return [];
     }
 
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "name" in err &&
+      (err as { name?: string }).name === "AbortError"
+    ) {
+      return [];
+    }
+
     console.error("Google Autocomplete API Error:", err);
     return [];
   }

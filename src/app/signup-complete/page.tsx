@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
+import BottomActionBar from "@/components/common/BottomActionBar";
+
 import homeLottie from "@/public/lotties/home-lottie.json";
 import LottieFallback from "@/public/svgs/signup/home-lottie-default.svg";
 
@@ -44,18 +46,15 @@ const CompletePage = () => {
         />
       </div>
 
-      {/* 텍스트 */}
       <span className="text-heading1 text-mint-contrast">
         가입이 완료되었어요!
       </span>
 
-      {/* 버튼 */}
-      <button
-        className="bg-mint text-heading3 fixed bottom-4 left-1/2 w-[343px] -translate-x-1/2 cursor-pointer rounded-sm p-3 text-white"
+      <BottomActionBar
+        label="시작하기"
         onClick={() => router.push("/home")}
-      >
-        시작하기
-      </button>
+        showDivider={false}
+      />
     </div>
   );
 };

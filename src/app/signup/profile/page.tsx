@@ -9,6 +9,7 @@ import { useSignupStore } from "@/stores/useSignupStore";
 import { useNickname } from "@/hooks/signup/useNickname";
 
 import AlertMessage from "@/components/common/AlertMessage";
+import BottomActionBar from "@/components/common/BottomActionBar";
 import InputField from "@/components/common/InputField";
 import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
@@ -101,17 +102,11 @@ const SignupProfilePage = () => {
         isSelected={!!region}
       />
 
-      <div className="fixed bottom-0 left-1/2 z-20 flex w-[343px] -translate-x-1/2 flex-col bg-white">
-        <div className="w-full border-t border-gray-300" />
-        <button
-          onClick={handleSubmit}
-          className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-mint" : "bg-gray-300"
-          }`}
-        >
-          완료
-        </button>
-      </div>
+      <BottomActionBar
+        label="완료"
+        onClick={handleSubmit}
+        disabled={!isFormReady}
+      />
 
       {alerts.length > 0 && (
         <AlertMessage

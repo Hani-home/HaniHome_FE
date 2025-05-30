@@ -9,6 +9,7 @@ import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
 import { useSignupStore } from "@/stores/useSignupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import BottomActionBar from "@/components/common/BottomActionBar";
 import InputField from "@/components/common/InputField";
 import AgreementList from "@/components/signup/info/AgreementList";
 
@@ -98,19 +99,11 @@ const SignupInfoPage = () => {
 
       <AgreementList onChange={setAgreed} defaultChecked={agreed} />
 
-      <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
-        <div className="h-[1px] w-full bg-gray-300" />
-        <button
-          type="button"
-          onClick={handleSubmit(onSubmit)}
-          disabled={!isFormReady}
-          className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-mint" : "cursor-not-allowed bg-gray-300"
-          }`}
-        >
-          다음
-        </button>
-      </div>
+      <BottomActionBar
+        label="다음"
+        onClick={handleSubmit(onSubmit)}
+        disabled={!isFormReady}
+      />
     </form>
   );
 };
