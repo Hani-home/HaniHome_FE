@@ -8,14 +8,13 @@ const suit = localFont({
   display: "swap",
   style: "normal",
   weight: "45 920",
-  variable: "--font-suit",
 });
 
 export const metadata: Metadata = {
   title: "하니홈",
   description: "해외 거주 한인을 위한 숙소 매칭 플랫폼",
   robots: "index, follow",
-  authors: [{ name: "Sujin" }, { name: "Chaeyoung" }],
+  authors: [{ name: "하니홈" }],
   icons: {
     icon: "/icons/favicon.svg",
   },
@@ -35,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={suit.className}>
       <body>
-        <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px] pt-12">
+        <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px]">
           {children}
         </div>
       </body>
