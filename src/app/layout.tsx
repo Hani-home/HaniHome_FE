@@ -5,6 +5,8 @@ import "@/styles/globals.css";
 
 import ReactQueryProvider from "@/utils/reactQueryProvider";
 
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
+
 const suit = localFont({
   src: "../../public/fonts/SUIT-Variable.woff2",
   display: "swap",
@@ -37,7 +39,9 @@ export default function RootLayout({
     <html lang="ko" className={suit.className}>
       <body>
         <div className="mx-auto min-h-screen max-w-[768px] min-w-[375px]">
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </ReactQueryProvider>
         </div>
       </body>
     </html>
