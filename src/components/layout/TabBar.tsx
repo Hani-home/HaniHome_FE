@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import HomeIcon from "@/public/svgs/tabbar/home-icon.svg";
+import HomeIcon from "@/public/svgs/common/home-icon.svg";
 import MyPageIcon from "@/public/svgs/tabbar/mypage-icon.svg";
 import ViewingIcon from "@/public/svgs/tabbar/viewing-icon.svg";
 import WishListIcon from "@/public/svgs/tabbar/wishlist-icon.svg";
