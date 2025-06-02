@@ -11,9 +11,9 @@ import { useNickname } from "@/hooks/signup/useNickname";
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import InputField from "@/components/common/InputField";
+import SearchField from "@/components/common/SearchField";
 import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
-import SearchField from "@/components/signup/profile/SearchField";
 
 const GENDER_OPTIONS = [
   { label: "남성", value: "male" },
