@@ -1,0 +1,77 @@
+import Image from "next/image";
+
+import { ListingCardProps } from "@/types/listing";
+
+import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";
+import HeartOutlineIcon from "@/public/svgs/common/heart-outline-icon.svg";
+
+const Dot = () => (
+  <span className="inline-block h-1 w-1 rounded-full bg-gray-400" />
+);
+
+const ListingCard = ({
+  image,
+  price,
+  status,
+  area,
+  floor,
+  type,
+  options,
+  distance,
+  location,
+  timeAgo,
+  likes,
+  isLiked,
+  onToggleLike,
+}: ListingCardProps) => {
+  return (
+    <div className="flex items-center justify-center gap-4 px-4 py-3">
+      <Image
+        src={image}
+        width={108}
+        height={108}
+        alt="매물 이미지"
+        className="h-27 w-27 rounded-sm border border-gray-200 object-cover"
+      />
+
+      <div className="flex h-24 flex-1 flex-col justify-between">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-[6px]">
+            <p className="text-body1-sb text-gray-900">{price}</p>
+            <span className="text-cap1-med bg-violet-ultralight text-violet border-violet rounded-full border px-2 py-[2px]">
+              {status}
+            </span>
+          </div>
+
+          <p className="text-cap1-med mt-2 flex items-center gap-1 text-gray-600">
+            {area} <Dot /> {floor} <Dot /> {type}
+          </p>
+
+          <p className="text-cap1-med mt-[2px] flex items-center gap-1 text-gray-600">
+            {options} <Dot /> {distance}
+          </p>
+        </div>
+
+        <span className="text-cap1-med text-gray-500">{location}</span>
+      </div>
+
+      <div className="text-cap1-med flex h-24 flex-col items-end justify-between text-gray-500">
+        <button
+          onClick={onToggleLike}
+          className="flex items-center gap-1"
+          aria-label="좋아요"
+        >
+          {isLiked ? (
+            <HeartFilledIcon className="h-[18px] w-[18px]" />
+          ) : (
+            <HeartOutlineIcon className="h-[18px] w-[18px]" />
+          )}
+          {likes}
+        </button>
+        <span>{timeAgo}</span>
+      </div>
+    </div>
+  );
+};
+
+export default ListingCard;
