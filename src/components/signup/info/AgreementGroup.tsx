@@ -10,24 +10,20 @@ import CheckIcon from "./CheckIcon";
 interface AgreementGroupProps {
   title: string;
   terms: typeof AgreementTerm;
+  isChecked: boolean;
   isOpen: boolean;
-  isAllChecked: boolean;
   onToggleOpen: () => void;
   onToggleGroup: () => void;
-  isChecked: (id: number) => boolean;
-  onToggleItem: (id: number) => void;
   gap?: string;
 }
 
 const AgreementGroup = ({
   title,
   terms,
+  isChecked,
   isOpen,
-  isAllChecked,
   onToggleOpen,
   onToggleGroup,
-  isChecked,
-  onToggleItem,
   gap,
 }: AgreementGroupProps) => {
   return (
@@ -37,7 +33,7 @@ const AgreementGroup = ({
           onClick={onToggleGroup}
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
         >
-          <CheckIcon checked={isAllChecked} />
+          <CheckIcon checked={isChecked} />
           {title}
         </button>
         <button
@@ -54,9 +50,8 @@ const AgreementGroup = ({
             <AgreementItem
               key={term.id}
               id={term.id}
+              link={term.link}
               label={term.label}
-              checked={isChecked(term.id)}
-              onClick={() => onToggleItem(term.id)}
             />
           ))}
         </div>

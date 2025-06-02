@@ -1,23 +1,27 @@
-import CheckIcon from "./CheckIcon";
+import Link from "next/link";
 
 interface AgreementItemProps {
   id: number;
+  link?: string;
   label: string;
-  checked: boolean;
-  onClick: () => void;
 }
 
-const AgreementItem = ({ id, label, checked, onClick }: AgreementItemProps) => {
+const AgreementItem = ({ id, label, link }: AgreementItemProps) => {
   const isRequired = label.includes("[필수]");
 
   return (
     <button
       key={id}
-      onClick={onClick}
       className="flex cursor-pointer items-center gap-1 text-left"
     >
-      {!isRequired && <CheckIcon checked={checked} />}
-      <span className="text-cap1-med text-gray-500">{label}</span>
+      <div className="flex gap-1">
+        <span className="text-cap1-med text-gray-500">{label}</span>
+        {isRequired && link && (
+          <Link href={link} className="text-cap1-med text-gray-500 underline">
+            자세히 보기
+          </Link>
+        )}
+      </div>
     </button>
   );
 };
