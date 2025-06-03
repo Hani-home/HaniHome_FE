@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
 import { ListingDummies } from "@/constants/ListingDummies";
@@ -18,6 +20,8 @@ const ListingList = () => {
     ),
   );
 
+  const router = useRouter();
+
   const toggleLike = (id: number) => {
     setLikedState(prev => ({
       ...prev,
@@ -30,6 +34,10 @@ const ListingList = () => {
     }));
   };
 
+  const handleCardClick = (id: number) => {
+    router.push(`/listing/${id}`);
+  };
+
   return (
     <div className="flex flex-col">
       {ListingDummies.map(listing => (
@@ -39,6 +47,7 @@ const ListingList = () => {
           likes={likeCounts[listing.id] ?? listing.likes}
           isLiked={likedState[listing.id] ?? false}
           onToggleLike={() => toggleLike(listing.id)}
+          onClick={() => handleCardClick(listing.id)}
         />
       ))}
     </div>

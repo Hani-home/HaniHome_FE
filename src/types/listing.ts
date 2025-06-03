@@ -12,4 +12,5 @@ export interface ListingCardProps {
   likes: number;
   isLiked: boolean;
   onToggleLike: () => void;
+  onClick?: () => void;
 }

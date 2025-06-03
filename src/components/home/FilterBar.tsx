@@ -15,10 +15,14 @@ const filters = [
 ];
 
 const FilterBar = () => {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const handleSelect = (filter: string) => {
-    setSelected(prev => (prev === filter ? null : filter));
+    setSelectedFilters(prev =>
+      prev.includes(filter)
+        ? prev.filter(f => f !== filter)
+        : [...prev, filter],
+    );
   };
 
   return (
@@ -28,7 +32,7 @@ const FilterBar = () => {
           <FilterChip
             key={filter}
             text={filter}
-            isSelected={selected === filter}
+            isSelected={selectedFilters.includes(filter)}
             onClick={() => handleSelect(filter)}
           />
         ))}

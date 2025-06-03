@@ -23,9 +23,13 @@ const ListingCard = ({
   likes,
   isLiked,
   onToggleLike,
+  onClick,
 }: ListingCardProps) => {
   return (
-    <div className="flex items-center justify-center gap-4 px-4 py-3">
+    <div
+      className="flex cursor-pointer items-center justify-center gap-4 px-4 py-3"
+      onClick={onClick}
+    >
       <Image
         src={image}
         width={108}
@@ -57,8 +61,11 @@ const ListingCard = ({
 
       <div className="text-cap1-med flex h-24 flex-col items-end justify-between text-gray-500">
         <button
-          onClick={onToggleLike}
-          className="flex items-center gap-1"
+          onClick={e => {
+            e.stopPropagation();
+            onToggleLike();
+          }}
+          className="z-10 flex cursor-pointer items-center gap-1"
           aria-label="좋아요"
         >
           {isLiked ? (
