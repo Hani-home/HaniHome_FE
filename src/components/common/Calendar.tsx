@@ -7,21 +7,7 @@ import clsx from "clsx";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 
-type Range = {
-  startDate: Date;
-  endDate: Date;
-  key: string;
-};
-
-type Props = {
-  range: Range[];
-  focusedRange: [number, number];
-  isSingleSelection?: boolean;
-  currentMonth: Date;
-  onRangeChange: (range: Range[]) => void;
-  onFocusChange: (range: [number, number]) => void;
-  onShownDateChange?: (date: Date) => void;
-};
+import { CalendarProps, Range } from "@/types/calendar";
 
 const Calendar = ({
   range,
@@ -31,32 +17,37 @@ const Calendar = ({
   onRangeChange,
   onFocusChange,
   onShownDateChange,
-}: Props) => {
-  const displayStart = format(range[0].startDate, "yyyy. MM. dd");
-  const displayEnd = format(range[0].endDate, "yyyy. MM. dd");
-
+}: CalendarProps) => {
+  const startDate = range[0].startDate;
+  const endDate = range[0].endDate;
   return (
     <div className="relative flex flex-col">
-      {/* 상단 날짜 표시 */}
+      {/* 상단 날짜 스피너 표시 */}
       <div className="rdrDateDisplay flex items-center justify-center gap-[24px] py-4">
         <button
-          onClick={() => onFocusChange([0, 0])}
+          onMouseDown={e => {
+            e.preventDefault();
+            onFocusChange([0, 0]);
+          }}
           className={clsx(
-            "rdrDateDisplayItem text-body1-med text-gray-800",
+            "rdrDateDisplayItem",
             focusedRange[1] === 0 && "rdrDateDisplayItemActive",
           )}
         >
-          {displayStart}
+          {format(startDate, "yyyy. MM. dd")}
         </button>
         <span className="text-body1-med text-gray-700">~</span>
         <button
-          onClick={() => onFocusChange([0, 1])}
+          onMouseDown={e => {
+            e.preventDefault();
+            onFocusChange([0, 1]);
+          }}
           className={clsx(
-            "rdrDateDisplayItem text-body1-med text-gray-800",
+            "rdrDateDisplayItem",
             focusedRange[1] === 1 && "rdrDateDisplayItemActive",
           )}
         >
-          {displayEnd}
+          {format(endDate, "yyyy. MM. dd")}
         </button>
       </div>
 
