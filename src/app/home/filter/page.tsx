@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import BottomActionBar from "@/components/common/BottomActionBar";
 import SubwayStationSelector from "@/components/home/filter/ SubwayStationSelector";
 import AvailableDatePicker from "@/components/home/filter/AvailableDatePicker";
 import BudgetSlider from "@/components/home/filter/BudgetSlider";
@@ -41,6 +42,17 @@ const Filter = () => {
     );
   };
 
+  const handleReset = () => {
+    setSelectedType(undefined);
+    setSelectedRoomTypes([]); //필터 초기화 추후 추가
+  };
+
+  const handleApply = () => {
+    console.log("적용된 필터:", { selectedType, selectedRoomTypes });
+  };
+
+  const count: number = 1; // TODO: 필터 로직과 연결해서 매물 수 계산
+
   return (
     <div className="scrollbar-hide flex flex-col overflow-x-hidden overflow-y-auto pb-31">
       <BackHeader />
@@ -67,6 +79,17 @@ const Filter = () => {
 
       {/* 지하철 역 설정 */}
       <SubwayStationSelector />
+
+      <BottomActionBar
+        buttons={[
+          { label: "초기화", onClick: handleReset },
+          {
+            label: `매물 ${count}개`,
+            onClick: handleApply,
+            disabled: count === 0,
+          },
+        ]}
+      />
     </div>
   );
 };

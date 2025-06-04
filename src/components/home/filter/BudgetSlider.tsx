@@ -7,7 +7,7 @@ import CheckIcon from "@/components/signup/info/CheckIcon";
 
 const MIN_BUDGET = 100;
 const MAX_BUDGET = 3000;
-const MIN_GAP = 100;
+const MIN_GAP = 50;
 
 const BudgetSlider = () => {
   const [budgetRange, setBudgetRange] = useState<[number, number]>([
@@ -38,7 +38,7 @@ const BudgetSlider = () => {
             value={budgetRange}
             min={MIN_BUDGET}
             max={MAX_BUDGET}
-            step={100}
+            step={50}
             allowCross={false}
             pushable={MIN_GAP}
             onChange={value => {
