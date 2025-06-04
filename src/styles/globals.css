@@ -46,20 +46,40 @@
 
 @layer utilities {
   /* gradient */
-  .bg-gradient-upper {
+  .bg-gradient-upper-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 100%;
+    pointer-events: none;
     background: linear-gradient(
       180deg,
-      rgba(200, 204, 215, 0) 30.77%,
-      rgba(200, 204, 215, 0.8) 89.42%
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.95) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.6) 80%,
+      rgba(255, 255, 255, 0.2) 100%
     );
+    z-index: 10;
   }
 
-  .bg-gradient-down {
+  .bg-gradient-bottom-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    width: 100%;
+    pointer-events: none;
     background: linear-gradient(
-      180deg,
-      rgba(200, 204, 215, 0.8) 12.02%,
-      rgba(200, 204, 215, 0) 75.96%
+      0deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.95) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.6) 80%,
+      rgba(255, 255, 255, 0.2) 100%
     );
+    z-index: 10;
   }
 
   /* blur */

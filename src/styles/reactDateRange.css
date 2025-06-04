@@ -106,6 +106,16 @@ button.rdrDay {
   width: 28px;
   margin-left: 8px;
 }
+.single-selection .rdrDays .rdrDay:nth-child(7n + 1) .rdrStartEdge {
+  width: 28px;
+  margin-left: 2.5px;
+}
+
+/* 토요일 날짜 셀의 width 보정 */
+.single-selection .rdrDays .rdrDay:nth-child(7n) .rdrStartEdge {
+  width: 28px;
+  margin-left: 4.5px;
+}
 
 .rdrEndEdge {
   border-top-right-radius: 14px;

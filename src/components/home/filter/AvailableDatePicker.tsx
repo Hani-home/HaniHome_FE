@@ -25,6 +25,8 @@ const AvailableDatePicker = () => {
   const [availableImmediately, setAvailableImmediately] = useState(false);
   const [negotiableDate, setNegotiableDate] = useState(false);
 
+  const [isWheelOpen, setIsWheelOpen] = useState(false);
+
   const isSingleSelection = useMemo(() => {
     const { startDate, endDate } = range[0];
     return startDate.toDateString() === endDate.toDateString();
@@ -42,9 +44,23 @@ const AvailableDatePicker = () => {
         onRangeChange={setRange}
         onFocusChange={setFocusedRange}
         onShownDateChange={setCurrentMonth}
+        onOpenWheel={() => {
+          setTimeout(() => {
+            setIsWheelOpen(true);
+          }, 0);
+        }}
+        onCloseWheel={() => {
+          setTimeout(() => {
+            setIsWheelOpen(false);
+          }, 0);
+        }}
       />
 
-      <div className="mt-[6px] flex flex-col gap-2 px-4 py-3">
+      <div
+        className={`flex flex-col gap-2 px-4 py-3 transition-all duration-300 ${
+          isWheelOpen ? "mt-[34px]" : "mt-[6px]"
+        }`}
+      >
         <div
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
           onClick={() => setAvailableImmediately(prev => !prev)}
