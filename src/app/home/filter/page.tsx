@@ -23,6 +23,8 @@ const Filter = () => {
   };
 
   const selectType = (type: "쉐어" | "렌트") => {
+    if (selectedType === type) return;
+
     setSelectedType(type);
     setSelectedRoomTypes([]);
   };
