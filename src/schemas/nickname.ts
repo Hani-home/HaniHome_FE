@@ -14,7 +14,9 @@ export const nicknameSchema = z
       });
     }
 
-    if (/\p{Emoji}/u.test(nickname)) {
+    //이모지 금지
+    const emojiRegex = /[\p{Emoji_Presentation}\uFE0F]/gu;
+    if (emojiRegex.test(nickname)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "이모지를 사용할 수 없습니다",

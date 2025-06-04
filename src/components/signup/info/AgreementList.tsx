@@ -9,22 +9,19 @@ import CheckIcon from "./CheckIcon";
 
 interface AgreementListProps {
   onChange: (checked: number[]) => void;
-  defaultChecked?: number[];
   onRequiredValidChange?: (valid: boolean) => void;
 }
 
 const AgreementList = ({
   onChange,
-  defaultChecked,
   onRequiredValidChange,
 }: AgreementListProps) => {
-  const [checkedItems, setCheckedItems] = useState<number[]>(
-    defaultChecked ?? [],
-  );
-  const [openGroup, setOpenGroup] = useState<{
-    required: boolean;
-    optional: boolean;
-  }>({
+  const [agreed, setAgreed] = useState({
+    required: false,
+    optional: false,
+  });
+
+  const [openGroup, setOpenGroup] = useState({
     required: false,
     optional: false,
   });
@@ -38,88 +35,60 @@ const AgreementList = ({
     [],
   );
 
-  const requiredIds = requiredTerms.map(t => t.id);
-  const optionalIds = optionalTerms.map(t => t.id);
-
-  const isChecked = (id: number) => checkedItems.includes(id);
-
-  const isAllChecked = AgreementTerm.length === checkedItems.length;
-  const isAllRequiredChecked = requiredIds.every(id =>
-    checkedItems.includes(id),
-  );
-  const isAllOptionalChecked = optionalIds.every(id =>
-    checkedItems.includes(id),
-  );
-
-  const update = (items: number[]) => {
-    const uniqueItems = [...new Set(items)];
-    setCheckedItems(uniqueItems);
-    onChange(uniqueItems);
-  };
-
-  const toggleItem = (id: number) => {
-    update(
-      isChecked(id)
-        ? checkedItems.filter(i => i !== id)
-        : [...checkedItems, id],
-    );
-  };
-
-  const toggleGroup = (ids: number[], isAllGroupChecked: boolean) => {
-    update(
-      isAllGroupChecked
-        ? checkedItems.filter(id => !ids.includes(id))
-        : [...checkedItems, ...ids],
-    );
-  };
+  const isAllChecked = agreed.required && agreed.optional;
 
   useEffect(() => {
-    onRequiredValidChange?.(isAllRequiredChecked);
-  }, [checkedItems]);
+    const checkedIds = [
+      ...(agreed.required ? requiredTerms.map(t => t.id) : []),
+      ...(agreed.optional ? optionalTerms.map(t => t.id) : []),
+    ];
+    onChange(checkedIds);
+    onRequiredValidChange?.(agreed.required);
+  }, [agreed]);
+
+  const toggleGroup = (type: "required" | "optional" | "all") => {
+    if (type === "all") {
+      const next = !isAllChecked;
+      setAgreed({ required: next, optional: next });
+    } else {
+      setAgreed(prev => ({ ...prev, [type]: !prev[type] }));
+    }
+  };
 
   return (
-    <div className="flex flex-col py-6">
+    <div className="flex flex-col py-8">
       {/* 전체 동의 */}
       <button
-        onClick={() =>
-          toggleGroup([...requiredIds, ...optionalIds], isAllChecked)
-        }
+        onClick={() => toggleGroup("all")}
         className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
       >
-        <CheckIcon checked={isAllChecked} />
-        전체 동의합니다
+        <CheckIcon checked={isAllChecked} />만 14세 이상이며 모든 약관에
+        동의합니다
       </button>
 
       <hr className="mt-3 border-t border-gray-200" />
 
-      {/* 필수 동의 */}
       <AgreementGroup
         title="필수 동의란"
         terms={requiredTerms}
+        isChecked={agreed.required}
         isOpen={openGroup.required}
         onToggleOpen={() =>
           setOpenGroup(prev => ({ ...prev, required: !prev.required }))
         }
-        isAllChecked={isAllRequiredChecked}
-        onToggleGroup={() => toggleGroup(requiredIds, isAllRequiredChecked)}
-        isChecked={isChecked}
-        onToggleItem={toggleItem}
+        onToggleGroup={() => toggleGroup("required")}
         gap="gap-1"
       />
 
-      {/* 선택 동의 */}
       <AgreementGroup
         title="선택 동의란"
         terms={optionalTerms}
+        isChecked={agreed.optional}
         isOpen={openGroup.optional}
         onToggleOpen={() =>
           setOpenGroup(prev => ({ ...prev, optional: !prev.optional }))
         }
-        isAllChecked={isAllOptionalChecked}
-        onToggleGroup={() => toggleGroup(optionalIds, isAllOptionalChecked)}
-        isChecked={isChecked}
-        onToggleItem={toggleItem}
-        gap="gap-2"
+        onToggleGroup={() => toggleGroup("optional")}
       />
     </div>
   );

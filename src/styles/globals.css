@@ -3,18 +3,18 @@
 
 @theme {
   /* Primary Colors */
-  --color-green: #30dc86;
-  --color-green-light: #ccffe6;
-  --color-green-dark: #167546;
+  --color-mint: #37cdac;
+  --color-mint-contrast: #1f9f8a;
+  --color-mint-light: #f2fffc;
+  --color-mint-press: #216d60;
 
   /* Secondary Colors */
   --color-violet: #a568ff;
-  --color-violet-light: #f0e5ff;
-  --color-violet-pressed: #8041de;
-  --color-violet-dark: #6224bf;
+  --color-violet-ultralight: #faf5ff;
+  --color-violet-dark: #8041de;
 
   /* Grayscale */
-  --color-gray-0: #f8faff;
+  --color-gray-0: #f7f8fa;
   --color-gray-100: #f4f6fb;
   --color-gray-200: #e9ecf3;
   --color-gray-300: #dbdee8;
@@ -45,6 +45,30 @@
 }
 
 @layer utilities {
+  /* gradient */
+  .bg-gradient-upper {
+    background: linear-gradient(
+      180deg,
+      rgba(200, 204, 215, 0) 30.77%,
+      rgba(200, 204, 215, 0.8) 89.42%
+    );
+  }
+
+  .bg-gradient-down {
+    background: linear-gradient(
+      180deg,
+      rgba(200, 204, 215, 0.8) 12.02%,
+      rgba(200, 204, 215, 0) 75.96%
+    );
+  }
+
+  /* blur */
+  .backdrop-blur-4 {
+    background: #1e1f21cc;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
   /* scrollbar hide */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

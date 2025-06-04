@@ -6,9 +6,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
-import { useSignupStore } from "@/stores/signupStore";
+import { useSignupStore } from "@/stores/useSignupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import BottomActionBar from "@/components/common/BottomActionBar";
 import InputField from "@/components/common/InputField";
 import AgreementList from "@/components/signup/info/AgreementList";
 
@@ -67,7 +68,7 @@ const SignupInfoPage = () => {
       onSubmit={e => e.preventDefault()}
       className="flex w-full flex-col pb-16"
     >
-      <div className="flex flex-col gap-1 py-3">
+      <div className="flex flex-col gap-1 py-4">
         <h1 className="text-heading2 text-gray-900">정보를 입력해주세요</h1>
         <span className="text-cap1-med text-gray-700">
           서비스 이용에 필요한 정보 입력 및 약관에 동의해주세요
@@ -98,19 +99,11 @@ const SignupInfoPage = () => {
 
       <AgreementList onChange={setAgreed} defaultChecked={agreed} />
 
-      <div className="fixed bottom-0 left-1/2 flex w-[343px] -translate-x-1/2 flex-col bg-white">
-        <div className="h-[1px] w-full bg-gray-300" />
-        <button
-          type="button"
-          onClick={handleSubmit(onSubmit)}
-          disabled={!isFormReady}
-          className={`text-heading3 my-2 w-full cursor-pointer rounded py-3 text-white ${
-            isFormReady ? "bg-violet" : "cursor-not-allowed bg-gray-300"
-          }`}
-        >
-          다음
-        </button>
-      </div>
+      <BottomActionBar
+        label="다음"
+        onClick={handleSubmit(onSubmit)}
+        disabled={!isFormReady}
+      />
     </form>
   );
 };

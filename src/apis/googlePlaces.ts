@@ -1,5 +1,3 @@
-import { axiosInstance } from "./axios";
-
 interface GooglePlacesAPIResponse {
   suggestions: {
     placePrediction: {
@@ -23,30 +21,16 @@ export const fetchPlaceSuggestions = async (
   if (!input.trim()) return [];
 
   try {
-    const res = await axiosInstance.post(
-      "https://places.googleapis.com/v1/places:autocomplete",
-      {
-        input,
-        includedRegionCodes: ["au"],
-        includedPrimaryTypes: ["(regions)"],
-        locationBias: {
-          circle: {
-            center: { latitude: -33.8688, longitude: 151.2093 },
-            radius: 20000,
-          },
-        },
+    const res = await fetch("/api/autocomplete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          "X-Goog-Api-Key": process.env.NEXT_PUBLIC_GOOGLE_API_KEY!,
-          "X-Goog-FieldMask":
-            "suggestions.placePrediction.text.text,suggestions.placePrediction.placeId",
-        },
-        signal,
-      },
-    );
+      body: JSON.stringify({ input }),
+      signal,
+    });
 
-    const data = res.data as GooglePlacesAPIResponse;
+    const data = (await res.json()) as GooglePlacesAPIResponse;
 
     return (
       data?.suggestions?.map(s => ({
@@ -59,8 +43,16 @@ export const fetchPlaceSuggestions = async (
       typeof err === "object" &&
       err !== null &&
       "code" in err &&
-      (err as { code?: string; name?: string; message?: string }).code ===
-        "ERR_CANCELED"
+      (err as { code?: string }).code === "ERR_CANCELED"
+    ) {
+      return [];
+    }
+
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "name" in err &&
+      (err as { name?: string }).name === "AbortError"
     ) {
       return [];
     }
