@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import SubwayStationSelector from "@/components/home/filter/ SubwayStationSelector";
+import AvailableDatePicker from "@/components/home/filter/AvailableDatePicker";
 import BudgetSlider from "@/components/home/filter/BudgetSlider";
 import RoomTypeSelector from "@/components/home/filter/RoomTypeSelector";
 import TypeSelector from "@/components/home/filter/TypeSelector";
@@ -61,6 +62,8 @@ const Filter = () => {
       <hr className="my-3 border-t border-gray-200" />
 
       {/* 입주 가능일 */}
+      <AvailableDatePicker />
+      <hr className="my-3 border-t border-gray-200" />
 
       {/* 지하철 역 설정 */}
       <SubwayStationSelector />
