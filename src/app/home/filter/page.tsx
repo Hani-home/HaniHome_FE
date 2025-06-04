@@ -57,6 +57,7 @@ const Filter = () => {
 
       {/* 예산 범위 */}
       <BudgetSlider />
+      <hr className="my-3 border-t border-gray-200" />
     </div>
   );
 };

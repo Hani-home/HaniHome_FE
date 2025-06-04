@@ -92,7 +92,7 @@
 
 .custom-slider .rc-slider-handle {
   background-color: var(--color-mint);
-  border-color: var(--color-mint);
+  border-color: transparent;
   opacity: 1;
   transition: none;
   margin-top: -6px;
