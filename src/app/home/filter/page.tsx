@@ -2,14 +2,12 @@
 
 import { useState } from "react";
 
-import SelectableChip from "@/components/common/SelectableChip";
+import BudgetSlider from "@/components/home/filter/BudgetSlider";
+import RoomTypeSelector from "@/components/home/filter/RoomTypeSelector";
+import TypeSelector from "@/components/home/filter/TypeSelector";
 import BackHeader from "@/components/layout/header/BackHeader";
 
-import {
-  HOUSE_TYPES,
-  ROOM_TYPES,
-  SHARE_ONLY_ROOM_TYPES,
-} from "@/constants/filter";
+import { SHARE_ONLY_ROOM_TYPES } from "@/constants/filter";
 
 const Filter = () => {
   const [selectedType, setSelectedType] = useState<"쉐어" | "렌트">();
@@ -42,55 +40,23 @@ const Filter = () => {
   };
 
   return (
-    <div className="scrollbar-hide flex h-screen flex-col overflow-y-auto">
+    <div className="scrollbar-hide flex h-screen flex-col overflow-x-hidden overflow-y-auto">
       <BackHeader />
 
       {/* 매물 종류 */}
-      <div className="flex items-center py-4">
-        <span className="text-heading3 px-4 py-1 text-gray-900">매물종류</span>
-        <div className="flex flex-1 justify-end gap-3 px-4 py-1">
-          {HOUSE_TYPES.map(type => (
-            <SelectableChip
-              key={type}
-              label={type}
-              selected={selectedType === type}
-              onClick={() => selectType(type as "쉐어" | "렌트")}
-            />
-          ))}
-        </div>
-      </div>
-
+      <TypeSelector selectedType={selectedType} onSelect={selectType} />
       <hr className="my-3 border-t border-gray-200" />
 
       {/* 매물 유형 */}
-      <div className="flex items-center gap-3 py-4">
-        <span className="text-heading3 px-4 py-2 text-gray-900">매물유형</span>
-        <div className="flex w-fit max-w-[269px] flex-wrap items-center justify-center gap-2 px-4 py-2">
-          {ROOM_TYPES.map(type => (
-            <SelectableChip
-              key={type}
-              label={type}
-              selected={selectedRoomTypes.includes(type)}
-              disabled={isDisabled(type)}
-              onClick={() => toggleRoomType(type)}
-            />
-          ))}
-        </div>
-      </div>
+      <RoomTypeSelector
+        selectedRoomTypes={selectedRoomTypes}
+        toggleRoomType={toggleRoomType}
+        isDisabled={isDisabled}
+      />
       <hr className="my-3 border-t border-gray-200" />
 
       {/* 예산 범위 */}
-      <div className="flex flex-col items-center py-4">
-        <div className="flex w-full px-4 py-3">
-          <span className="text-heading3 py-2 text-gray-900">예산 범위</span>
-          <div className="text-heading3 flex flex-1 items-center justify-end gap-2">
-            <span className="text-gray-500">주/$</span>
-            <span className="text-mint">100</span>
-            <span className="text-mint">–</span>
-            <span className="text-mint">150</span>
-          </div>
-        </div>
-      </div>
+      <BudgetSlider />
     </div>
   );
 };
