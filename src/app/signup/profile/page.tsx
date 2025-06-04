@@ -96,11 +96,14 @@ const SignupProfilePage = () => {
         options={GENDER_OPTIONS}
       />
 
-      <SearchField
-        value={region}
-        onChange={val => setField("region", val)}
-        isSelected={!!region}
-      />
+      <div className="flex flex-col gap-2 py-4">
+        <label className="text-body1-sb text-gray-800">관심 지역 검색</label>
+        <SearchField
+          value={region}
+          onChange={val => setField("region", val)}
+          isSelected={!!region}
+        />
+      </div>
 
       <BottomActionBar
         label="완료"

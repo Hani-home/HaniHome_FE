@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import BackArrow from "@/public/svgs/header/back-icon.svg";
+import BackArrow from "@/public/svgs/common/left-arrow.svg";
 
 const BackHeader = () => {
   const router = useRouter();

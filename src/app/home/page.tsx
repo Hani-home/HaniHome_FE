@@ -1,3 +1,25 @@
-const Home = () => {};
+import CategoryHeader from "@/components/home/CategoryHeader";
+import FilterBar from "@/components/home/FilterBar";
+import ListingList from "@/components/home/ListingList";
+import LocationHeader from "@/components/home/LocationHeader";
+import ViewingSection from "@/components/home/ViewingSection";
+import MainHeader from "@/components/layout/header/MainHeader";
+
+const Home = () => {
+  return (
+    <div className="scrollbar-hide flex h-screen flex-col overflow-y-auto pt-12 pb-16">
+      <MainHeader />
+      <div className="bg-gray-0 flex flex-col pt-6 pb-2">
+        <CategoryHeader />
+        <ViewingSection />
+      </div>
+      <div className="flex flex-col py-5">
+        <LocationHeader />
+        <FilterBar />
+        <ListingList />
+      </div>
+    </div>
+  );
+};
 
 export default Home;
