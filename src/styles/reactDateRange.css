@@ -1,4 +1,8 @@
 /* ========= 기본 레이아웃 ========= */
+.rdrMonthAndYearWrapper {
+  display: none !important;
+}
+
 .rdrMonth {
   width: 296px;
   align-self: center;

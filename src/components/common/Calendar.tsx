@@ -22,6 +22,7 @@ const Calendar = ({
   onShownDateChange,
   onOpenWheel,
   onCloseWheel,
+  setCurrentMonth,
 }: CalendarProps) => {
   const startDate = range[0].startDate;
   const endDate = range[0].endDate;
@@ -96,7 +97,6 @@ const Calendar = ({
         </button>
       </div>
 
-      {/* 상단 날짜 */}
       <div
         onClick={() => {
           setShowWheel(prev => {
@@ -106,17 +106,44 @@ const Calendar = ({
             return next;
           });
         }}
-        className="text-body1-med absolute top-21.5 left-1/2 z-10 -translate-x-1/2 text-gray-900"
+        className="flex items-center justify-center gap-17 px-11 py-3 text-gray-900"
       >
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            const newDate = new Date(tempDate);
+            newDate.setMonth(newDate.getMonth() - 1);
+            setTempDate(newDate);
+            setCurrentMonth?.(newDate);
+            onShownDateChange?.(newDate);
+          }}
+          className="h-[8.71px] w-[7px] text-[8px] leading-none"
+        >
+          ◀
+        </button>
+
         {format(tempDate, "yyyy. MM. dd.")}
+
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            const newDate = new Date(tempDate);
+            newDate.setMonth(newDate.getMonth() + 1);
+            setTempDate(newDate);
+            onShownDateChange?.(newDate);
+          }}
+          className="h-[8.71px] w-[7px] text-[8px] leading-none"
+        >
+          ▶
+        </button>
       </div>
 
-      {/* WheelSelector */}
-      {showWheel && (
+      {showWheel ? (
         <WheelSelector
           value={tempDate}
           onChange={date => {
             setTempDate(date);
+            setCurrentMonth?.(date);
             onShownDateChange?.(date);
 
             const updated = new Date(date);
@@ -151,23 +178,23 @@ const Calendar = ({
             setTimeout(() => onCloseWheel?.(), 0);
           }}
         />
+      ) : (
+        <DateRange
+          key={currentMonth.toISOString()}
+          shownDate={currentMonth}
+          onShownDateChange={(date: Date) => setCurrentMonth(date)}
+          ranges={range}
+          onChange={(item: { selection: Range }) =>
+            onRangeChange([item.selection])
+          }
+          showDateDisplay={false}
+          focusedRange={focusedRange}
+          onRangeFocusChange={onFocusChange}
+          locale={enUS}
+          rangeColors={["#2ED8A7"]}
+          className={clsx({ "single-selection": isSingleSelection })}
+        />
       )}
-
-      {/* 캘린더 */}
-      <DateRange
-        ranges={range}
-        onChange={(item: { selection: Range }) =>
-          onRangeChange([item.selection])
-        }
-        showDateDisplay={false}
-        focusedRange={focusedRange}
-        onRangeFocusChange={onFocusChange}
-        locale={enUS}
-        rangeColors={["#2ED8A7"]}
-        shownDate={currentMonth}
-        onShownDateChange={onShownDateChange}
-        className={clsx({ "single-selection": isSingleSelection })}
-      />
     </div>
   );
 };

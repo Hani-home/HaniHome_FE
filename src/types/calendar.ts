@@ -11,7 +11,8 @@ export interface CalendarProps {
   currentMonth: Date;
   onRangeChange: (range: Range[]) => void;
   onFocusChange: (range: [number, number]) => void;
-  onShownDateChange?: (date: Date) => void;
+  onShownDateChange: (date: Date) => void;
   onOpenWheel?: () => void;
   onCloseWheel?: () => void;
+  setCurrentMonth: (date: Date) => void;
 }

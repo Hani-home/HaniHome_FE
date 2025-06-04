@@ -37,9 +37,17 @@ const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
   };
 
   const handleSelect = (year: number, month: number) => {
-    const newDate = new Date(value);
+    const newDate = new Date(value); // 기준 날짜 복사
+    const originalDate = newDate.getDate(); // 기존 일(day)
+
+    // 먼저 연/월 바꿈
     newDate.setFullYear(year);
     newDate.setMonth(month - 1);
+
+    // 그 다음 일(day)을 다시 설정 (유효한 범위 내에서만)
+    const lastDay = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날
+    newDate.setDate(Math.min(originalDate, lastDay)); // 유효하지 않으면 마지막 날로
+
     onChange(newDate);
 
     const yearIndex = years.findIndex(y => y === year);
@@ -57,22 +65,31 @@ const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
     if (!ref.current) return;
     const scrollTop = ref.current.scrollTop;
     const centerIndex = Math.round((scrollTop + centerOffset) / itemHeight);
-    const value = items[centerIndex];
+    const selectedValue = items[centerIndex];
 
-    if (typeof value !== "number") return;
+    if (typeof selectedValue !== "number") return;
 
     // 진동
     if ("vibrate" in navigator) navigator.vibrate(30);
 
-    setSelected(value);
+    setSelected(selectedValue);
     ref.current.scrollTo({
       top: centerIndex * itemHeight - centerOffset,
       behavior: "smooth",
     });
 
-    const newDate = new Date(value);
-    newDate.setFullYear(type === "year" ? value : selectedYear);
-    newDate.setMonth(type === "month" ? value - 1 : selectedMonth - 1);
+    // ✅ 기존 value에서 복사하고, 기존 일(day)을 유지
+    const originalDay = value.getDate();
+    const newDate = new Date(value); // 복사
+    const newYear = type === "year" ? selectedValue : selectedYear;
+    const newMonth = type === "month" ? selectedValue - 1 : selectedMonth - 1;
+
+    newDate.setFullYear(newYear);
+    newDate.setMonth(newMonth);
+
+    const lastDay = new Date(newYear, newMonth + 1, 0).getDate();
+    newDate.setDate(Math.min(originalDay, lastDay)); // 유효하지 않으면 말일로 보정
+
     onChange(newDate);
   };
 
@@ -84,7 +101,7 @@ const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
   }, [selectedYear, selectedMonth]);
 
   return (
-    <div className="absolute top-30 left-0 z-30 w-full border-b border-gray-200 bg-white">
+    <div className="z-30 w-full border-b border-gray-200 bg-white">
       <div className="relative mx-auto flex justify-center gap-3">
         <div className="bg-gradient-upper-overlay pointer-events-none absolute top-0 left-0 z-10 h-[50px] w-full bg-white" />
         <div className="bg-gradient-bottom-overlay pointer-events-none absolute bottom-0 left-0 z-10 h-[50px] w-full bg-white" />
