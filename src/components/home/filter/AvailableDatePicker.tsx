@@ -6,7 +6,6 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
 import "@/styles/reactDateRange.css";
-// 네가 작성한 스타일 포함
 import clsx from "clsx";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";

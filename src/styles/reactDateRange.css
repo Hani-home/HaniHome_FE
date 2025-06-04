@@ -252,15 +252,6 @@ button.rdrDay {
   display: none;
 }
 
-/* .rdrDayToday:not(.rdrDayStartOfRange):not(.rdrDayInRange):not(.rdrDayEndOfRange)
-  .rdrDayNumber
-  span {
-  color: var(--color-mint);
-  border: 1px solid var(--color-mint);
-  border-radius: 50%;
-  background-color: var(--color-white);
-} */
-
 .rdrDayToday:not(.rdrDayStartOfRange):not(.rdrDayInRange):not(
     .rdrDayEndOfRange
   )::before {
