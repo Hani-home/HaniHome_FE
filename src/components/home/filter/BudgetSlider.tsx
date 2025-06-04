@@ -39,10 +39,11 @@ const BudgetSlider = () => {
             min={MIN_BUDGET}
             max={MAX_BUDGET}
             step={50}
-            allowCross={false}
-            pushable={MIN_GAP}
             onChange={value => {
-              setBudgetRange(value as [number, number]);
+              const [start, end] = value as [number, number];
+              const distance = Math.abs(end - start);
+              if (distance < MIN_GAP) return;
+              setBudgetRange([start, end]);
             }}
             marks={{
               [MIN_BUDGET]: {
