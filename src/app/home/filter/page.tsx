@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import SubwayStationSelector from "@/components/home/filter/ SubwayStationSelector";
 import BudgetSlider from "@/components/home/filter/BudgetSlider";
 import RoomTypeSelector from "@/components/home/filter/RoomTypeSelector";
 import TypeSelector from "@/components/home/filter/TypeSelector";
@@ -40,7 +41,7 @@ const Filter = () => {
   };
 
   return (
-    <div className="scrollbar-hide flex h-screen flex-col overflow-x-hidden overflow-y-auto">
+    <div className="scrollbar-hide flex flex-col overflow-x-hidden overflow-y-auto pb-31">
       <BackHeader />
 
       {/* 매물 종류 */}
@@ -58,6 +59,11 @@ const Filter = () => {
       {/* 예산 범위 */}
       <BudgetSlider />
       <hr className="my-3 border-t border-gray-200" />
+
+      {/* 입주 가능일 */}
+
+      {/* 지하철 역 설정 */}
+      <SubwayStationSelector />
     </div>
   );
 };
