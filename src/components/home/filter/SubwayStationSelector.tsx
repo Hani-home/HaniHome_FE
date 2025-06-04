@@ -4,7 +4,7 @@ import Slider from "rc-slider";
 
 import SearchField from "@/components/common/SearchField";
 
-const MIN_DISTANCE = 1;
+const MIN_DISTANCE = 0.5;
 const MAX_DISTANCE = 10;
 
 const SubwayStationSelector = () => {
@@ -40,7 +40,7 @@ const SubwayStationSelector = () => {
         <label className="text-body1-sb text-gray-800">거리 설정</label>
         <div className="relative mt-[6px] flex w-full justify-center">
           <div className="absolute top-2 left-0 z-0 h-1 w-full -translate-y-1/2 rounded-full bg-gray-100" />
-          <div className="bg-mint absolute top-2 left-0 z-10 h-1 w-[10%] -translate-y-1/2 rounded-full transition-all duration-200" />
+          <div className="bg-mint absolute top-2 left-0 z-10 h-1 w-[5%] -translate-y-1/2 rounded-full transition-all duration-200" />
 
           <div className="w-[327px] pb-[30px]">
             <Slider
@@ -48,7 +48,7 @@ const SubwayStationSelector = () => {
               value={distanceRange}
               min={0}
               max={MAX_DISTANCE}
-              step={1}
+              step={0.5}
               onChange={handleChange}
               onChangeComplete={handleAfterChange}
               marks={{
