@@ -35,16 +35,26 @@ const Calendar = ({
   // 날짜 클릭 시
   const handleDateClick = (targetIndex: number) => {
     const isSame = focusedRange[1] === targetIndex;
-    onFocusChange([0, targetIndex]);
 
-    const newDate = targetIndex === 0 ? startDate : endDate;
-
-    if (!isSame || !showWheel) {
-      setNextTempDate(newDate);
-    } else {
-      setShowWheel(false);
-      setTimeout(() => onCloseWheel?.(), 0);
+    if (isSame) {
+      setShowWheel(prev => {
+        const next = !prev;
+        if (next) onOpenWheel?.();
+        else setTimeout(() => onCloseWheel?.(), 0);
+        return next;
+      });
+      return;
     }
+
+    // 다른 버튼이면 휠 무조건 열기
+    onFocusChange([0, targetIndex]);
+    const selectedDate = targetIndex === 0 ? startDate : endDate;
+
+    setTempDate(selectedDate);
+    setCurrentMonth?.(selectedDate);
+    onShownDateChange?.(selectedDate);
+    setShowWheel(true);
+    onOpenWheel?.();
   };
 
   // 외부 currentMonth 변할 때 초기화
@@ -69,12 +79,15 @@ const Calendar = ({
   }, [tempDate]);
 
   useEffect(() => {
+    // 휠 열기 흐름에서는 tempDate 세팅 스킵
+    if (shouldOpenWheel || nextTempDate) return;
+
     const selected = focusedRange[1] === 0 ? startDate : endDate;
 
     setTempDate(selected);
     setCurrentMonth?.(selected);
     onShownDateChange?.(selected);
-  }, [focusedRange, startDate, endDate]);
+  }, [focusedRange, startDate, endDate, shouldOpenWheel, nextTempDate]);
   return (
     <div className="relative flex flex-col">
       {/* 날짜 선택 버튼 */}
@@ -104,17 +117,7 @@ const Calendar = ({
         </button>
       </div>
 
-      <div
-        onClick={() => {
-          setShowWheel(prev => {
-            const next = !prev;
-            if (next) onOpenWheel?.();
-            else setTimeout(() => onCloseWheel?.(), 0);
-            return next;
-          });
-        }}
-        className="flex items-center justify-center gap-17 px-11 py-3 text-gray-900"
-      >
+      <div className="flex items-center justify-center gap-17 px-11 py-3 text-gray-900">
         <button
           onClick={e => {
             e.stopPropagation();
@@ -128,9 +131,18 @@ const Calendar = ({
         >
           ◀
         </button>
-
-        {format(tempDate, "yyyy. MM. dd.")}
-
+        <span
+          onClick={() => {
+            setShowWheel(prev => {
+              const next = !prev;
+              if (next) onOpenWheel?.();
+              else setTimeout(() => onCloseWheel?.(), 0);
+              return next;
+            });
+          }}
+        >
+          {format(tempDate, "yyyy. MM. dd.")}
+        </span>
         <button
           onClick={e => {
             e.stopPropagation();

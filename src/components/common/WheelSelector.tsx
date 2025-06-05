@@ -3,102 +3,74 @@ import { useEffect, useRef, useState } from "react";
 import "@/styles/reactDateRange.css";
 import clsx from "clsx";
 
+import { useWheelSnap } from "@/hooks/common/useWheelSnap";
+
+import { getSafeDate } from "@/utils/getSafeDate";
+
 interface WheelSelectorProps {
   value: Date;
   onChange: (newDate: Date) => void;
   onClose: () => void;
 }
 
+const BASE_YEARS = Array.from({ length: 11 }, (_, i) => 2020 + i);
+const BASE_MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
+const PADDED = ["", ""];
+const YEARS = [...PADDED, ...BASE_YEARS, ...PADDED];
+const MONTHS = [...PADDED, ...BASE_MONTHS, ...PADDED];
+
 const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
-  const baseYears = Array.from({ length: 11 }, (_, i) => 2020 + i);
-  const baseMonths = Array.from({ length: 12 }, (_, i) => i + 1);
+  const [year, setYear] = useState(value.getFullYear());
+  const [month, setMonth] = useState(value.getMonth() + 1);
 
-  const years = ["", "", ...baseYears, "", ""];
-  const months = ["", "", ...baseMonths, "", ""];
+  const yearRef = useRef<HTMLDivElement>(null!);
+  const monthRef = useRef<HTMLDivElement>(null!);
+  const yearTimer = useRef<NodeJS.Timeout | null>(null);
+  const monthTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const [selectedYear, setSelectedYear] = useState(value.getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState(value.getMonth() + 1);
+  const yearSnap = useWheelSnap({
+    ref: yearRef,
+    items: YEARS,
+    selectedYear: year,
+    selectedMonth: month,
+    type: "year",
+    value,
+    onSelect: setYear,
+    onChange,
+  });
 
-  const monthScrollRef = useRef<HTMLDivElement>(null!);
-  const yearScrollRef = useRef<HTMLDivElement>(null!);
-  const yearScrollTimer = useRef<NodeJS.Timeout | null>(null);
-  const monthScrollTimer = useRef<NodeJS.Timeout | null>(null);
+  const monthSnap = useWheelSnap({
+    ref: monthRef,
+    items: MONTHS,
+    selectedYear: year,
+    selectedMonth: month,
+    type: "month",
+    value,
+    onSelect: setMonth,
+    onChange,
+  });
 
-  const itemHeight = 50;
-  const centerOffset = 100;
-
-  const scrollToIndex = (
-    ref: React.RefObject<HTMLDivElement | null>,
-    index: number,
-  ) => {
-    if (!ref.current) return;
-    const offset = itemHeight * index - centerOffset;
-    ref.current.scrollTo({ top: offset, behavior: "smooth" });
+  const handleClick = (type: "year" | "month", val: number) => {
+    const newYear = type === "year" ? val : year;
+    const newMonth = type === "month" ? val - 1 : month - 1;
+    const newDate = getSafeDate(newYear, newMonth, value.getDate());
+    if (type === "year") setYear(val);
+    else setMonth(val);
+    onChange(newDate);
   };
 
-  const handleSelect = (year: number, month: number) => {
-    const newDate = new Date(value); // 기준 날짜 복사
-    const originalDate = newDate.getDate(); // 기존 일(day)
-
-    // 먼저 연/월 바꿈
-    newDate.setFullYear(year);
-    newDate.setMonth(month - 1);
-
-    // 그 다음 일(day)을 다시 설정 (유효한 범위 내에서만)
-    const lastDay = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날
-    newDate.setDate(Math.min(originalDate, lastDay)); // 유효하지 않으면 마지막 날로
-
-    onChange(newDate);
-
-    const yearIndex = years.findIndex(y => y === year);
-    const monthIndex = months.findIndex(m => m === month);
-    scrollToIndex(yearScrollRef, yearIndex);
-    scrollToIndex(monthScrollRef, monthIndex);
-  };
-
-  const handleSnapScroll = (
-    ref: React.RefObject<HTMLDivElement>,
-    items: (number | string)[],
-    setSelected: (val: number) => void,
-    type: "year" | "month",
+  const debounceScroll = (
+    timerRef: React.MutableRefObject<NodeJS.Timeout | null>,
+    callback: () => void,
   ) => {
-    if (!ref.current) return;
-    const scrollTop = ref.current.scrollTop;
-    const centerIndex = Math.round((scrollTop + centerOffset) / itemHeight);
-    const selectedValue = items[centerIndex];
-
-    if (typeof selectedValue !== "number") return;
-
-    // 진동
-    if ("vibrate" in navigator) navigator.vibrate(30);
-
-    setSelected(selectedValue);
-    ref.current.scrollTo({
-      top: centerIndex * itemHeight - centerOffset,
-      behavior: "smooth",
-    });
-
-    // ✅ 기존 value에서 복사하고, 기존 일(day)을 유지
-    const originalDay = value.getDate();
-    const newDate = new Date(value); // 복사
-    const newYear = type === "year" ? selectedValue : selectedYear;
-    const newMonth = type === "month" ? selectedValue - 1 : selectedMonth - 1;
-
-    newDate.setFullYear(newYear);
-    newDate.setMonth(newMonth);
-
-    const lastDay = new Date(newYear, newMonth + 1, 0).getDate();
-    newDate.setDate(Math.min(originalDay, lastDay)); // 유효하지 않으면 말일로 보정
-
-    onChange(newDate);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(callback, 100);
   };
 
   useEffect(() => {
-    const yearIndex = years.findIndex(y => y === selectedYear);
-    const monthIndex = months.findIndex(m => m === selectedMonth);
-    scrollToIndex(yearScrollRef, yearIndex);
-    scrollToIndex(monthScrollRef, monthIndex);
-  }, [selectedYear, selectedMonth]);
+    yearSnap.scrollToIndex(year);
+    monthSnap.scrollToIndex(month);
+  }, [year, month]);
 
   return (
     <div className="z-30 w-full border-b border-gray-200 bg-white">
@@ -113,35 +85,24 @@ const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
           </div>
           <div className="border-mint-contrast pointer-events-none absolute top-1/2 left-[34px] z-20 h-[50px] w-[72px] -translate-y-1/2 border-y" />
           <div
-            ref={yearScrollRef}
+            ref={yearRef}
             className="scrollbar-hide relative z-0 h-[250px] w-full overflow-auto scroll-smooth pl-[34px]"
-            onScroll={() => {
-              if (yearScrollTimer.current)
-                clearTimeout(yearScrollTimer.current);
-              yearScrollTimer.current = setTimeout(() => {
-                handleSnapScroll(yearScrollRef, years, setSelectedYear, "year");
-              }, 100);
-            }}
+            onScroll={() => debounceScroll(yearTimer, yearSnap.snap)}
           >
-            {years.map((year, idx) => (
+            {YEARS.map((y, idx) => (
               <div
                 key={idx}
                 className={clsx(
                   "text-heading4 flex h-[50px] items-center justify-center transition-colors duration-150",
-                  typeof year === "number"
-                    ? year === selectedYear
+                  typeof y === "number"
+                    ? y === year
                       ? "text-mint-contrast"
                       : "text-gray-400"
                     : "pointer-events-none",
                 )}
-                onClick={() => {
-                  if (typeof year === "number") {
-                    setSelectedYear(year);
-                    handleSelect(year, selectedMonth);
-                  }
-                }}
+                onClick={() => typeof y === "number" && handleClick("year", y)}
               >
-                {typeof year === "number" ? `${year.toString().slice(2)}.` : ""}
+                {typeof y === "number" ? `${y.toString().slice(2)}.` : ""}
               </div>
             ))}
           </div>
@@ -151,41 +112,25 @@ const WheelSelector = ({ value, onChange }: WheelSelectorProps) => {
         <div className="relative flex w-[80px] flex-col items-center text-center">
           <div className="border-mint-contrast pointer-events-none absolute top-1/2 left-0 z-20 h-[50px] w-full -translate-y-1/2 border-y" />
           <div
-            ref={monthScrollRef}
+            ref={monthRef}
             className="scrollbar-hide relative z-0 h-[250px] w-full overflow-auto scroll-smooth"
-            onScroll={() => {
-              if (monthScrollTimer.current)
-                clearTimeout(monthScrollTimer.current);
-              monthScrollTimer.current = setTimeout(() => {
-                handleSnapScroll(
-                  monthScrollRef,
-                  months,
-                  setSelectedMonth,
-                  "month",
-                );
-              }, 100);
-            }}
+            onScroll={() => debounceScroll(monthTimer, monthSnap.snap)}
           >
-            {months.map((month, idx) => (
+            {MONTHS.map((m, idx) => (
               <div
                 key={idx}
                 className={clsx(
                   "text-heading4 flex h-[50px] items-center justify-center transition-colors duration-150",
-                  typeof month === "number"
-                    ? month === selectedMonth
+                  typeof m === "number"
+                    ? m === month
                       ? "text-mint-contrast"
                       : "text-gray-400"
                     : "pointer-events-none",
                 )}
-                onClick={() => {
-                  if (typeof month === "number") {
-                    setSelectedMonth(month);
-                    handleSelect(selectedYear, month);
-                  }
-                }}
+                onClick={() => typeof m === "number" && handleClick("month", m)}
               >
-                {typeof month === "number"
-                  ? `${month.toString().padStart(2, "0")}.`
+                {typeof m === "number"
+                  ? `${m.toString().padStart(2, "0")}.`
                   : ""}
               </div>
             ))}
