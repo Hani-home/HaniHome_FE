@@ -7,9 +7,11 @@ import BackHeader from "@/components/layout/header/BackHeader";
 import DetailTabs from "@/components/listings/DetailTabs";
 import CheckIcon from "@/components/signup/info/CheckIcon";
 
+import LocationImage from "@/public/svgs/listings/location-image.svg";
+
 const ListingDetailPage = () => {
   return (
-    <div className="scrollbar-hide flex h-screen flex-col overflow-y-auto pt-12">
+    <div className="scrollbar-hide flex h-screen flex-col overflow-y-auto pt-12 pb-16">
       <BackHeader rightIcon="report" />
       <Image
         src="/svgs/common/room-img.svg"
@@ -56,6 +58,23 @@ const ListingDetailPage = () => {
       </div>
 
       <DetailTabs />
+      <div className="mt-6 mb-15">
+        <div className="flex flex-col gap-3 px-4 py-8">
+          <span className="text-body1-sb text-gray-900">위치</span>
+
+          <div className="relative">
+            {/* 지도 이미지 */}
+            <LocationImage className="h-[343px] w-[343px]" />
+
+            {/* 오버레이 안내 문구 */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-heading3 text-center text-gray-900">
+                상세 주소는 뷰잉 예약 후 확인 가능합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <BottomActionBar label="뷰잉 예약하기" />
     </div>
