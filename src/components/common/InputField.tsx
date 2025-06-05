@@ -29,11 +29,12 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
 
     return (
       <div className="flex flex-col gap-2 py-4">
-        <label className="text-body1-sb text-gray-800">{label}</label>
+        <span className="text-body1-sb text-gray-800">{label}</span>
 
         <div className="flex flex-col gap-2">
           <div className="flex gap-1">
             <input
+              name={props.name ?? "default-input"}
               ref={ref}
               {...props}
               className={clsx(

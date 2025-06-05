@@ -1,8 +1,8 @@
 import CategoryHeader from "@/components/home/CategoryHeader";
-import FilterBar from "@/components/home/FilterBar";
 import ListingList from "@/components/home/ListingList";
 import LocationHeader from "@/components/home/LocationHeader";
 import ViewingSection from "@/components/home/ViewingSection";
+import FilterBar from "@/components/home/filterBar/FilterBar";
 import MainHeader from "@/components/layout/header/MainHeader";
 
 const Home = () => {

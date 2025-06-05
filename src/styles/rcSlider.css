@@ -1,0 +1,40 @@
+@import "rc-slider/assets/index.css";
+
+/* rc-slider 스타일 커스텀 */
+.custom-slider .rc-slider-rail {
+  height: 4px;
+  background-color: var(--color-gray-100);
+}
+
+.custom-slider .rc-slider-track {
+  height: 4px;
+  background-color: var(--color-mint);
+}
+
+.custom-slider .rc-slider-handle {
+  background-color: var(--color-mint);
+  border-color: transparent;
+  opacity: 1;
+  transition: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+}
+
+.custom-slider .rc-slider-handle,
+.custom-slider .rc-slider-handle:active,
+.custom-slider .rc-slider-handle:focus,
+.custom-slider .rc-slider-handle:hover {
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: var(--color-mint) !important;
+}
+
+.custom-slider .rc-slider-dot {
+  display: none;
+}
+
+.custom-slider .rc-slider-mark {
+  top: calc(50% + 10px);
+  transform: translateY(-50%);
+}

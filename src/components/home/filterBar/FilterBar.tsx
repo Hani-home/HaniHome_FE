@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
 import EditIcon from "@/public/svgs/home/filter-icon.svg";
@@ -16,6 +18,7 @@ const filters = [
 
 const FilterBar = () => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const router = useRouter();
 
   const handleSelect = (filter: string) => {
     setSelectedFilters(prev =>
@@ -37,7 +40,13 @@ const FilterBar = () => {
           />
         ))}
       </div>
-      <EditIcon className="cursor-pointer" />
+
+      <EditIcon
+        className="cursor-pointer"
+        onClick={() => {
+          router.push("/home/filter");
+        }}
+      />
     </div>
   );
 };

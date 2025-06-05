@@ -97,7 +97,7 @@ const SignupInfoPage = () => {
         errorMessage={touchedFields.phone ? errors.phone?.message : undefined}
       />
 
-      <AgreementList onChange={setAgreed} defaultChecked={agreed} />
+      <AgreementList onChange={setAgreed} />
 
       <BottomActionBar
         label="다음"

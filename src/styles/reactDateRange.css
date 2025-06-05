@@ -1,0 +1,288 @@
+@import "react-date-range/dist/styles.css";
+@import "react-date-range/dist/theme/default.css";
+
+/* ========= 기본 레이아웃 ========= */
+.rdrMonthAndYearWrapper {
+  display: none !important;
+}
+
+.rdrMonth {
+  width: 296px;
+  align-self: center;
+  padding: 0;
+}
+
+.rdrDays {
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  margin: 8px 2px auto;
+  row-gap: 12px;
+}
+
+/* ========= 날짜 셀 ========= */
+.rdrDay {
+  width: 44px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdrDay:nth-child(7n + 1) {
+  width: 36px;
+}
+.rdrDay:nth-child(7n) {
+  width: 36px;
+  padding-right: 0;
+}
+
+button.rdrDay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* ========= 날짜 숫자 ========= */
+.rdrDayNumber {
+  width: 28px;
+  height: 100%;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+}
+
+.rdrDayNumber span {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 135%;
+  letter-spacing: -0.02em;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.rdrDay.rdrDayInRange .rdrDayNumber span {
+  background-color: var(--color-mint);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  border-radius: 0;
+}
+
+/* ========= Range 영역 ========= */
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+  background-color: var(--color-mint);
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  border-radius: 0;
+}
+
+.rdrStartEdge {
+  width: 100%;
+  margin-left: 0;
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+/* 단일 날짜 선택일 때만 마진 적용 */
+.single-selection .rdrStartEdge {
+  width: 28px;
+  margin-left: 8px;
+}
+.single-selection .rdrDays .rdrDay:nth-child(7n + 1) .rdrStartEdge {
+  width: 28px;
+  margin-left: 2.5px;
+}
+
+/* 토요일 날짜 셀의 width 보정 */
+.single-selection .rdrDays .rdrDay:nth-child(7n) .rdrStartEdge {
+  width: 28px;
+  margin-left: 4.5px;
+}
+
+.rdrEndEdge {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* ========= 상태에 따른 배경 ========= */
+.rdrDay.rdrDayInRange {
+  background-color: var(--color-mint);
+  color: white !important;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.rdrDayStartOfRange {
+  background-color: var(--color-mint);
+  color: white !important;
+  border-radius: 14px 0 0 14px;
+}
+
+.rdrDayEndOfRange {
+  background-color: var(--color-mint);
+  color: white;
+  border-radius: 0 14px 14px 0;
+}
+
+.rdrDayStartOfRange,
+.rdrDayEndOfRange {
+  border-radius: 14px;
+}
+
+/* ========= Hover, Preview ========= */
+.rdrDayStartPreview,
+.rdrDayInPreview,
+.rdrDayEndPreview,
+.rdrDayHovered {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* ========= Passive ========= */
+.rdrDayPassive {
+  color: #ccc;
+}
+
+.rdrDay.rdrDayPassive .rdrDayNumber span {
+  color: #ccc !important;
+}
+
+/* ========= 요일 헤더 ========= */
+.rdrWeekDays {
+  display: flex;
+  gap: 16px;
+  width: 292px;
+  margin: 0 2px;
+}
+
+.rdrWeekDay {
+  width: 44px;
+  height: 20px;
+  text-transform: lowercase;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 135%;
+  letter-spacing: -0.02em;
+  color: #0f0f10;
+}
+
+/* ========= 요일별 스타일 ========= */
+.rdrDay:nth-child(7n + 1) .rdrDayNumber span {
+  color: red;
+}
+.rdrDay.rdrDaySelected:nth-child(7n + 1) .rdrDayNumber span,
+.rdrDay.rdrDayStartOfRange:nth-child(7n + 1) .rdrDayNumber span,
+.rdrDay.rdrDayEndOfRange:nth-child(7n + 1) .rdrDayNumber span {
+  color: white !important;
+}
+
+/* ========= 상단 요약 날짜 영역 ========= */
+.rdrDateDisplay {
+  background-color: var(--color-gray-0);
+  padding: 16px 40.5px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.rdrDateDisplayItem {
+  border: 1px solid var(--color-gray-400);
+  background-color: var(--color-white);
+  border-radius: 4px;
+  padding: 4px 12px;
+  box-shadow: none;
+  color: var(--color-gray-700);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 135%;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+
+.rdrDateDisplayItemActive {
+  background-color: var(--color-mint-contrast);
+  border-color: var(--color-mint-contrast);
+  color: var(--color-white);
+}
+
+/* ========= 달/연도 선택 숨김 ========= */
+.rdrMonthAndYearWrapper {
+  margin-top: 8px;
+  padding: 12px 44px;
+  height: auto;
+}
+
+.rdrMonthAndYearPickers {
+  display: none;
+}
+
+/* ========= 네비게이션 버튼 ========= */
+.rdrNextPrevButton,
+.rdrNextButton,
+.rdrPrevButton {
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdrNextPrevButton i,
+.rdrNextButton i {
+  width: 7px;
+  height: 8.71px;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* ========= 기타 ========= */
+.rdrDayNumber span:after {
+  display: none;
+}
+
+.rdrDayToday:not(.rdrDayStartOfRange):not(.rdrDayInRange):not(
+    .rdrDayEndOfRange
+  )::before {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-mint);
+  border-radius: 50%;
+  background-color: white;
+  color: var(--color-mint);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
