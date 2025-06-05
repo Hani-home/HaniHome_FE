@@ -68,6 +68,13 @@ const Calendar = ({
     onOpenWheel?.();
   }, [tempDate]);
 
+  useEffect(() => {
+    const selected = focusedRange[1] === 0 ? startDate : endDate;
+
+    setTempDate(selected);
+    setCurrentMonth?.(selected);
+    onShownDateChange?.(selected);
+  }, [focusedRange, startDate, endDate]);
   return (
     <div className="relative flex flex-col">
       {/* 날짜 선택 버튼 */}
@@ -117,7 +124,7 @@ const Calendar = ({
             setCurrentMonth?.(newDate);
             onShownDateChange?.(newDate);
           }}
-          className="h-[8.71px] w-[7px] text-[8px] leading-none"
+          className="h-[8.71px] w-[7px] cursor-pointer text-[8px] leading-none"
         >
           ◀
         </button>
@@ -132,7 +139,7 @@ const Calendar = ({
             setTempDate(newDate);
             onShownDateChange?.(newDate);
           }}
-          className="h-[8.71px] w-[7px] text-[8px] leading-none"
+          className="h-[8.71px] w-[7px] cursor-pointer text-[8px] leading-none"
         >
           ▶
         </button>
