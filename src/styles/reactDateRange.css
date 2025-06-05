@@ -1,3 +1,6 @@
+@import "react-date-range/dist/styles.css";
+@import "react-date-range/dist/theme/default.css";
+
 /* ========= 기본 레이아웃 ========= */
 .rdrMonthAndYearWrapper {
   display: none !important;

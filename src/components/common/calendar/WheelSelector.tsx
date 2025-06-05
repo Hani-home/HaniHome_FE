@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-import "@/styles/reactDateRange.css";
-
 import { useWheelSnap } from "@/hooks/calendar/useWheelSnap";
 
 import { getSafeDate } from "@/utils/getSafeDate";
