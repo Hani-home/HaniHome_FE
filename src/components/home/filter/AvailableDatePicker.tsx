@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import Calendar from "@/components/common/Calendar";
+import Calendar from "@/components/common/calendar/Calendar";
 import CheckIcon from "@/components/signup/info/CheckIcon";
 
 type Range = {
