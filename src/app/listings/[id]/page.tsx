@@ -11,7 +11,7 @@ import LocationImage from "@/public/svgs/listings/location-image.svg";
 
 const ListingDetailPage = () => {
   return (
-    <div className="scrollbar-hide flex h-screen flex-col overflow-y-auto pt-12 pb-16">
+    <div className="scrollbar-hide flex h-screen flex-col overflow-auto pt-12 pb-16">
       <BackHeader rightIcon="report" />
       <Image
         src="/svgs/common/room-img.svg"

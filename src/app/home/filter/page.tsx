@@ -56,7 +56,7 @@ const Filter = () => {
   const count: number = 1; // TODO: 필터 로직과 연결해서 매물 수 계산
 
   return (
-    <div className="scrollbar-hide flex flex-col overflow-x-hidden overflow-y-auto pb-31">
+    <div className="scrollbar-hide flex h-screen flex-col overflow-x-hidden overflow-y-auto pt-12 pb-31">
       <BackHeader />
 
       {/* 매물 종류 */}
