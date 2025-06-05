@@ -84,7 +84,7 @@ const Calendar = ({
         </button>
 
         <span onClick={toggleShowWheel} className="cursor-pointer">
-          {format(tempDate, "yyyy. MM. dd.")}
+          {tempDate ? format(tempDate, "yyyy. MM. dd.") : ""}
         </span>
 
         <button
@@ -96,7 +96,7 @@ const Calendar = ({
       </div>
 
       {/* 날짜 휠 또는 캘린더 표시 */}
-      {showWheel ? (
+      {showWheel && tempDate ? (
         <WheelSelector
           value={tempDate}
           onChange={handleWheelChange}
@@ -104,7 +104,7 @@ const Calendar = ({
         />
       ) : (
         <DateRange
-          key={currentMonth.toISOString()}
+          key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
           shownDate={tempDate}
           onShownDateChange={handleWheelChange}
           ranges={range}

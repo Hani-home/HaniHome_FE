@@ -54,7 +54,7 @@ const DropdownField = ({
 
   return (
     <div className="flex flex-col gap-2 py-4">
-      <label className="text-body1-sb text-gray-800">{label}</label>
+      <span className="text-body1-sb text-gray-800">{label}</span>
 
       <div
         ref={dropdownRef}

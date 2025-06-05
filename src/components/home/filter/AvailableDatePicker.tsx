@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Calendar from "@/components/common/calendar/Calendar";
 import CheckIcon from "@/components/signup/info/CheckIcon";
@@ -13,24 +13,32 @@ type Range = {
 
 const AvailableDatePicker = () => {
   const [focusedRange, setFocusedRange] = useState<[number, number]>([0, 0]);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [range, setRange] = useState<Range[]>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
-
+  const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
+  const [range, setRange] = useState<Range[] | null>(null);
   const [availableImmediately, setAvailableImmediately] = useState(false);
   const [negotiableDate, setNegotiableDate] = useState(false);
-
   const [, setIsWheelOpen] = useState(false);
 
+  // 클라이언트에서만 날짜 초기화
+  useEffect(() => {
+    const today = new Date();
+    setCurrentMonth(today);
+    setRange([
+      {
+        startDate: today,
+        endDate: today,
+        key: "selection",
+      },
+    ]);
+  }, []);
+
   const isSingleSelection = useMemo(() => {
+    if (!range) return true;
     const { startDate, endDate } = range[0];
     return startDate.toDateString() === endDate.toDateString();
   }, [range]);
+
+  if (!range || !currentMonth) return null;
 
   return (
     <div className="flex flex-col py-4">
@@ -44,19 +52,9 @@ const AvailableDatePicker = () => {
         isSingleSelection={isSingleSelection}
         onRangeChange={setRange}
         onFocusChange={setFocusedRange}
-        onShownDateChange={date => {
-          setCurrentMonth(date);
-        }}
-        onOpenWheel={() => {
-          setTimeout(() => {
-            setIsWheelOpen(true);
-          }, 0);
-        }}
-        onCloseWheel={() => {
-          setTimeout(() => {
-            setIsWheelOpen(false);
-          }, 0);
-        }}
+        onShownDateChange={setCurrentMonth}
+        onOpenWheel={() => setTimeout(() => setIsWheelOpen(true), 0)}
+        onCloseWheel={() => setTimeout(() => setIsWheelOpen(false), 0)}
       />
 
       <div className="mt-[6px] flex flex-col gap-2 px-4 py-3 transition-all duration-300">

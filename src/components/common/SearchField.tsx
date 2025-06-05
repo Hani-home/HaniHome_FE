@@ -97,10 +97,15 @@ const SearchField = ({
 
   return (
     <div className={`flex w-full flex-col gap-3 ${label ? "py-4" : ""}`}>
-      {label && <label className="text-body1-sb text-gray-800">{label}</label>}
+      {label && (
+        <label htmlFor="search-input" className="text-body1-sb text-gray-800">
+          {label}
+        </label>
+      )}
       <div className="flex max-w-[343px] flex-col">
         <div className="group relative w-full">
           <input
+            id="search-input"
             className={clsx(
               "text-body1-med h-[44px] w-full rounded-sm border py-3 placeholder:text-gray-500 focus:outline-none",
               isSelected

@@ -37,7 +37,7 @@ const SubwayStationSelector = () => {
       </div>
 
       <div className="flex flex-col gap-1 py-3">
-        <label className="text-body1-sb text-gray-800">거리 설정</label>
+        <span className="text-body1-sb text-gray-800">거리 설정</span>
         <div className="relative mt-[6px] flex w-full justify-center">
           <div className="absolute top-2 left-0 z-0 h-1 w-full -translate-y-1/2 rounded-full bg-gray-100" />
           <div className="bg-mint absolute top-2 left-0 z-10 h-1 w-[5%] -translate-y-1/2 rounded-full transition-all duration-200" />
