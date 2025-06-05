@@ -6,7 +6,7 @@ export default function SignupLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="scrollbar-hide h-screen overflow-auto">
+    <div className="min-h-screen w-full">
       <BackHeader />
       <div className="px-4 pt-12 pb-16">{children}</div>
     </div>

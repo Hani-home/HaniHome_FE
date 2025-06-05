@@ -29,11 +29,11 @@ const BackHeader = ({ title, rightIcon, onRightClick }: BackHeaderProps) => {
 
       {rightIcon === "report" ? (
         <button onClick={onRightClick} className="cursor-pointer">
-          <ReportIcon />
+          <ReportIcon className="h-6 w-6" />
         </button>
       ) : rightIcon === "close" ? (
         <button onClick={onRightClick} className="cursor-pointer">
-          <CloseIcon />
+          <CloseIcon className="h-6 w-6" />
         </button>
       ) : (
         <div />
