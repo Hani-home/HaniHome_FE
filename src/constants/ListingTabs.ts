@@ -5,7 +5,7 @@ import MoveInCondition from "@/components/listings/MoveInCondition";
 type TabItem = {
   key: string;
   label: string;
-  Component: React.ComponentType;
+  Component: React.ComponentType<{ listingId: string }>;
 };
 
 export const listingDetailTabs: readonly TabItem[] = [

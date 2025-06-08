@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
@@ -10,6 +11,9 @@ import CheckIcon from "@/components/signup/info/CheckIcon";
 import LocationImage from "@/public/svgs/listings/location-image.svg";
 
 const ListingDetailPage = () => {
+  const params = useParams();
+  const listingId = params?.id as string;
+
   return (
     <>
       <div className="flex min-h-screen flex-col pt-12 pb-16">
@@ -58,7 +62,7 @@ const ListingDetailPage = () => {
           </div>
         </div>
 
-        <DetailTabs />
+        <DetailTabs listingId={listingId} />
         <div className="mt-6 mb-15">
           <div className="flex flex-col gap-3 px-4 py-8">
             <span className="text-body1-sb text-gray-900">위치</span>
