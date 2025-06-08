@@ -7,7 +7,7 @@ const ExtraConditions = () => {
   ];
 
   return (
-    <div className="mb-3 grid w-full grid-cols-2 gap-2">
+    <div className="grid w-full grid-cols-2 gap-2">
       {tags.map((tag, idx) => (
         <div
           key={idx}
