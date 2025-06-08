@@ -1,3 +1,5 @@
+import Divider from "@/components/common/Divider";
+
 import ExtraConditions from "./ExtraConditions";
 
 const MoveInCondition = () => {
@@ -9,7 +11,7 @@ const MoveInCondition = () => {
           <span>성별 무관</span> <span>최대 3인 1실</span>
         </div>
       </div>
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
       <div className="flex w-full py-3">
         <div className="flex w-1/2 flex-col gap-2 px-4">
           <span className="text-body1-sb text-gray-900">노티스</span>
@@ -20,7 +22,7 @@ const MoveInCondition = () => {
           <span className="text-body2-med text-gray-700">최소 n주</span>
         </div>
       </div>
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
       <div className="flex flex-col gap-2 px-4 py-3">
         <span className="text-body1-sb text-gray-900">입주 가능일</span>
         <div className="text-body2-med flex text-gray-700">
@@ -29,7 +31,7 @@ const MoveInCondition = () => {
           25년 6월 nn일
         </div>
       </div>
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
       <div className="flex flex-col gap-3 px-4 py-3">
         <div className="flex items-center justify-between">
           <span className="text-body1-sb text-gray-900">추가 고려사항</span>

@@ -3,6 +3,7 @@
 import React from "react";
 
 const badges = [
+  // 추후 API 연결
   "전망이 좋아요",
   "햇빛이 잘 들어요",
   "교통이 편리해요",

@@ -1,3 +1,5 @@
+import Divider from "@/components/common/Divider";
+
 import HomeIcon from "@/public/svgs/common/home-icon.svg";
 import Arrow from "@/public/svgs/common/left-arrow.svg";
 import PersonIcon from "@/public/svgs/common/mypage-icon.svg";
@@ -14,7 +16,7 @@ const ListingDetail = () => {
         <span className="text-body2-med text-gray-700">세컨드 룸 쉐어</span>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex w-full py-3">
         <div className="flex w-1/2 flex-col gap-3 px-4">
@@ -32,6 +34,7 @@ const ListingDetail = () => {
             </div>
           </div>
         </div>
+
         <div className="flex w-1/2 flex-col gap-3 px-4">
           <span className="text-body1-sb text-gray-900">층수</span>
           <div className="flex flex-col gap-2">
@@ -47,7 +50,7 @@ const ListingDetail = () => {
         </div>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex flex-col gap-2 px-4 py-3">
         <span className="text-body1-sb text-gray-900">주차</span>
@@ -58,7 +61,7 @@ const ListingDetail = () => {
         </div>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex justify-between px-4 py-3">
         <span className="text-body1-sb text-gray-900">제공되는 가구</span>
@@ -67,7 +70,7 @@ const ListingDetail = () => {
         </button>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex flex-col gap-3 px-4 py-3">
         <span className="text-body1-sb text-gray-900">호스트 설명</span>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import React from "react";
 
+import Divider from "@/components/common/Divider";
+
 const labels = ["수도세", "전기세", "안터넷비", "가스비", "청소비", "주차비"];
 
 const descriptions: Record<string, string> = {
@@ -39,7 +41,7 @@ const ContractInfo = () => {
         </div>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex flex-col gap-1 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -49,7 +51,7 @@ const ContractInfo = () => {
         <span className="text-cap1-med text-gray-500">디파짓 조정 가능</span>
       </div>
 
-      <hr className="my-3 border-t border-gray-200" />
+      <Divider />
 
       <div className="flex flex-col gap-3 px-4 py-3">
         <span className="text-body1-sb text-gray-900">계약 형태 설명</span>
