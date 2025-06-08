@@ -22,6 +22,7 @@ const ListingFurniturePage = () => {
   return (
     <div className="flex min-h-screen flex-col pt-12 pb-16">
       <BackHeader />
+
       {groupKeys.map((category, idx) => (
         <Fragment key={category}>
           <div className="flex flex-col gap-3 p-4">
@@ -41,6 +42,7 @@ const ListingFurniturePage = () => {
               })}
             </div>
           </div>
+
           {idx < groupKeys.length - 1 && (
             <div className="my-1">
               <Divider />
