@@ -1,3 +1,4 @@
+import AddListingFab from "@/components/home/AddListingFab";
 import CategoryHeader from "@/components/home/CategoryHeader";
 import ListingList from "@/components/home/ListingList";
 import LocationHeader from "@/components/home/LocationHeader";
@@ -19,6 +20,7 @@ const Home = () => {
         <FilterBar />
         <ListingList />
       </div>
+      <AddListingFab />
     </ContentWrapper>
   );
 };
