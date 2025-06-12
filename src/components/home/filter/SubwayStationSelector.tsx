@@ -9,7 +9,7 @@ const MAX_DISTANCE = 10;
 
 const SubwayStationSelector = () => {
   const [inputValue, setInputValue] = useState("");
-  const [distanceRange, setDistanceRange] = useState(MIN_DISTANCE);
+  const [distanceRange, setDistanceRange] = useState(MAX_DISTANCE);
 
   const handleChange = (value: number | number[]) => {
     setDistanceRange(value as number);
