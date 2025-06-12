@@ -98,7 +98,8 @@ const Filter = () => {
           {
             label: `매물 ${count}개`,
             onClick: handleApply,
-            disabled: count === 0,
+            disabled:
+              selectedTypes.length === 0 || selectedRoomTypes.length === 0,
           },
         ]}
       />
