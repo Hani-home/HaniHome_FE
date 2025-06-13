@@ -1,9 +1,4 @@
-import {
-  LoginPayload,
-  LoginResponse,
-  SignupPayload,
-  UpdateUserPayload,
-} from "@/types/auth";
+import { LoginPayload, SignupPayload, UpdateUserPayload } from "@/types/auth";
 
 import { axiosInstance } from "./axios";
 
@@ -18,11 +13,7 @@ export const signup = async (payload: SignupPayload) => {
 
 // 로그인 (인증코드 콜백)
 export const login = async (payload: LoginPayload) => {
-  const res = await axiosInstance.post<LoginResponse>(
-    "/api/v1/auth/social/login",
-    payload,
-  );
-  return res.data;
+  await axiosInstance.post("/api/v1/auth/social/login", payload);
 };
 
 // 토큰 재발급

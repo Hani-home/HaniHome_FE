@@ -15,7 +15,7 @@ import {
   updateUser,
 } from "@/apis/auth";
 
-import { LoginResponse, SignupPayload } from "@/types/auth";
+import { SignupPayload } from "@/types/auth";
 import { UserUpdateData } from "@/types/user";
 
 export const useAuth = () => {
@@ -34,8 +34,7 @@ export const useAuth = () => {
   // 2. 로그인
   const loginMutation = useMutation({
     mutationFn: (payload: { code: string }) => login(payload),
-    onSuccess: (data: LoginResponse) => {
-      setAccessToken(data.accessToken);
+    onSuccess: () => {
       router.push("/home");
     },
     onError: () => console.error("로그인 실패"),
