@@ -34,8 +34,12 @@ export const useAuth = () => {
   // 2. 로그인
   const loginMutation = useMutation({
     mutationFn: (payload: { code: string }) => login(payload),
-    onSuccess: () => {
-      router.push("/home");
+    onSuccess: data => {
+      if (data.newUser) {
+        router.push("/signup/info");
+      } else {
+        router.push("/home");
+      }
     },
     onError: () => console.error("로그인 실패"),
   });

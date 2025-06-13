@@ -15,5 +15,9 @@ export interface LoginPayload {
   code: string;
 }
 
+export interface LoginResponse {
+  newUser: boolean;
+}
+
 // 유저 정보 수정
 export interface UpdateUserPayload {}
