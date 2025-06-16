@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
@@ -17,6 +18,7 @@ import LocationImage from "@/public/svgs/listings/location-image.svg";
 
 const ListingDetailPage = () => {
   const params = useParams();
+  const router = useRouter();
   const listingId = params?.id as string;
   const [isBillIncluded, setIsBillIncluded] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -110,7 +112,10 @@ const ListingDetailPage = () => {
           </div>
         </div>
       </div>
-      <BottomActionBar label="뷰잉 예약하기" />
+      <BottomActionBar
+        label="뷰잉 예약하기"
+        onClick={() => router.push(`/viewing/reservation/${listingId}`)}
+      />
     </>
   );
 };
