@@ -32,7 +32,7 @@ const BottomActionBar = ({
         <button
           type="button"
           onClick={onClick}
-          className={`text-heading3 my-2 w-[343px] rounded py-3 text-white transition ${
+          className={`text-heading3 my-2 h-12 w-[343px] rounded py-3 text-white transition ${
             disabled
               ? "cursor-not-allowed bg-gray-300"
               : "bg-mint cursor-pointer"
@@ -55,7 +55,7 @@ const BottomActionBar = ({
           const isLeft = idx === 0;
           const isDisabled = !!btn.disabled;
 
-          const baseClass = "text-heading3 rounded border p-3 transition";
+          const baseClass = "h-12 text-heading3 rounded border p-3 transition";
 
           const leftClass = "w-[83px] border-mint text-mint bg-white";
           const rightClass = isDisabled
