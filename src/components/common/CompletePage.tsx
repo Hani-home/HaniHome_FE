@@ -15,7 +15,21 @@ const Lottie = dynamic(
   { ssr: false },
 );
 
-const CompletePage = () => {
+interface CompletePageProps {
+  message: string;
+  description?: string[];
+  buttonLabel: string;
+  redirectUrl: string;
+  showDivider?: boolean;
+}
+
+const CompletePage = ({
+  message,
+  description,
+  buttonLabel,
+  showDivider = true,
+  redirectUrl,
+}: CompletePageProps) => {
   const [isLottieReady, setIsLottieReady] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -33,7 +47,6 @@ const CompletePage = () => {
           <LottieFallback className="h-[121px] w-[223px]" />
         </div>
 
-        {/* Lottie (전체 높이 고정) */}
         <Lottie
           animationData={homeLottie}
           play
@@ -46,14 +59,18 @@ const CompletePage = () => {
         />
       </div>
 
-      <span className="text-heading1 text-mint-contrast">
-        가입이 완료되었어요!
-      </span>
+      <span className="text-heading1 text-mint-contrast">{message}</span>
+
+      {description?.map((line, idx) => (
+        <span key={idx} className="text-body2-med text-center text-gray-700">
+          {line}
+        </span>
+      ))}
 
       <BottomActionBar
-        label="시작하기"
-        onClick={() => router.push("/home")}
-        showDivider={false}
+        label={buttonLabel}
+        onClick={() => router.push(redirectUrl)}
+        showDivider={showDivider}
       />
     </div>
   );
