@@ -45,11 +45,7 @@ export const useViewingSchedules = (
   const allowedStart = new Date(VIEWING_PERIOD.startDate);
   const allowedEnd = new Date(VIEWING_PERIOD.endDate);
 
-  const disabledDates = eachDayOfInterval({
-    start: startOfMonth(shownDate),
-    end: endOfMonth(shownDate),
-  }).filter(date => isBefore(date, allowedStart) || isAfter(date, allowedEnd));
-
+  // 현재 인덱스 제외한 중복된 시간대
   const usedDateTimeSet = new Set(
     schedules
       .filter((_, i) => i !== activeIndex)
@@ -57,6 +53,26 @@ export const useViewingSchedules = (
       .map(s => `${(s.date as Date).toDateString()}-${s.time}`),
   );
 
+  // 캘린더에서 비활성화할 날짜 (범위 밖 + 같은 시간대 중복)
+  const currentTime = schedules[activeIndex]?.time;
+  const disabledByUsedTime = schedules
+    .filter((_, i) => i !== activeIndex)
+    .filter(s => s.date && s.time === currentTime && currentTime !== "NN : NN")
+    .map(s => (s.date as Date).toDateString());
+
+  const disabledDates = eachDayOfInterval({
+    start: startOfMonth(shownDate),
+    end: endOfMonth(shownDate),
+  }).filter(date => {
+    const isOutOfRange =
+      isBefore(date, allowedStart) || isAfter(date, allowedEnd);
+
+    const isTimeTaken = disabledByUsedTime.includes(date.toDateString());
+
+    return isOutOfRange || isTimeTaken;
+  });
+
+  // 날짜나 시간 모두 입력되었는지 확인
   const isAllSchedulesFilled =
     schedules.length > 0 &&
     schedules.every(s => s.date !== null && s.time !== "NN : NN");
