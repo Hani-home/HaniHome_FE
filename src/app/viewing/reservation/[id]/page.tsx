@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useSingleDateCalendar } from "@/hooks/calendar/useSingleDateHandlers";
 
@@ -10,6 +10,8 @@ import ScheduleInputList from "@/components/reservation/ScheduleInputList";
 import SingleDateCalendar from "@/components/reservation/SingleDateCalendar";
 import TimePicker from "@/components/reservation/TimePicker";
 
+import { TimeLabel } from "@/constants/time-options";
+
 import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
 
 const ViewingReservationPage = () => {
@@ -18,6 +20,12 @@ const ViewingReservationPage = () => {
   const [schedules, setSchedules] = useState<
     { date: Date | null; time: string }[]
   >([{ date: null, time: "NN : NN" }]);
+  const selectedDates = schedules
+    .map(schedule => schedule.date)
+    .filter((date): date is Date => date !== null);
+  const [selectedTimeLabels, setSelectedTimeLabels] = useState<TimeLabel[]>([
+    "아침",
+  ]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [mode, setMode] = useState<"calendar" | "time" | null>("calendar");
@@ -35,16 +43,25 @@ const ViewingReservationPage = () => {
   const removeSchedule = (index: number) => {
     setSchedules(prev => {
       const newList = prev.filter((_, i) => i !== index);
-      setActiveIndex(0);
       return newList;
     });
+    setSelectedTimeLabels(prev => prev.filter((_, i) => i !== index));
+    setActiveIndex(0);
   };
 
   const addSchedule = () => {
     if (schedules.length < 3) {
       setSchedules(prev => [...prev, { date: null, time: "NN : NN" }]);
+      setSelectedTimeLabels(prev => [...prev, "아침"]);
+      setActiveIndex(schedules.length);
+      setShownDate(new Date());
     }
   };
+
+  useEffect(() => {
+    const selectedDate = schedules[activeIndex].date;
+    setShownDate(selectedDate ?? new Date());
+  }, [activeIndex]);
 
   return (
     <>
@@ -86,6 +103,12 @@ const ViewingReservationPage = () => {
           activeIndex={activeIndex}
           schedules={schedules}
           updateSchedule={updateSchedule}
+          selectedLabel={selectedTimeLabels[activeIndex] ?? "아침"}
+          setSelectedLabel={label =>
+            setSelectedTimeLabels(prev =>
+              prev.map((l, i) => (i === activeIndex ? label : l)),
+            )
+          }
         />
       )}
 
@@ -94,6 +117,7 @@ const ViewingReservationPage = () => {
           activeIndex={activeIndex}
           schedules={schedules}
           updateSchedule={updateSchedule}
+          selectedDates={selectedDates}
           moveMonthBy={moveMonthBy}
           shownDate={shownDate}
           setShownDate={setShownDate}

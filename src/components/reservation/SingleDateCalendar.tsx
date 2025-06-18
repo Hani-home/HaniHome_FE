@@ -12,6 +12,7 @@ interface CalendarSectionProps {
     key: "date" | "time",
     value: Date | string,
   ) => void;
+  selectedDates: Date[];
   moveMonthBy: (offset: number) => void;
   shownDate: Date;
   setShownDate: React.Dispatch<React.SetStateAction<Date>>;
