@@ -1,5 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
+import { useEffect } from "react";
+
+import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
+
 import { useSingleDateCalendar } from "@/hooks/calendar/useSingleDateHandlers";
 import { useViewingSchedules } from "@/hooks/reservation/useViewingSchedule";
 
@@ -33,9 +39,38 @@ const ViewingReservationPage = () => {
     setSelectedTimeLabels,
   } = useViewingSchedules(shownDate, setShownDate);
 
+  const { push, pop, reset } = useViewingScheduleStore();
+
+  const router = useRouter();
+  const handleBack = () => {
+    let prev = pop();
+    while (prev !== undefined && prev >= schedules.length) {
+      prev = pop();
+    }
+    if (prev !== undefined && prev !== activeIndex) {
+      setActiveIndex(prev);
+      setMode("time");
+    } else {
+      router.back();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      reset(); // 페이지 이탈 시 히스토리 초기화
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(
+      "📦 히스토리 상태:",
+      useViewingScheduleStore.getState().history,
+    );
+  }, [activeIndex]);
+
   return (
     <>
-      <BackHeader title="뷰잉 예약" />
+      <BackHeader title="뷰잉 예약" onBackClick={handleBack} />
 
       <div className="flex flex-col justify-center gap-1 p-4">
         <h1 className="text-heading3 text-gray-900">
@@ -52,7 +87,10 @@ const ViewingReservationPage = () => {
         activeIndex={activeIndex}
         mode={mode}
         setMode={setMode}
-        setActiveIndex={setActiveIndex}
+        setActiveIndex={index => {
+          setActiveIndex(index); // 상태 변경
+          push(index); // ✅ 히스토리 기록
+        }}
         removeSchedule={removeSchedule}
       />
 

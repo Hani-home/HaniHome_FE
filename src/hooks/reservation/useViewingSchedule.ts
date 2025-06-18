@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -25,6 +26,7 @@ export const useViewingSchedules = (
     { date: Date | null; time: string }[]
   >([{ date: null, time: "NN : NN" }]);
 
+  const { push, remove } = useViewingScheduleStore();
   const [selectedTimeLabels, setSelectedTimeLabels] = useState<TimeLabel[]>([
     "아침",
   ]);
@@ -68,9 +70,11 @@ export const useViewingSchedules = (
 
   const addSchedule = () => {
     if (schedules.length < 3) {
+      const newIndex = schedules.length;
       setSchedules(prev => [...prev, { date: null, time: "NN : NN" }]);
       setSelectedTimeLabels(prev => [...prev, "아침"]);
-      setActiveIndex(schedules.length);
+      setActiveIndex(newIndex);
+      push(newIndex);
       setMode("calendar");
       setShownDate(new Date());
     }
@@ -79,9 +83,13 @@ export const useViewingSchedules = (
   const removeSchedule = (index: number) => {
     setSchedules(prev => prev.filter((_, i) => i !== index));
     setSelectedTimeLabels(prev => prev.filter((_, i) => i !== index));
-    setActiveIndex(prev => (index === 0 ? 0 : prev - 1));
+    setActiveIndex(prev => {
+      if (prev > index) return prev - 1;
+      if (prev === index) return 0;
+      return prev;
+    });
+    remove(index);
   };
-
   // 일정 인덱스가 바뀌면 캘린더를 해당 일정 날짜로 이동
   useEffect(() => {
     const selectedDate = schedules[activeIndex]?.date;
