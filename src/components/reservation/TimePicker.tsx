@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import clsx from "clsx";
 
+import { getTimeRange } from "@/utils/getTimeRange";
+
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
 import AfternoonIcon from "@/public/svgs/reservation/afternoon-icon.svg";
@@ -14,12 +16,20 @@ const TimePicker = ({
   updateSchedule,
   selectedLabel,
   setSelectedLabel,
+  usedDateTimeSet,
+  viewingTimeSlots,
 }: {
   activeIndex: number;
   schedules: { date: Date | null; time: string }[];
   updateSchedule: (index: number, key: "time", value: string) => void;
   selectedLabel: TimeLabel;
   setSelectedLabel: (label: TimeLabel) => void;
+  usedDateTimeSet: Set<string>;
+  viewingTimeSlots: {
+    label: TimeLabel;
+    start: string;
+    end: string;
+  }[];
 }) => {
   const [tempLabel, setTempLabel] = useState<TimeLabel>("아침");
 
@@ -68,20 +78,39 @@ const TimePicker = ({
 
       {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
-        {TIME_OPTIONS[tempLabel].map(time => (
-          <button
-            key={time}
-            onClick={() => handleSelectTime(time)}
-            className={clsx(
-              "text-body1-sb border-mint-contrast h-10 w-24 cursor-pointer rounded border py-2 text-center",
-              schedules[activeIndex].time === time
-                ? "bg-mint-light text-mint-contrast"
-                : "text-gray-700",
-            )}
-          >
-            {time}
-          </button>
-        ))}
+        {TIME_OPTIONS[tempLabel].map(time => {
+          const currentDate = schedules[activeIndex].date;
+
+          const isAllowed = viewingTimeSlots.some(
+            slot =>
+              slot.label === tempLabel &&
+              getTimeRange(slot.start, slot.end).includes(time),
+          );
+
+          const isUsed =
+            currentDate &&
+            usedDateTimeSet.has(`${currentDate.toDateString()}-${time}`);
+
+          const isDisabled = !isAllowed || isUsed;
+
+          return (
+            <button
+              key={time}
+              disabled={!!isDisabled}
+              onClick={() => handleSelectTime(time)}
+              className={clsx(
+                "text-body1-sb h-10 w-24 rounded border py-2 text-center",
+                isDisabled
+                  ? "cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400"
+                  : schedules[activeIndex].time === time
+                    ? "bg-mint-light text-mint-contrast border-mint-contrast cursor-pointer"
+                    : "border-mint-contrast cursor-pointer bg-white text-gray-700",
+              )}
+            >
+              {time}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

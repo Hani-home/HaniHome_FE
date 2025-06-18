@@ -180,11 +180,17 @@ button.rdrDay {
 
 /* ========= Passive ========= */
 .rdrDayPassive {
-  color: #ccc;
+  color: var(--color-gray-300) !important;
 }
 
 .rdrDay.rdrDayPassive .rdrDayNumber span {
-  color: #ccc !important;
+  color: var(--color-gray-300) !important;
+}
+
+.rdrDay.rdrDayDisabled .rdrDayNumber span {
+  background-color: var(--color-gray-100) !important;
+  color: var(--color-gray-300) !important;
+  border-radius: 50%;
 }
 
 /* ========= 상단 요약 날짜 영역 ========= */

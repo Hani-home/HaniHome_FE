@@ -16,6 +16,7 @@ interface CalendarSectionProps {
   moveMonthBy: (offset: number) => void;
   shownDate: Date;
   setShownDate: React.Dispatch<React.SetStateAction<Date>>;
+  disabledDates: Date[];
 }
 
 const SingleDateCalendar = ({
@@ -25,6 +26,7 @@ const SingleDateCalendar = ({
   moveMonthBy,
   shownDate,
   setShownDate,
+  disabledDates,
 }: CalendarSectionProps) => (
   <>
     <div className="flex items-center justify-between gap-17 border-y border-gray-200 px-11 py-3 text-gray-900">
@@ -47,6 +49,7 @@ const SingleDateCalendar = ({
           setShownDate(date);
         }}
         color="transparent"
+        disabledDates={disabledDates}
       />
     </div>
   </>
