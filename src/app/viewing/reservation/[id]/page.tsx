@@ -15,6 +15,7 @@ import ScheduleInputList from "@/components/reservation/ScheduleInputList";
 import SingleDateCalendar from "@/components/reservation/SingleDateCalendar";
 import TimePicker from "@/components/reservation/TimePicker";
 
+import { TimeLabel } from "@/constants/time-options";
 import { VIEWING_TIME_SLOTS } from "@/constants/viewing-schedule-dummies";
 
 import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
@@ -22,6 +23,10 @@ import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
 const ViewingReservationPage = () => {
   const { id } = useParams() as { id: string };
   const { moveMonthBy, shownDate, setShownDate } = useSingleDateCalendar();
+
+  useEffect(() => {
+    setActiveId(id);
+  }, [id]);
 
   const {
     schedules,
@@ -40,7 +45,7 @@ const ViewingReservationPage = () => {
     setSelectedTimeLabels,
   } = useViewingSchedules(shownDate, setShownDate);
 
-  const { push, pop, reset } = useViewingScheduleStore();
+  const { push, pop, reset, setActiveId } = useViewingScheduleStore();
   const correctedShownDate = useMemo(() => {
     return shownDate instanceof Date ? shownDate : new Date(shownDate);
   }, [shownDate]);
@@ -60,17 +65,17 @@ const ViewingReservationPage = () => {
   };
 
   useEffect(() => {
-    return () => {
-      reset(); // 페이지 이탈 시 히스토리 초기화
-    };
-  }, []);
-
-  useEffect(() => {
     console.log(
       "📦 히스토리 상태:",
       useViewingScheduleStore.getState().history,
     );
   }, [activeIndex]);
+
+  useEffect(() => {
+    return () => {
+      reset(); // 페이지 이탈 시 히스토리 초기화
+    };
+  }, []);
 
   return (
     <>
@@ -118,10 +123,13 @@ const ViewingReservationPage = () => {
           selectedLabel={selectedTimeLabels[activeIndex] ?? "아침"}
           setSelectedLabel={label =>
             setSelectedTimeLabels(
-              selectedTimeLabels.map((l, i) => (i === activeIndex ? label : l)),
+              id,
+              selectedTimeLabels.map((l: TimeLabel, i: number) =>
+                i === activeIndex ? label : l,
+              ),
             )
           }
-          usedDateTimeSet={usedDateTimeSet}
+          usedDateTimeSet={usedDateTimeSet as Set<string>}
           viewingTimeSlots={VIEWING_TIME_SLOTS}
         />
       )}

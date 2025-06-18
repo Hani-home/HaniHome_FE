@@ -88,9 +88,8 @@ const TimePicker = ({
           );
 
           const isUsed =
-            currentDate &&
+            currentDate instanceof Date &&
             usedDateTimeSet.has(`${currentDate.toDateString()}-${time}`);
-
           const isDisabled = !isAllowed || isUsed;
 
           return (

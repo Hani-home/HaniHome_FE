@@ -42,7 +42,7 @@ const SingleDateCalendar = ({
     <div className="flex items-center justify-center border-b border-gray-200 pb-6">
       <Calendar
         key={shownDate.toISOString()}
-        date={schedules[activeIndex].date ?? undefined}
+        date={schedules[activeIndex]?.date ?? undefined}
         shownDate={shownDate}
         onChange={(date: Date) => {
           updateSchedule(activeIndex, "date", date);

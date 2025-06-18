@@ -23,9 +23,10 @@ export const useViewingSchedules = (
   setShownDate: (date: Date) => void,
 ) => {
   const {
-    schedules,
+    activeId,
+    getSchedules,
+    getSelectedTimeLabels,
     setSchedules,
-    selectedTimeLabels,
     setSelectedTimeLabels,
     push,
     remove,
@@ -33,6 +34,9 @@ export const useViewingSchedules = (
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [mode, setMode] = useState<"calendar" | "time" | null>("calendar");
+
+  const schedules = activeId ? getSchedules() : [];
+  const selectedTimeLabels = activeId ? getSelectedTimeLabels() : [];
 
   const selectedDates = schedules
     .filter((s): s is { date: Date; time: string } => s.date !== null)
@@ -53,41 +57,42 @@ export const useViewingSchedules = (
       .map(s => `${(s.date as Date).toDateString()}-${s.time}`),
   );
 
-  const isAllSchedulesFilled = schedules.every(
-    s => s.date !== null && s.time !== "NN : NN",
-  );
+  const isAllSchedulesFilled =
+    schedules.length > 0 &&
+    schedules.every(s => s.date !== null && s.time !== "NN : NN");
 
   const updateSchedule = (
     index: number,
     key: "date" | "time",
     value: Date | string,
   ) => {
+    if (!activeId) return;
     const updated = schedules.map((item, i) =>
       i === index ? { ...item, [key]: value } : item,
     );
-    setSchedules(updated);
+    setSchedules(activeId, updated);
   };
 
   const addSchedule = () => {
-    if (schedules.length < 3) {
-      const newSchedules = [...schedules, { date: null, time: "NN : NN" }];
-      const newLabels = [...selectedTimeLabels, "아침"];
-      setSchedules(newSchedules);
-      setSelectedTimeLabels(newLabels as TimeLabel[]);
+    if (!activeId || schedules.length >= 3) return;
+    const newSchedules = [...schedules, { date: null, time: "NN : NN" }];
+    const newLabels = [...selectedTimeLabels, "아침"];
+    setSchedules(activeId, newSchedules);
+    setSelectedTimeLabels(activeId, newLabels as TimeLabel[]);
 
-      const newIndex = newSchedules.length - 1;
-      setActiveIndex(newIndex);
-      push(newIndex);
-      setMode("calendar");
-      setShownDate(new Date());
-    }
+    const newIndex = newSchedules.length - 1;
+    setActiveIndex(newIndex);
+    push(newIndex);
+    setMode("calendar");
+    setShownDate(new Date());
   };
 
   const removeSchedule = (index: number) => {
+    if (!activeId) return;
     const newSchedules = schedules.filter((_, i) => i !== index);
     const newLabels = selectedTimeLabels.filter((_, i) => i !== index);
-    setSchedules(newSchedules);
-    setSelectedTimeLabels(newLabels);
+    setSchedules(activeId, newSchedules);
+    setSelectedTimeLabels(activeId, newLabels);
     setActiveIndex(prev => {
       if (prev > index) return prev - 1;
       if (prev === index) return 0;
@@ -115,6 +120,7 @@ export const useViewingSchedules = (
     removeSchedule,
     setActiveIndex,
     setMode,
-    setSelectedTimeLabels,
+    setSelectedTimeLabels: (id: string, labels: TimeLabel[]) =>
+      activeId && setSelectedTimeLabels(id, labels),
   };
 };

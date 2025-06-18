@@ -2,6 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 
+import { useEffect } from "react";
+
 import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -12,7 +14,13 @@ import ViewingScheduleCard from "@/components/reservation/ViewingScheduleCard";
 const ViewingConfirmPage = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const { schedules } = useViewingScheduleStore();
+  const { setActiveId, getSchedules } = useViewingScheduleStore();
+
+  useEffect(() => {
+    setActiveId(id);
+  }, [id, setActiveId]);
+
+  const schedules = getSchedules();
 
   return (
     <>

@@ -8,24 +8,30 @@ interface Schedule {
   time: string;
 }
 
+interface StorePerId {
+  schedules: Schedule[];
+  selectedTimeLabels: TimeLabel[];
+}
+
 interface ViewingScheduleStore {
+  // 매물 ID별 저장
+  data: Record<string, StorePerId>;
+  activeId: string | null;
+
+  // getter/setter
+  setActiveId: (id: string) => void;
+  setSchedules: (id: string, s: Schedule[]) => void;
+  setSelectedTimeLabels: (id: string, l: TimeLabel[]) => void;
+
+  getSchedules: () => Schedule[];
+  getSelectedTimeLabels: () => TimeLabel[];
+
   // 히스토리
   history: number[];
   push: (index: number) => void;
   pop: () => number | undefined;
   remove: (index: number) => void;
   reset: () => void;
-
-  // 뷰잉 스케줄
-  schedules: Schedule[];
-  selectedTimeLabels: TimeLabel[];
-  activeIndex: number;
-  mode: "calendar" | "time" | null;
-
-  setSchedules: (s: Schedule[]) => void;
-  setSelectedTimeLabels: (l: TimeLabel[]) => void;
-  setActiveIndex: (index: number) => void;
-  setMode: (m: "calendar" | "time" | null) => void;
 }
 
 export const useViewingScheduleStore = create<
@@ -34,19 +40,57 @@ export const useViewingScheduleStore = create<
 >(
   persist(
     (set, get) => ({
-      // 초기 상태
+      data: {},
+      activeId: null,
       history: [0],
-      schedules: [{ date: null, time: "NN : NN" }],
-      selectedTimeLabels: ["아침"],
-      activeIndex: 0,
-      mode: "calendar",
 
-      setSchedules: schedules => set({ schedules }),
-      setSelectedTimeLabels: labels => set({ selectedTimeLabels: labels }),
-      setActiveIndex: index => set({ activeIndex: index }),
-      setMode: mode => set({ mode }),
+      setActiveId: id => {
+        const state = get();
+        if (!state.data[id]) {
+          state.data[id] = {
+            schedules: [{ date: null, time: "NN : NN" }],
+            selectedTimeLabels: ["아침"],
+          };
+        }
+        set({ activeId: id });
+      },
 
-      // 히스토리
+      setSchedules: (id, schedules) =>
+        set(state => ({
+          data: {
+            ...state.data,
+            [id]: {
+              ...state.data[id],
+              schedules,
+            },
+          },
+        })),
+
+      setSelectedTimeLabels: (id, labels) =>
+        set(state => ({
+          data: {
+            ...state.data,
+            [id]: {
+              ...state.data[id],
+              selectedTimeLabels: labels,
+            },
+          },
+        })),
+
+      getSchedules: () => {
+        const { activeId, data } = get();
+        return activeId && data[activeId]?.schedules
+          ? data[activeId].schedules
+          : [{ date: null, time: "NN : NN" }];
+      },
+
+      getSelectedTimeLabels: () => {
+        const { activeId, data } = get();
+        return activeId && data[activeId]?.selectedTimeLabels
+          ? data[activeId].selectedTimeLabels
+          : ["아침"];
+      },
+
       push: index =>
         set(state => {
           const last = state.history[state.history.length - 1];
@@ -64,42 +108,83 @@ export const useViewingScheduleStore = create<
       },
 
       remove: index =>
-        set(state => ({
-          schedules: state.schedules.filter((_, i) => i !== index),
-          selectedTimeLabels: state.selectedTimeLabels.filter(
-            (_, i) => i !== index,
-          ),
-          history: state.history
-            .filter(i => i !== index)
-            .map(i => (i > index ? i - 1 : i)),
-        })),
+        set(state => {
+          const id = state.activeId;
+          if (!id) return state;
 
-      reset: () =>
-        set({
-          history: [0],
-          selectedTimeLabels: ["아침"],
-          activeIndex: 0,
-          mode: "calendar",
+          const current = state.data[id];
+          if (!current) return state;
+
+          const newSchedules = current.schedules.filter((_, i) => i !== index);
+          const newLabels = current.selectedTimeLabels.filter(
+            (_, i) => i !== index,
+          );
+
+          return {
+            data: {
+              ...state.data,
+              [id]: {
+                schedules: newSchedules,
+                selectedTimeLabels: newLabels,
+              },
+            },
+            history: state.history
+              .filter(i => i !== index)
+              .map(i => (i > index ? i - 1 : i)),
+          };
         }),
+
+      reset: () => {
+        const id = get().activeId;
+        if (!id) return;
+
+        const current = get().data[id];
+        if (!current) return;
+
+        if (
+          current.schedules.length > 1 ||
+          current.schedules[0].date !== null ||
+          current.schedules[0].time !== "NN : NN"
+        ) {
+          return;
+        }
+
+        set(state => ({
+          data: {
+            ...state.data,
+            [id]: {
+              schedules: [{ date: null, time: "NN : NN" }],
+              selectedTimeLabels: ["아침"],
+            },
+          },
+          history: [0],
+        }));
+      },
     }),
     {
-      name: "viewing-schedule",
+      name: "viewing-schedules",
       storage:
         typeof window !== "undefined"
           ? createJSONStorage(() => localStorage)
           : undefined,
-      partialize: (state): Partial<ViewingScheduleStore> => ({
-        schedules: state.schedules,
-        selectedTimeLabels: state.selectedTimeLabels,
+      partialize: state => ({
+        data: state.data,
       }),
       onRehydrateStorage: () => state => {
         if (!state) return;
+        const restored: typeof state.data = {};
+        for (const [id, value] of Object.entries(state.data)) {
+          restored[id] = {
+            ...value,
+            schedules: value.schedules.map(s => ({
+              ...s,
+              date: s.date ? new Date(s.date) : null,
+            })),
+          };
+        }
         return {
           ...state,
-          schedules: state.schedules.map(s => ({
-            ...s,
-            date: s.date ? new Date(s.date) : null,
-          })),
+          data: restored,
         };
       },
     },
