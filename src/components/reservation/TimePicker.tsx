@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import clsx from "clsx";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
@@ -19,6 +21,17 @@ const TimePicker = ({
   selectedLabel: TimeLabel;
   setSelectedLabel: (label: TimeLabel) => void;
 }) => {
+  const [tempLabel, setTempLabel] = useState<TimeLabel>("아침");
+
+  useEffect(() => {
+    setTempLabel(selectedLabel ?? "아침");
+  }, [activeIndex, selectedLabel]);
+
+  const handleSelectTime = (time: string) => {
+    updateSchedule(activeIndex, "time", time);
+    setSelectedLabel(tempLabel);
+  };
+
   return (
     <div className="border-b border-gray-200 pb-12">
       {/* 상단 시간대 탭 */}
@@ -29,12 +42,12 @@ const TimePicker = ({
             { label: "점심", icon: AfternoonIcon },
             { label: "저녁", icon: EveningIcon },
           ].map(({ label, icon: Icon }) => {
-            const isActive = selectedLabel === label;
+            const isActive = tempLabel === label;
 
             return (
               <button
                 key={label}
-                onClick={() => setSelectedLabel(label as TimeLabel)}
+                onClick={() => setTempLabel(label as TimeLabel)}
                 className={clsx(
                   "text-body1-sb flex cursor-pointer items-center gap-2 rounded-full",
                   isActive ? "bg-green text-mint" : "text-gray-500",
@@ -53,12 +66,12 @@ const TimePicker = ({
         </div>
       </div>
 
-      {/* 선택된 시간대에 따른 시간 버튼 목록 */}
+      {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
-        {TIME_OPTIONS[selectedLabel].map(time => (
+        {TIME_OPTIONS[tempLabel].map(time => (
           <button
             key={time}
-            onClick={() => updateSchedule(activeIndex, "time", time)}
+            onClick={() => handleSelectTime(time)}
             className={clsx(
               "text-body1-sb border-mint-contrast h-10 w-24 cursor-pointer rounded border py-2 text-center",
               schedules[activeIndex].time === time
