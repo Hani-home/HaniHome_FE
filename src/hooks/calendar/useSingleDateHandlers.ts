@@ -6,12 +6,12 @@ export const useSingleDateCalendar = (initialDate: Date = new Date()) => {
 
   const moveMonthBy = (offset: number) => {
     setShownDate(prev => {
-      const newDate = new Date(prev);
-      newDate.setMonth(prev.getMonth() + offset);
+      const prevDate = new Date(prev);
+      const newDate = new Date(prevDate);
+      newDate.setMonth(prevDate.getMonth() + offset);
       return newDate;
     });
   };
-
   return {
     selectedDate,
     setSelectedDate,

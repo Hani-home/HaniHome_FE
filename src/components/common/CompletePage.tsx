@@ -59,13 +59,15 @@ const CompletePage = ({
         />
       </div>
 
-      <span className="text-heading1 text-mint-contrast">{message}</span>
+      <div className="flex flex-col gap-2">
+        <span className="text-heading1 text-mint-contrast">{message}</span>
 
-      {description?.map((line, idx) => (
-        <span key={idx} className="text-body2-med text-center text-gray-700">
-          {line}
-        </span>
-      ))}
+        {description && (
+          <span className="text-body2-med text-center leading-[150%] whitespace-pre-line text-gray-700">
+            {description.join("\n")}
+          </span>
+        )}
+      </div>
 
       <BottomActionBar
         label={buttonLabel}

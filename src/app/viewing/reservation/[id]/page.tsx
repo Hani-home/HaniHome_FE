@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
 
@@ -20,6 +20,7 @@ import { VIEWING_TIME_SLOTS } from "@/constants/viewing-schedule-dummies";
 import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
 
 const ViewingReservationPage = () => {
+  const { id } = useParams() as { id: string };
   const { moveMonthBy, shownDate, setShownDate } = useSingleDateCalendar();
 
   const {
@@ -40,6 +41,9 @@ const ViewingReservationPage = () => {
   } = useViewingSchedules(shownDate, setShownDate);
 
   const { push, pop, reset } = useViewingScheduleStore();
+  const correctedShownDate = useMemo(() => {
+    return shownDate instanceof Date ? shownDate : new Date(shownDate);
+  }, [shownDate]);
 
   const router = useRouter();
   const handleBack = () => {
@@ -88,8 +92,8 @@ const ViewingReservationPage = () => {
         mode={mode}
         setMode={setMode}
         setActiveIndex={index => {
-          setActiveIndex(index); // 상태 변경
-          push(index); // ✅ 히스토리 기록
+          setActiveIndex(index);
+          push(index);
         }}
         removeSchedule={removeSchedule}
       />
@@ -113,8 +117,8 @@ const ViewingReservationPage = () => {
           updateSchedule={updateSchedule}
           selectedLabel={selectedTimeLabels[activeIndex] ?? "아침"}
           setSelectedLabel={label =>
-            setSelectedTimeLabels(prev =>
-              prev.map((l, i) => (i === activeIndex ? label : l)),
+            setSelectedTimeLabels(
+              selectedTimeLabels.map((l, i) => (i === activeIndex ? label : l)),
             )
           }
           usedDateTimeSet={usedDateTimeSet}
@@ -129,13 +133,17 @@ const ViewingReservationPage = () => {
           updateSchedule={updateSchedule}
           selectedDates={selectedDates}
           moveMonthBy={moveMonthBy}
-          shownDate={shownDate}
+          shownDate={correctedShownDate}
           setShownDate={setShownDate}
           disabledDates={disabledDates}
         />
       )}
 
-      <BottomActionBar label="뷰잉 예약하기" disabled={!isAllSchedulesFilled} />
+      <BottomActionBar
+        label="뷰잉 예약하기"
+        disabled={!isAllSchedulesFilled}
+        onClick={() => router.push(`/viewing/reservation/${id}/confirm`)}
+      />
     </>
   );
 };
