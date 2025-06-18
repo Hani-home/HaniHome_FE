@@ -37,7 +37,7 @@ const ScheduleInputList = ({
               setMode("calendar");
             }}
             className={clsx(
-              "text-body1-med rounded border px-3 py-1",
+              "text-body1-med w-[122px] rounded border px-3 py-1",
               activeIndex === idx && mode === "calendar"
                 ? "border-mint-contrast bg-mint-contrast text-white"
                 : "border-gray-300 bg-white text-gray-700",

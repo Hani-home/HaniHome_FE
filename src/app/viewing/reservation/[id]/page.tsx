@@ -13,7 +13,7 @@ import TimePicker from "@/components/reservation/TimePicker";
 import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
 
 const ViewingReservationPage = () => {
-  const { moveMonthBy } = useSingleDateCalendar();
+  const { moveMonthBy, shownDate, setShownDate } = useSingleDateCalendar();
 
   const [schedules, setSchedules] = useState<
     { date: Date | null; time: string }[]
@@ -95,6 +95,8 @@ const ViewingReservationPage = () => {
           schedules={schedules}
           updateSchedule={updateSchedule}
           moveMonthBy={moveMonthBy}
+          shownDate={shownDate}
+          setShownDate={setShownDate}
         />
       )}
 

@@ -13,6 +13,8 @@ interface CalendarSectionProps {
     value: Date | string,
   ) => void;
   moveMonthBy: (offset: number) => void;
+  shownDate: Date;
+  setShownDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 const SingleDateCalendar = ({
@@ -20,18 +22,15 @@ const SingleDateCalendar = ({
   schedules,
   updateSchedule,
   moveMonthBy,
+  shownDate,
+  setShownDate,
 }: CalendarSectionProps) => (
   <>
     <div className="flex items-center justify-between gap-17 border-y border-gray-200 px-11 py-3 text-gray-900">
       <button onClick={() => moveMonthBy(-1)}>
         <RightArrow className="h-4.5 w-4.5 rotate-180 cursor-pointer" />
       </button>
-      <span>
-        {format(
-          (schedules[activeIndex].date as Date) ?? new Date(),
-          "yyyy. MM. dd.",
-        )}
-      </span>
+      <span>{format(shownDate, "yyyy. MM. dd.")}</span>
       <button onClick={() => moveMonthBy(1)}>
         <RightArrow className="h-4.5 w-4.5 cursor-pointer" />
       </button>
@@ -39,8 +38,13 @@ const SingleDateCalendar = ({
 
     <div className="flex items-center justify-center border-b border-gray-200 pb-6">
       <Calendar
-        date={undefined}
-        onChange={(date: Date) => updateSchedule(activeIndex, "date", date)}
+        key={shownDate.toISOString()}
+        date={schedules[activeIndex].date ?? undefined}
+        shownDate={shownDate}
+        onChange={(date: Date) => {
+          updateSchedule(activeIndex, "date", date);
+          setShownDate(date);
+        }}
         color="transparent"
       />
     </div>

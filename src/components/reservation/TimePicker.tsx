@@ -29,9 +29,7 @@ const TimePicker = ({
             { label: "점심", icon: AfternoonIcon },
             { label: "저녁", icon: EveningIcon },
           ].map(({ label, icon: Icon }) => {
-            const isActive =
-              selectedLabel === label ||
-              (schedules[activeIndex].time === "NN : NN" && label === "아침");
+            const isActive = selectedLabel === label;
 
             return (
               <button
@@ -61,7 +59,7 @@ const TimePicker = ({
               key={time}
               onClick={() => updateSchedule(activeIndex, "time", time)}
               className={clsx(
-                "text-body1-sb border-mint-contrast h-10 w-24 rounded border py-2 text-center",
+                "text-body1-sb border-mint-contrast h-10 w-24 cursor-pointer rounded border py-2 text-center",
                 schedules[activeIndex].time === time
                   ? "bg-mint-light text-mint-contrast"
                   : "text-gray-700",

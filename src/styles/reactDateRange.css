@@ -237,3 +237,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
+
+.rdrDay .rdrSelected ~ .rdrDayNumber,
+.rdrDay .rdrStartEdge ~ .rdrDayNumber,
+.rdrDay .rdrEndEdge ~ .rdrDayNumber {
+  background-color: #37cdac !important;
+  border-radius: 50%;
+}
