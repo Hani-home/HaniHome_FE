@@ -10,6 +10,7 @@ interface Schedule {
 interface StorePerId {
   schedules: Schedule[];
   selectedTimeLabels: TimeLabel[];
+  activeIndex: number;
 }
 
 interface ViewingScheduleStore {
@@ -22,6 +23,9 @@ interface ViewingScheduleStore {
 
   getSchedules: () => Schedule[];
   getSelectedTimeLabels: () => TimeLabel[];
+
+  getActiveIndex: () => number;
+  setActiveIndex: (index: number) => void;
 
   history: number[];
   push: (index: number) => void;
@@ -42,6 +46,7 @@ export const useViewingScheduleStore = create<ViewingScheduleStore>(
         state.data[id] = {
           schedules: [{ date: null, time: "NN : NN" }],
           selectedTimeLabels: ["아침"],
+          activeIndex: 0,
         };
       }
       set({ activeId: id });
@@ -83,6 +88,27 @@ export const useViewingScheduleStore = create<ViewingScheduleStore>(
         : ["아침"];
     },
 
+    getActiveIndex: () => {
+      const { activeId, data } = get();
+      return activeId && data[activeId]?.activeIndex != null
+        ? data[activeId].activeIndex
+        : 0;
+    },
+
+    setActiveIndex: index => {
+      const { activeId } = get();
+      if (!activeId) return;
+      set(state => ({
+        data: {
+          ...state.data,
+          [activeId]: {
+            ...state.data[activeId],
+            activeIndex: index,
+          },
+        },
+      }));
+    },
+
     push: index =>
       set(state => {
         const last = state.history[state.history.length - 1];
@@ -116,8 +142,13 @@ export const useViewingScheduleStore = create<ViewingScheduleStore>(
           data: {
             ...state.data,
             [id]: {
+              ...current,
               schedules: newSchedules,
               selectedTimeLabels: newLabels,
+              activeIndex:
+                current.activeIndex >= newSchedules.length
+                  ? newSchedules.length - 1
+                  : current.activeIndex,
             },
           },
           history: state.history
@@ -147,6 +178,7 @@ export const useViewingScheduleStore = create<ViewingScheduleStore>(
           [id]: {
             schedules: [{ date: null, time: "NN : NN" }],
             selectedTimeLabels: ["아침"],
+            activeIndex: 0,
           },
         },
         history: [0],

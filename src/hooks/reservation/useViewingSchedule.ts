@@ -26,13 +26,16 @@ export const useViewingSchedules = (
     activeId,
     getSchedules,
     getSelectedTimeLabels,
+    getActiveIndex,
+    setActiveIndex,
     setSchedules,
     setSelectedTimeLabels,
     push,
     remove,
   } = useViewingScheduleStore();
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndex = getActiveIndex();
+
   const [mode, setMode] = useState<"calendar" | "time" | null>("calendar");
 
   const schedules = activeId ? getSchedules() : [];
@@ -105,15 +108,6 @@ export const useViewingSchedules = (
 
   const removeSchedule = (index: number) => {
     if (!activeId) return;
-    const newSchedules = schedules.filter((_, i) => i !== index);
-    const newLabels = selectedTimeLabels.filter((_, i) => i !== index);
-    setSchedules(activeId, newSchedules);
-    setSelectedTimeLabels(activeId, newLabels);
-    setActiveIndex(prev => {
-      if (prev > index) return prev - 1;
-      if (prev === index) return 0;
-      return prev;
-    });
     remove(index);
   };
 
