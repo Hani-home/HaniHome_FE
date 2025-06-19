@@ -1,12 +1,11 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import CompletePage from "@/components/common/CompletePage";
 
 const ViewingCompletePage = () => {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const { id } = useParams();
 
   return (
     <CompletePage
@@ -17,7 +16,7 @@ const ViewingCompletePage = () => {
         "다시 들어가 확인해주세요",
       ]}
       buttonLabel="주소 확인하기"
-      redirectUrl={`/listing/${id}`}
+      redirectUrl={`/listings/${id}?mode=confirm`}
     />
   );
 };

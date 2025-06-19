@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";
@@ -17,16 +17,21 @@ import CertificatedIcon from "@/public/svgs/listings/certificated-icon.svg";
 import LocationImage from "@/public/svgs/listings/location-image.svg";
 
 const ListingDetailPage = () => {
-  const params = useParams();
+  const { id } = useParams();
+  const listingId = id as string;
+
+  const mode = useSearchParams().get("mode");
+  const isReservationConfirmed = mode === "confirm";
+
   const router = useRouter();
-  const listingId = params?.id as string;
+
   const [isBillIncluded, setIsBillIncluded] = useState(false);
   const [liked, setLiked] = useState(false);
 
   return (
     <>
       <div className="flex min-h-screen flex-col pb-16">
-        <BackHeader rightIcon="report" />
+        <BackHeader hideBackIcon={isReservationConfirmed} rightIcon="report" />
         <div className="relative flex">
           <Image
             src="/svgs/common/room-img.svg"
@@ -112,10 +117,17 @@ const ListingDetailPage = () => {
           </div>
         </div>
       </div>
-      <BottomActionBar
-        label="뷰잉 예약하기"
-        onClick={() => router.push(`/viewing/reservation/${listingId}`)}
-      />
+      {isReservationConfirmed ? (
+        <BottomActionBar
+          label="홈으로 이동"
+          onClick={() => router.push("/home")}
+        />
+      ) : (
+        <BottomActionBar
+          label="뷰잉 예약하기"
+          onClick={() => router.push(`/viewing/reservation/${listingId}`)}
+        />
+      )}
     </>
   );
 };
