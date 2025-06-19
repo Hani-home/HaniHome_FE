@@ -1,5 +1,8 @@
+"use client"
 import Image from "next/image";
+import { useState } from "react";
 
+import EmptyHeart from "@/public/svgs/wishlist/empty-heart.svg";
 import FilledHeart from "@/public/svgs/wishlist/filled-heart.svg";
 
 interface ListingCardProps {
@@ -29,9 +32,14 @@ const RoomList = (props: ListingCardProps) => {
     timeAgo,
     likes,
   } = props;
+  const [liked, setLiked] = useState(false);
+
+  const handleClick = () => {
+    setLiked(prev => !prev);
+  };
   return (
     <div
-      className={`flex flex-row gap-4 border px-4 py-3 ${status == "거래 중" ? "" : "opacity-60"}`}
+      className={`flex flex-row gap-4 px-4 py-3 ${status == "거래 중" ? "" : "opacity-60"}`}
     >
       <Image
         src={image}
@@ -50,8 +58,8 @@ const RoomList = (props: ListingCardProps) => {
             <div
               className={`text-cap1-med flex items-center justify-center rounded-[100px] border ${
                 status == "거래 중"
-                  ? "border-violet bg-violet-ultralight h-5 w-[50px]"
-                  : "h-5 w-[58px] border-gray-300"
+                  ? "border-violet bg-violet-ultralight text-violet h-5 w-[50px]"
+                  : "h-5 w-[58px] border-gray-300 text-gray-700"
               }`}
             >
               {status}
@@ -75,9 +83,15 @@ const RoomList = (props: ListingCardProps) => {
           <div className="text-cap1-med text-gray-500">{location}</div>
         </div>
 
-        <div className="gap-[12px] flex flex-col items-center">
+        <div className="flex flex-col items-end gap-[12px]">
           <div>
-            <FilledHeart className="text-mint" />
+            <div onClick={handleClick} className="cursor-pointer">
+              {liked ? (
+                <EmptyHeart className="text-mint" />
+              ) : (
+                <FilledHeart className="text-mint" />
+              )}
+            </div>
             <div className="text-cap1-med text-gray-400">{likes}</div>
           </div>
 
