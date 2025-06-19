@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import EmptyHeart from "@/public/svgs/wishlist/empty-heart.svg";
-import FilledHeart from "@/public/svgs/wishlist/filled-heart.svg";
+import EmptyHeart from "@/public/svgs/common/heart-outline-icon.svg";
+import FilledHeart from "@/public/svgs/common/heart-filled-icon.svg";
 
 interface ListingCardProps {
   image: string;
