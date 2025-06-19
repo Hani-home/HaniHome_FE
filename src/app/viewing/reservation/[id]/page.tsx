@@ -65,13 +65,6 @@ const ViewingReservationPage = () => {
   };
 
   useEffect(() => {
-    console.log(
-      "📦 히스토리 상태:",
-      useViewingScheduleStore.getState().history,
-    );
-  }, [activeIndex]);
-
-  useEffect(() => {
     return () => {
       reset(); // 페이지 이탈 시 히스토리 초기화
     };
