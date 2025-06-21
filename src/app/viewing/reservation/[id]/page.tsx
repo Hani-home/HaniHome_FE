@@ -71,7 +71,7 @@ const ViewingReservationPage = () => {
   }, []);
 
   return (
-    <>
+    <div className="pb-16">
       <BackHeader title="뷰잉 예약" onBackClick={handleBack} />
 
       <div className="flex flex-col justify-center gap-1 p-4">
@@ -145,7 +145,7 @@ const ViewingReservationPage = () => {
         disabled={!isAllSchedulesFilled}
         onClick={() => router.push(`/viewing/reservation/${id}/confirm`)}
       />
-    </>
+    </div>
   );
 };
 
