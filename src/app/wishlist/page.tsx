@@ -1,50 +1,80 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
-import BottomActionBar from "@/components/wishlist/BottomActionBar";
+import BottomActionBar from "@/components/common/BottomActionBar";
+import TitleHeader from "@/components/layout/header/TitleHeader";
 import RoomList from "@/components/wishlist/roomList";
 
 import { ListingDummies } from "@/constants/listing-card-dummies";
 
-import ListingIcon from "@/public/svgs/wishlist/listing-icon.svg";
-
 const Wishlist = () => {
+  const router = useRouter();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [setIsOpen] = useState(false);
 
   const handleRoomClick = (id: number) => {
     setSelectedId(prevId => (prevId === id ? null : id));
   };
 
-  return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden overflow-y-auto pb-39.5">
-      <div className="fixed top-0 left-1/2 z-10 flex h-12 w-full max-w-[375px] -translate-x-1/2 items-center justify-between bg-white px-4">
-        <div className="text-heading-2 flex-grow text-center font-bold text-gray-900">
-          즐겨찾기
-        </div>
-        <div>
-          <ListingIcon className="ml-auto cursor-pointer" />
-        </div>
-      </div>
+  const handleOverview = () => {
+    if (selectedId !== null) {
+      router.push(`/listing/${selectedId}`);
+    }
+  };
 
-      <div className="mt-16">
-        <div className="flex h-[19px] items-center pl-4">
-          즐겨찾기 매물 {ListingDummies.length}개
+  const handleReservation = () => {
+    if (selectedId !== null) {
+      router.push(`/viewing/reservation/${selectedId}`);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col overflow-x-hidden overflow-y-auto">
+      <TitleHeader
+        title="즐겨찾기"
+        rightIcon="list"
+        onRightClick={() => setIsOpen(prev => !prev)}
+      />
+
+      <div>
+        <div className="text-body2-med flex h-[19px] items-center gap-[4px] px-4 py-3 text-gray-800">
+          <div>즐겨찾기 매물</div>
+          <div>{ListingDummies.length}개</div>
         </div>
 
         {ListingDummies.map(item => (
           <div
             key={item.id}
             onClick={() => handleRoomClick(item.id)}
-            className={`cursor-pointer ${selectedId === item.id ? "bg-mint-light" : ""}`}
+            className={`cursor-pointer transition ${
+              selectedId === item.id ? "bg-mint-light" : ""
+            }`}
           >
             <RoomList {...item} />
           </div>
         ))}
       </div>
+
       {selectedId !== null && (
         <div className="duration-300">
-          <BottomActionBar />
+          <BottomActionBar
+            buttons={[
+              {
+                label: "상세페이지 이동",
+                onClick: handleOverview,
+                variant: "outline",
+              },
+              {
+                label: "뷰잉 예약",
+                onClick: handleReservation,
+                variant: "filled",
+              },
+            ]}
+            layout="equal"
+          />
         </div>
       )}
     </div>
