@@ -1,45 +1,34 @@
-"use client"
+"use client";
+
 import Image from "next/image";
-import { useState } from "react";
 
-import EmptyHeart from "@/public/svgs/common/heart-outline-icon.svg";
+import { ListingCardProps } from "@/types/listingCard";
+
 import FilledHeart from "@/public/svgs/common/heart-filled-icon.svg";
+import EmptyHeart from "@/public/svgs/common/heart-outline-icon.svg";
 
-interface ListingCardProps {
-  image: string;
-  price: string;
-  status: string;
-  area: string;
-  floor: string;
-  type: string;
-  options: string;
-  distance: string;
-  location: string;
-  timeAgo: string;
-  likes: number;
-}
-const RoomList = (props: ListingCardProps) => {
-  const {
-    image,
-    price,
-    status,
-    area,
-    floor,
-    type,
-    options,
-    distance,
-    location,
-    timeAgo,
-    likes,
-  } = props;
-  const [liked, setLiked] = useState(false);
-
-  const handleClick = () => {
-    setLiked(prev => !prev);
-  };
+const RoomList = ({
+  image,
+  price,
+  status,
+  area,
+  floor,
+  type,
+  options,
+  distance,
+  location,
+  timeAgo,
+  likes,
+  isLiked,
+  onToggleLike,
+  onClick,
+}: ListingCardProps) => {
   return (
     <div
-      className={`flex flex-row gap-4 px-4 py-3 ${status == "거래 중" ? "" : "opacity-60"}`}
+      onClick={onClick}
+      className={`flex cursor-pointer flex-row gap-4 px-4 py-3 ${
+        status == "거래 중" ? "" : "opacity-60"
+      }`}
     >
       <Image
         src={image}
@@ -51,9 +40,10 @@ const RoomList = (props: ListingCardProps) => {
         style={{ width: "108px", height: "108px", objectFit: "cover" }}
       />
 
-      <div className="flex w-full items-center justify-between">
-        <div className="flex flex-col pb-[8px]">
-          <div className="flex flex-row gap-[6px]">
+      <div className="flex w-full py-2 items-end justify-between">
+        <div className="flex flex-col">
+          {/* 가격 + 상태 */}
+          <div className="flex flex-row gap-[6px] pb-2">
             <div className="text-body1-sb text-gray-900">{price}</div>
             <div
               className={`text-cap1-med flex items-center justify-center rounded-[100px] border ${
@@ -66,6 +56,7 @@ const RoomList = (props: ListingCardProps) => {
             </div>
           </div>
 
+          {/* 정보들 */}
           <div className="text-cap1-med flex flex-row gap-[4px] pb-[2px] text-gray-600">
             <div>{area}</div>
             <div className="text-gray-300">•</div>
@@ -83,16 +74,25 @@ const RoomList = (props: ListingCardProps) => {
           <div className="text-cap1-med text-gray-500">{location}</div>
         </div>
 
+        {/* 우측 하트 및 시간 */}
         <div className="flex flex-col items-end gap-[12px]">
-          <div>
-            <div onClick={handleClick} className="cursor-pointer">
-              {liked ? (
-                <EmptyHeart className="text-mint" />
-              ) : (
+          <div className="flex flex-col gap-1">
+            <div
+              onClick={e => {
+                e.stopPropagation();
+                onToggleLike();
+              }}
+              className="cursor-pointer"
+            >
+              {isLiked ? (
                 <FilledHeart className="text-mint" />
+              ) : (
+                <EmptyHeart className="text-mint" />
               )}
             </div>
-            <div className="text-cap1-med text-gray-400">{likes}</div>
+            <div className="text-cap1-med text-center text-gray-400">
+              {likes}
+            </div>
           </div>
 
           <div className="text-cap1-med text-gray-500">{timeAgo}</div>
@@ -101,4 +101,5 @@ const RoomList = (props: ListingCardProps) => {
     </div>
   );
 };
+
 export default RoomList;

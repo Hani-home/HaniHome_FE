@@ -13,7 +13,8 @@ import { ListingDummies } from "@/constants/listing-card-dummies";
 const Wishlist = () => {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [setIsOpen] = useState(false);
+  const [, setIsOpen] = useState(false);
+  const [likedMap, setLikedMap] = useState<Record<number, boolean>>({});
 
   const handleRoomClick = (id: number) => {
     setSelectedId(prevId => (prevId === id ? null : id));
@@ -21,7 +22,7 @@ const Wishlist = () => {
 
   const handleOverview = () => {
     if (selectedId !== null) {
-      router.push(`/listing/${selectedId}`);
+      router.push(`/listings/${selectedId}`);
     }
   };
 
@@ -29,6 +30,13 @@ const Wishlist = () => {
     if (selectedId !== null) {
       router.push(`/viewing/reservation/${selectedId}`);
     }
+  };
+
+  const toggleLike = (id: number) => {
+    setLikedMap(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   return (
@@ -53,7 +61,11 @@ const Wishlist = () => {
               selectedId === item.id ? "bg-mint-light" : ""
             }`}
           >
-            <RoomList {...item} />
+            <RoomList
+              {...item}
+              isLiked={likedMap[item.id] !== undefined ? likedMap[item.id] : true} 
+              onToggleLike={() => toggleLike(item.id)}
+            />
           </div>
         ))}
       </div>
