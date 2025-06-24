@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import ContentWrapper from "@/components/layout/ContentWrapper";
 import TitleHeader from "@/components/layout/header/TitleHeader";
 import DropDownMenu from "@/components/wishlist/dropDownMenu";
 import RoomList from "@/components/wishlist/roomList";
@@ -48,34 +49,38 @@ const Wishlist = () => {
     setSelectedId(prevId => (prevId === id ? null : id));
   };
 
-  const handleOverview = () => {
-    if (selectedId !== null) {
-      router.push(`/listings/${selectedId}`);
-    }
-  };
-
-  const handleReservation = () => {
-    if (selectedId !== null) {
-      router.push(`/viewing/reservation/${selectedId}`);
-    }
+  const handleNavigate = (type: "overview" | "reservation") => {
+    if (!selectedId) return;
+    const url =
+      type === "overview"
+        ? `/listings/${selectedId}`
+        : `/viewing/reservation/${selectedId}`;
+    router.push(url);
   };
 
   const toggleLike = (id: number) => {
-    setLikedMap(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setLikedMap(prev => {
+      const current = prev[id] ?? true;
+      return {
+        ...prev,
+        [id]: !current,
+      };
+    });
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-x-hidden overflow-y-auto">
+    <ContentWrapper
+      className="flex min-h-screen w-full flex-col"
+      bottomOffset={selectedId !== null ? 65 : 62}
+    >
       <TitleHeader
         title="즐겨찾기"
         rightIcon="list"
         onRightClick={() => setIsOpen(prev => !prev)}
       />
+
       {isOpen && (
-        <div className="absolute top-[36px] right-[17px] z-60">
+        <div className="absolute top-9 right-[17px] z-60">
           <DropDownMenu
             onSelect={order => {
               setSortOrder(order);
@@ -86,7 +91,7 @@ const Wishlist = () => {
       )}
 
       <div>
-        <div className="text-body2-med flex h-[19px] items-center gap-[4px] px-4 py-3 text-gray-800">
+        <div className="text-body2-med flex items-center gap-1 px-4 py-3 text-gray-800">
           <div>즐겨찾기 매물</div>
           <div>{sortedListings.length}개</div>
         </div>
@@ -104,6 +109,11 @@ const Wishlist = () => {
               isLiked={
                 likedMap[item.id] !== undefined ? likedMap[item.id] : true
               }
+              likes={
+                likedMap[item.id] !== undefined
+                  ? item.likes + (likedMap[item.id] ? 0 : -1)
+                  : item.likes
+              }
               onToggleLike={() => toggleLike(item.id)}
             />
           </div>
@@ -116,20 +126,23 @@ const Wishlist = () => {
             buttons={[
               {
                 label: "상세페이지 이동",
-                onClick: handleOverview,
+                onClick: () => handleNavigate("overview"),
                 variant: "outline",
               },
               {
                 label: "뷰잉 예약",
-                onClick: handleReservation,
+                onClick: () => handleNavigate("reservation"),
                 variant: "filled",
+                disabled:
+                  sortedListings.find(item => item.id === selectedId)
+                    ?.status === "거래 완료",
               },
             ]}
             layout="equal"
           />
         </div>
       )}
-    </div>
+    </ContentWrapper>
   );
 };
 

@@ -65,17 +65,18 @@ const BottomActionBar = ({
             layout === "equal" ? "flex-1" : index === 0 ? "w-[83px]" : "flex-1";
           const variantClass =
             btn.variant === "outline"
-              ? "border border-mint bg-white text-mint"
+              ? "border border-mint bg-white text-mint cursor-pointer"
               : isDisabled
                 ? "bg-gray-300 text-white cursor-not-allowed"
                 : "bg-mint text-white cursor-pointer";
+
           return (
             <button
               key={index}
               type="button"
               onClick={btn.onClick}
               disabled={isDisabled}
-              className={`${widthClass} ${variantClass} text-heading3 rounded py-3 transition`}
+              className={`${widthClass} ${variantClass} text-heading3 h-12 rounded py-3 transition`}
             >
               {btn.label}
             </button>

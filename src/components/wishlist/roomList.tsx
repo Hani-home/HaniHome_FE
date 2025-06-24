@@ -39,7 +39,7 @@ const RoomList = ({
         width={108}
         height={108}
         unoptimized
-        className="rounded-[4px]"
+        className="self-center rounded-[4px]"
         style={{ width: "108px", height: "108px", objectFit: "cover" }}
       />
 
@@ -61,7 +61,7 @@ const RoomList = ({
           </div>
 
           {/* 정보들 */}
-          <div className="text-cap1-med flex flex-row gap-[4px] pb-[2px] text-gray-600">
+          <div className="text-cap1-med flex flex-row gap-1 pb-[2px] text-gray-600">
             <div>{area}</div>
             <div className="text-gray-300">•</div>
             <div>{floor}</div>
@@ -69,7 +69,7 @@ const RoomList = ({
             <div>{type}</div>
           </div>
 
-          <div className="text-cap1-med flex flex-row gap-[4px] pb-[16px] text-gray-600">
+          <div className="text-cap1-med flex flex-row gap-1 pb-4 text-gray-600">
             <div>{options}</div>
             <div className="text-gray-300">•</div>
             <div>{distance}</div>
@@ -79,7 +79,7 @@ const RoomList = ({
         </div>
 
         {/* 우측 하트 및 시간 */}
-        <div className="flex flex-col items-end gap-[12px]">
+        <div className="flex flex-col items-end gap-3">
           <div className="flex flex-col gap-1">
             <div
               onClick={e => {

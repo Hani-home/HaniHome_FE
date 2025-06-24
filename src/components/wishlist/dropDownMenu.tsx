@@ -5,7 +5,7 @@ interface DropDownMenuProps {
 }
 const DropDownMenu = ({ onSelect }: DropDownMenuProps) => {
   return (
-    <div className="text-lab1-sb h-[86px] w-[70px] border border-gray-300 bg-white px-4 py-3 text-gray-800">
+    <div className="text-lab1-sb h-[86px] w-[70px] rounded border border-gray-300 bg-white px-4 py-3 text-gray-800">
       <div className="flex flex-col gap-[8px]">
         <button
           className="cursor-pointer pb-1"
