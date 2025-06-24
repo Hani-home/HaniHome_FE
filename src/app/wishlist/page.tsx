@@ -43,7 +43,7 @@ const Wishlist = () => {
 
     return [...sortedAvailable, ...completed];
   }, [sortOrder]);
-  
+
   const handleRoomClick = (id: number) => {
     setSelectedId(prevId => (prevId === id ? null : id));
   };
