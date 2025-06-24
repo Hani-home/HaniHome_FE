@@ -10,7 +10,7 @@ import { axiosInstance } from "./axios";
 // 회원가입
 export const signup = async (payload: SignupPayload) => {
   const res = await axiosInstance.post<void>(
-    "/api/v1/auth/social/signup",
+    "/api/v1/members/complete-profile",
     payload,
   );
   return res.data;
