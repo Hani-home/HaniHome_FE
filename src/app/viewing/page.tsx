@@ -16,10 +16,11 @@ const Viewing = () => {
     <ContentWrapper bottomOffset={62}>
       <TitleHeader title="뷰잉 관리" />
       <SelectTab activeTab={activeTab} onChange={setActiveTab} />
-
-      {activeTab === "confirmed" && <ViewingConfirmedSection />}
-      {activeTab === "canceled" && <ViewingCanceledSection />}
-      {activeTab === "completed" && <ViewingCompletedSection />}
+      <main>
+        {activeTab === "confirmed" && <ViewingConfirmedSection />}
+        {activeTab === "canceled" && <ViewingCanceledSection />}
+        {activeTab === "completed" && <ViewingCompletedSection />}
+      </main>
     </ContentWrapper>
   );
 };

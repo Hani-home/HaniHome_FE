@@ -1,4 +1,10 @@
+import DdayBadge from "./DdayBadge";
+
 const ViewingConfirmedSection = () => {
-  return <>확정</>;
+  return (
+    <div>
+      <DdayBadge dday={3} />
+    </div>
+  );
 };
 export default ViewingConfirmedSection;
