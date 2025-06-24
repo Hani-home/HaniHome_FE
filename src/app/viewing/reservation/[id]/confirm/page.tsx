@@ -7,6 +7,7 @@ import { useConfirmSchedules } from "@/hooks/reservation/useConfirmSchedule";
 import { formatDateTime, getTimeLabel } from "@/utils/time";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import UserRoomPreview from "@/components/common/UserRoomPreview";
 import BackHeader from "@/components/layout/header/BackHeader";
 import ViewingScheduleSection from "@/components/reservation/ViewingScheduleSection";
 
@@ -34,21 +35,28 @@ const ViewingConfirmPage = () => {
 
       {/* 상단: 선택된 일정 표시 */}
       <div className="my-13 p-4">
-        <div className="flex flex-col items-center gap-4">
-          <NoteIcon />
-          <div className="text-heading4 text-mint flex flex-col gap-1">
-            <p>
-              {
-                formatDateTime(selectedSchedule.date, selectedSchedule.time)
-                  .formattedDate
-              }
-            </p>
-            <div className="flex justify-center gap-2">
-              <span>{periodInfo.period}</span>
-              <div>
-                <span>{periodInfo.hour}</span>
-                <span>&nbsp;:&nbsp;</span>
-                <span>{periodInfo.minute}</span>
+        <div className="flex flex-col items-center gap-15">
+          <UserRoomPreview
+            userImg="/svgs/common/profile-img.svg"
+            roomImg="/svgs/common/room-img.svg"
+            variant="lg"
+          />
+          <div className="flex flex-col items-center gap-4">
+            <NoteIcon />
+            <div className="text-heading4 text-mint flex flex-col gap-1">
+              <p>
+                {
+                  formatDateTime(selectedSchedule.date, selectedSchedule.time)
+                    .formattedDate
+                }
+              </p>
+              <div className="flex justify-center gap-2">
+                <span>{periodInfo.period}</span>
+                <div>
+                  <span>{periodInfo.hour}</span>
+                  <span>&nbsp;:&nbsp;</span>
+                  <span>{periodInfo.minute}</span>
+                </div>
               </div>
             </div>
           </div>
