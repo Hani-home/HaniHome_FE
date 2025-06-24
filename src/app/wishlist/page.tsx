@@ -81,6 +81,7 @@ const Wishlist = () => {
               setSortOrder(order);
               setIsOpen(false);
             }}
+            onClose={() => setIsOpen(false)}
           />
         </div>
       )}
