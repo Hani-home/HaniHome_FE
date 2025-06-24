@@ -1,0 +1,110 @@
+// src/components/modal/CancelModal.tsx
+import { useEffect, useRef, useState } from "react";
+
+import {
+  GUEST_REASONS,
+  HOST_REASONS,
+  PLACEHOLDER_TEXT,
+} from "@/constants/cancel";
+
+import ModalLayout from "../common/ModalLayout";
+import SelectableChip from "../common/SelectableChip";
+
+interface CancelModalProps {
+  onClose: () => void;
+  userType: "host" | "guest";
+}
+
+const CancelModal = ({ onClose, userType }: CancelModalProps) => {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [customReason, setCustomReason] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const cancelReasons = userType === "host" ? HOST_REASONS : GUEST_REASONS;
+  const isOtherSelected = selected === "기타";
+  const isDisabled = !selected || (isOtherSelected && !customReason.trim());
+
+  /* --- textarea height 조정 로직 --- */
+  const resizeTextarea = () => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+
+    const [min, max, placeholder] = [46, 176, 68];
+    ta.style.height = "auto";
+    ta.style.height = `${!customReason.trim() ? placeholder : Math.max(min, Math.min(ta.scrollHeight, max))}px`;
+  };
+
+  useEffect(() => {
+    if (isOtherSelected) resizeTextarea();
+  }, [customReason, isOtherSelected]);
+
+  /* --- render --- */
+  return (
+    <ModalLayout
+      onClose={onClose}
+      className="px-4 py-6"
+      closeButtonPosition="top-6 right-4"
+    >
+      <div className="flex flex-col gap-9">
+        {/* 헤더 */}
+        <div className="flex flex-col gap-1">
+          <h1 className="text-heading3 text-gray-900">
+            취소 사유를 선택해주세요
+          </h1>
+          <span className="text-cap1-med text-gray-600">
+            예약 시간 1시간 전까지만 취소할 수 있어요
+          </span>
+        </div>
+
+        {/* 선택 칩 */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {cancelReasons.map(reason => (
+            <SelectableChip
+              key={reason}
+              label={reason}
+              selected={selected === reason}
+              onClick={() => setSelected(reason)}
+            />
+          ))}
+        </div>
+
+        {/* 기타 사유 입력 */}
+        {isOtherSelected && (
+          <div className="flex flex-col gap-3">
+            <h1 className="text-heading3 text-gray-900">취소 사유 기입</h1>
+            <div className="relative">
+              <textarea
+                ref={textareaRef}
+                value={customReason}
+                onChange={e => setCustomReason(e.target.value)}
+                maxLength={150}
+                rows={1}
+                placeholder="placeholder"
+                className="text-body1-med bg-gray-0 scrollbar-hide max-h-[176px] w-full resize-none overflow-y-auto rounded p-3 placeholder-transparent outline-none"
+              />
+              {!customReason && (
+                <p className="text-body1-med pointer-events-none absolute top-3 left-3 whitespace-pre-line text-gray-400">
+                  {PLACEHOLDER_TEXT[userType]}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 액션 버튼 */}
+        <button
+          disabled={isDisabled}
+          className={`text-lab1-b h-9 rounded text-white ${
+            isDisabled
+              ? "cursor-not-allowed bg-gray-300"
+              : "bg-mint cursor-pointer"
+          }`}
+        >
+          취소하기
+        </button>
+      </div>
+    </ModalLayout>
+  );
+};
+
+export default CancelModal;

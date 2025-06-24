@@ -1,0 +1,78 @@
+import UserRoomPreview from "@/components/common/UserRoomPreview";
+
+import CancelIcon from "@/public/svgs/common/close-icon.svg";
+import RecordIcon from "@/public/svgs/viewings/record-icon.svg";
+
+interface ViewingManageCardProps {
+  profileImageUrl: string;
+  roomImageUrl: string;
+  nickname: string;
+  date: string; // "25.05.23"
+  time: string; // "09 : 30"
+  onRecordClick?: () => void;
+  onCancelClick?: () => void;
+  isActive?: boolean;
+}
+
+const ViewingManageCard = ({
+  //   profileImageUrl,
+  //   roomImageUrl,
+  nickname,
+  date,
+  time,
+  onRecordClick,
+  onCancelClick,
+  //   isActive = false,
+}: ViewingManageCardProps) => {
+  return (
+    <div className="flex items-center justify-between rounded-lg p-4">
+      {/* 왼쪽 영역 */}
+      <div className="flex cursor-pointer items-center justify-center gap-4">
+        <UserRoomPreview
+          userImg="/svgs/common/profile-img.svg"
+          roomImg="/svgs/common/room-img.svg"
+          variant="md"
+        />
+        <div className="flex flex-col gap-2">
+          <p className="text-body1-sb text-gray-800">{nickname}</p>
+          <div className="text-cap1-med flex flex-col gap-1 text-gray-700">
+            <div className="flex items-center gap-2">
+              <span>날짜</span>
+              <div className="h-3 border-l border-gray-300" />
+              <span>{date}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>시간</span>
+              <div className="h-3 border-l border-gray-300" />
+              <span>{time}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 오른쪽 버튼 영역 */}
+      <div className="flex gap-2">
+        <button
+          onClick={onRecordClick}
+          className="flex w-12 cursor-pointer items-center justify-center rounded border border-gray-300 px-3 py-2"
+        >
+          <div className="flex flex-col gap-1">
+            <RecordIcon />
+            <span className="text-cap1-med text-mint">기록</span>
+          </div>
+        </button>
+        <button
+          onClick={onCancelClick}
+          className="text-cap1-med flex w-12 cursor-pointer items-center justify-center rounded border border-gray-300 px-3 py-2"
+        >
+          <div className="flex flex-col gap-1">
+            <CancelIcon className="text-gray-600" />
+            <span className="text-cap1-med text-gray-600">취소</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ViewingManageCard;
