@@ -25,12 +25,12 @@ const Wishlist = () => {
   };
 
   const sortedListings = useMemo(() => {
-    const available = ListingDummies.filter(
-      item => item.status !== "거래 완료",
+    const likedFiltered = ListingDummies.filter(
+      item => likedMap[item.id] !== false, // false일 경우 제외
     );
-    const completed = ListingDummies.filter(
-      item => item.status === "거래 완료",
-    );
+
+    const available = likedFiltered.filter(item => item.status !== "거래 완료");
+    const completed = likedFiltered.filter(item => item.status === "거래 완료");
 
     const sortedAvailable = [...available].sort((a, b) => {
       if (sortOrder === "latest") {
@@ -43,7 +43,7 @@ const Wishlist = () => {
     });
 
     return [...sortedAvailable, ...completed];
-  }, [sortOrder]);
+  }, [sortOrder, likedMap]);
 
   const handleRoomClick = (id: number) => {
     setSelectedId(prevId => (prevId === id ? null : id));
@@ -66,11 +66,12 @@ const Wishlist = () => {
         [id]: !current,
       };
     });
+    if (selectedId === id) setSelectedId(null);
   };
 
   return (
     <ContentWrapper
-      className="flex min-h-screen w-full flex-col"
+      className="relative flex min-h-screen w-full flex-col"
       bottomOffset={selectedId !== null ? 65 : 62}
     >
       <TitleHeader
