@@ -2,10 +2,11 @@
 
 import { useRouter } from "next/navigation";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import TitleHeader from "@/components/layout/header/TitleHeader";
+import DropDownMenu from "@/components/wishlist/dropDownMenu";
 import RoomList from "@/components/wishlist/roomList";
 
 import { ListingDummies } from "@/constants/listing-card-dummies";
@@ -13,9 +14,36 @@ import { ListingDummies } from "@/constants/listing-card-dummies";
 const Wishlist = () => {
   const router = useRouter();
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [likedMap, setLikedMap] = useState<Record<number, boolean>>({});
+  const [sortOrder, setSortOrder] = useState<"latest" | "popular">("latest");
 
+  const extractTime = (timeAgo: string): number => {
+    const match = timeAgo.match(/\d+/);
+    return match ? parseInt(match[0]) : 0;
+  };
+
+  const sortedListings = useMemo(() => {
+    const available = ListingDummies.filter(
+      item => item.status !== "거래 완료",
+    );
+    const completed = ListingDummies.filter(
+      item => item.status === "거래 완료",
+    );
+
+    const sortedAvailable = [...available].sort((a, b) => {
+      if (sortOrder === "latest") {
+        return extractTime(a.timeAgo) - extractTime(b.timeAgo);
+      }
+      if (sortOrder === "popular") {
+        return b.likes - a.likes;
+      }
+      return 0;
+    });
+
+    return [...sortedAvailable, ...completed];
+  }, [sortOrder]);
+  
   const handleRoomClick = (id: number) => {
     setSelectedId(prevId => (prevId === id ? null : id));
   };
@@ -40,20 +68,30 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden overflow-y-auto">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden overflow-y-auto">
       <TitleHeader
         title="즐겨찾기"
         rightIcon="list"
         onRightClick={() => setIsOpen(prev => !prev)}
       />
+      {isOpen && (
+        <div className="absolute top-[36px] right-[17px] z-60">
+          <DropDownMenu
+            onSelect={order => {
+              setSortOrder(order);
+              setIsOpen(false);
+            }}
+          />
+        </div>
+      )}
 
       <div>
         <div className="text-body2-med flex h-[19px] items-center gap-[4px] px-4 py-3 text-gray-800">
           <div>즐겨찾기 매물</div>
-          <div>{ListingDummies.length}개</div>
+          <div>{sortedListings.length}개</div>
         </div>
 
-        {ListingDummies.map(item => (
+        {sortedListings.map(item => (
           <div
             key={item.id}
             onClick={() => handleRoomClick(item.id)}
@@ -63,7 +101,9 @@ const Wishlist = () => {
           >
             <RoomList
               {...item}
-              isLiked={likedMap[item.id] !== undefined ? likedMap[item.id] : true} 
+              isLiked={
+                likedMap[item.id] !== undefined ? likedMap[item.id] : true
+              }
               onToggleLike={() => toggleLike(item.id)}
             />
           </div>
