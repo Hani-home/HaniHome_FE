@@ -22,7 +22,10 @@ const Mypage = () => {
       {/*헤더*/}
       <TitleHeader title="마이페이지" />
       {/*바디 */}
-      <div className="scrollbar-hide overflow-auto pb-[62px]">
+      <div
+        className="scrollbar-hide overflow-auto pb-[62px] cursor-pointer"
+        onClick={() => router.push("profile/edit")}
+      >
         {/*프로필수정 */}
         <div className="flex h-22 items-center justify-between px-4 py-2">
           <div className="flex gap-[24px]">
@@ -49,10 +52,7 @@ const Mypage = () => {
             </div>
           </div>
           <div>
-            <Arrow
-              onClick={() => router.push("profile/edit")}
-              className="h-6 w-6 rotate-180 cursor-pointer text-gray-700"
-            />
+            <Arrow className="h-6 w-6 rotate-180 text-gray-700" />
           </div>
         </div>
         <div className="py-4">
