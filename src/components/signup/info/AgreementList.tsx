@@ -62,7 +62,7 @@ const AgreementList = ({
       {/* 전체 동의 */}
       <button
         onClick={() => toggleGroup("all")}
-        className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
+        className="text-cap1-med mb-3 flex cursor-pointer items-center gap-1 text-gray-700"
       >
         <CheckIcon checked={isAllChecked} />만 14세 이상이며 모든 약관에
         동의합니다

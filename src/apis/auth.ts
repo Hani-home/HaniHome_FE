@@ -19,7 +19,7 @@ export const signup = async (payload: SignupPayload) => {
 // 로그인 (인증코드 콜백)
 export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
   const res = await axiosInstance.post("/api/v1/auth/social/login", payload);
-  return res.data;
+  return res.data.data;
 };
 
 // 토큰 재발급
