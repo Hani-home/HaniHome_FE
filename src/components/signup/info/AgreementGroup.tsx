@@ -4,8 +4,8 @@ import { AgreementTerm } from "@/constants/agreement-terms";
 
 import DownArrow from "@/public/svgs/signup/down-arrow.svg";
 
+import CheckIcon from "../../common/CheckIcon";
 import AgreementItem from "./AgreementItem";
-import CheckIcon from "./CheckIcon";
 
 interface AgreementGroupProps {
   title: string;

@@ -6,8 +6,8 @@ import Divider from "@/components/common/Divider";
 
 import { AgreementTerm } from "@/constants/agreement-terms";
 
+import CheckIcon from "../../common/CheckIcon";
 import AgreementGroup from "./AgreementGroup";
-import CheckIcon from "./CheckIcon";
 
 interface AgreementListProps {
   onChange: (checked: number[]) => void;

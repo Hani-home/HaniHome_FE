@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import CheckIcon from "@/components/common/CheckIcon";
 import BackHeader from "@/components/layout/header/BackHeader";
 import AddressMap from "@/components/listings/AddressMap";
 import DetailTabs from "@/components/listings/DetailTabs";
-import CheckIcon from "@/components/signup/info/CheckIcon";
 
 import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";
 import HeartOutlineIcon from "@/public/svgs/common/heart-outline-icon.svg";
