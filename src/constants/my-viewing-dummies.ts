@@ -5,7 +5,7 @@ export const mockViewings: ViewingCardItem[] = [
   {
     id: 1,
     memberId: 1,
-    propertyId: 101,
+    propertyId: 1,
     meetingDay: "2025-06-30T14:00:00.000Z",
     status: "REQUESTED",
     cancelReason: null,
@@ -21,7 +21,7 @@ export const mockViewings: ViewingCardItem[] = [
   {
     id: 2,
     memberId: 2,
-    propertyId: 101,
+    propertyId: 2,
     meetingDay: "2025-07-31T14:00:00.000Z",
     status: "REQUESTED",
     cancelReason: null,
@@ -37,7 +37,7 @@ export const mockViewings: ViewingCardItem[] = [
   {
     id: 3,
     memberId: 2,
-    propertyId: 101,
+    propertyId: 3,
     meetingDay: "2025-07-07T14:00:00.000Z",
     status: "REQUESTED",
     cancelReason: null,
@@ -53,7 +53,7 @@ export const mockViewings: ViewingCardItem[] = [
   {
     id: 4,
     memberId: 2,
-    propertyId: 102,
+    propertyId: 4,
     meetingDay: "2025-07-01T16:00:00.000Z",
     status: "COMPLETED",
     cancelReason: null,
@@ -69,7 +69,7 @@ export const mockViewings: ViewingCardItem[] = [
   {
     id: 5,
     memberId: 1,
-    propertyId: 103,
+    propertyId: 4,
     meetingDay: "2025-07-03T11:00:00.000Z",
     status: "CANCELLED",
     cancelReason:

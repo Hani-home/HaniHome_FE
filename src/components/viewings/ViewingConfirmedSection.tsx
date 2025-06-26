@@ -39,6 +39,7 @@ const ViewingConfirmedSection = ({
               <DdayBadge dday={dday} />
               <ViewingManageCard
                 id={item.id}
+                propertyId={item.propertyId}
                 status="REQUESTED"
                 profileImageUrl={item.profileImageUrl}
                 roomImageUrl={item.roomImageUrl}

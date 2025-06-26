@@ -21,7 +21,8 @@ const ListingDetailPage = () => {
   const listingId = id as string;
 
   const mode = useSearchParams().get("mode");
-  const isReservationConfirmed = mode === "confirm";
+  const isConfirmMode = mode === "confirm";
+  const isViewingMode = mode === "viewing";
 
   const router = useRouter();
 
@@ -43,7 +44,7 @@ const ListingDetailPage = () => {
   return (
     <>
       <div className="flex min-h-screen flex-col pb-16">
-        <BackHeader hideBackIcon={isReservationConfirmed} rightIcon="report" />
+        <BackHeader hideBackIcon={isConfirmMode} rightIcon="report" />
         <div className="relative flex">
           <Image
             src="/svgs/common/room-img.svg"
@@ -117,17 +118,17 @@ const ListingDetailPage = () => {
 
             <AddressMap
               region={region}
-              isReservationConfirmed={isReservationConfirmed}
+              isReservationConfirmed={isConfirmMode || isViewingMode}
             />
           </div>
         </div>
       </div>
-      {isReservationConfirmed ? (
+      {isConfirmMode ? (
         <BottomActionBar
           label="홈으로 이동"
           onClick={() => router.push("/home")}
         />
-      ) : (
+      ) : isViewingMode ? null : (
         <BottomActionBar
           label="뷰잉 예약하기"
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}

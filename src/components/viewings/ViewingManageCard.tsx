@@ -10,6 +10,7 @@ import RecordIcon from "@/public/svgs/viewings/record-icon.svg";
 
 interface ViewingManageCardProps {
   id: number;
+  propertyId: number;
   profileImageUrl: string;
   roomImageUrl: string;
   nickname: string;
@@ -22,6 +23,7 @@ interface ViewingManageCardProps {
 
 const ViewingManageCard = ({
   id,
+  propertyId,
   profileImageUrl,
   roomImageUrl,
   nickname,
@@ -37,7 +39,10 @@ const ViewingManageCard = ({
   return (
     <div className="flex items-center justify-between rounded-lg p-4">
       {/* 왼쪽 영역 */}
-      <div className="flex cursor-pointer items-center justify-center gap-4">
+      <div
+        className="flex cursor-pointer items-center justify-center gap-4"
+        onClick={() => router.push(`/listings/${propertyId}?mode=viewing`)}
+      >
         <UserRoomPreview
           userImg={profileImageUrl}
           roomImg={roomImageUrl}
