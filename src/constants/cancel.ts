@@ -1,4 +1,3 @@
-// src/constants/cancel.ts
 export const GUEST_REASONS = [
   "다른 매물로 결정했어요",
   "일정 변경을 원해요",
