@@ -1,10 +1,11 @@
 import clsx from "clsx";
 
+import CheckIcon from "@/components/common/CheckIcon";
+
 import { AgreementTerm } from "@/constants/agreement-terms";
 
 import DownArrow from "@/public/svgs/signup/down-arrow.svg";
 
-import CheckIcon from "../../common/CheckIcon";
 import AgreementItem from "./AgreementItem";
 
 interface AgreementGroupProps {

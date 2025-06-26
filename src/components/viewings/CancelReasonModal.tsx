@@ -1,4 +1,4 @@
-import ModalLayout from "../common/ModalLayout";
+import ModalLayout from "@/components/common/ModalLayout";
 
 interface CancelReasonModalProps {
   isOpen: boolean;

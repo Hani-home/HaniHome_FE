@@ -9,7 +9,7 @@ import ViewingCanceledSection from "@/components/viewings/ViewingCanceledSection
 import ViewingCompletedSection from "@/components/viewings/ViewingCompletedSection";
 import ViewingConfirmedSection from "@/components/viewings/ViewingConfirmedSection";
 
-import { mockViewings } from "@/constants/my-viewing-dummies";
+import { mockViewings } from "@/constants/mock/my-viewing-dummies";
 import { viewingTabs } from "@/constants/viewing-tabs";
 
 import { ViewingCardItem } from "@/types/viewing";

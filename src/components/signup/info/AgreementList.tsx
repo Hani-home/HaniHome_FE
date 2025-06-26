@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import CheckIcon from "@/components/common/CheckIcon";
 import Divider from "@/components/common/Divider";
 
 import { AgreementTerm } from "@/constants/agreement-terms";
 
-import CheckIcon from "../../common/CheckIcon";
 import AgreementGroup from "./AgreementGroup";
 
 interface AgreementListProps {

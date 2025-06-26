@@ -2,9 +2,10 @@ import { useState } from "react";
 
 import { calculateDday } from "@/utils/dateFormatter";
 
+import AlertModal from "@/components/common/AlertModal";
+
 import { ViewingCardItem } from "@/types/viewing";
 
-import AlertModal from "../common/AlertModal";
 import CancelModal from "./CancelModal";
 import DdayBadge from "./DdayBadge";
 import ViewingManageCard from "./ViewingManageCard";

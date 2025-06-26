@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
+import ModalLayout from "@/components/common/ModalLayout";
+import SelectableChip from "@/components/common/SelectableChip";
+
 import {
   GUEST_REASONS,
   HOST_REASONS,
   PLACEHOLDER_TEXT,
 } from "@/constants/cancel";
-
-import ModalLayout from "../common/ModalLayout";
-import SelectableChip from "../common/SelectableChip";
 
 interface CancelModalProps {
   onClose: () => void;
@@ -77,7 +77,7 @@ const CancelModal = ({ onClose, onConfirm, userType }: CancelModalProps) => {
                 maxLength={150}
                 rows={1}
                 placeholder="placeholder"
-                className="text-body1-med bg-gray-0 scrollbar-hide max-h-[176px] w-full resize-none overflow-y-auto rounded p-3 placeholder-transparent outline-none"
+                className="text-body1-med bg-gray-0 scrollbar-hide max-h-[176px] w-full resize-none overflow-y-auto rounded p-3 text-gray-700 placeholder-transparent outline-none"
               />
               {!customReason && (
                 <p className="text-body1-med pointer-events-none absolute top-3 left-3 whitespace-pre-line text-gray-400">
