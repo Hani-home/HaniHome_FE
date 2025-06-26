@@ -1,3 +1,5 @@
+import { useRouter } from "next/navigation";
+
 import { formatMeetingDay } from "@/utils/dateFormatter";
 
 import UserRoomPreview from "@/components/common/UserRoomPreview";
@@ -7,11 +9,11 @@ import Arrow from "@/public/svgs/common/left-arrow.svg";
 import RecordIcon from "@/public/svgs/viewings/record-icon.svg";
 
 interface ViewingManageCardProps {
+  id: number;
   profileImageUrl: string;
   roomImageUrl: string;
   nickname: string;
   meetingDay: string;
-  onRecordClick?: () => void;
   onCancelClick?: () => void;
   onArrowClick?: () => void;
   status: "REQUESTED" | "CANCELLED" | "COMPLETED";
@@ -19,17 +21,19 @@ interface ViewingManageCardProps {
 }
 
 const ViewingManageCard = ({
+  id,
   profileImageUrl,
   roomImageUrl,
   nickname,
   meetingDay,
-  onRecordClick,
   onCancelClick,
   onArrowClick,
   status,
   //   isActive = false,
 }: ViewingManageCardProps) => {
+  const router = useRouter();
   const { date, time } = formatMeetingDay(meetingDay);
+
   return (
     <div className="flex items-center justify-between rounded-lg p-4">
       {/* 왼쪽 영역 */}
@@ -71,7 +75,7 @@ const ViewingManageCard = ({
         ) : (
           <>
             <button
-              onClick={onRecordClick}
+              onClick={() => router.push(`/viewing/${id}/record`)}
               className="flex w-12 cursor-pointer items-center justify-center rounded border border-gray-300 px-3 py-2"
             >
               <div className="flex flex-col gap-1">

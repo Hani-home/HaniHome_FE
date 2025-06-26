@@ -68,7 +68,7 @@ const AgreementList = ({
         동의합니다
       </button>
 
-      <Divider />
+      <Divider className="mt-3" />
 
       <AgreementGroup
         title="필수 동의란"

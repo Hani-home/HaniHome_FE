@@ -19,6 +19,7 @@ const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
         return (
           <li key={item.id}>
             <ViewingManageCard
+              id={item.id}
               status="COMPLETED"
               profileImageUrl={item.profileImageUrl}
               roomImageUrl={item.roomImageUrl}

@@ -1,17 +1,19 @@
+interface TabItem {
+  key: string;
+  label: string;
+}
+
 interface SelectTabProps {
+  tabs: readonly TabItem[];
   activeTab: string;
   onChange: (tab: string) => void;
 }
 
-const tabs = [
-  { key: "requested", label: "예약 확정" },
-  { key: "canceled", label: "취소" },
-  { key: "completed", label: "완료" },
-] as const;
+const SelectTab = ({ tabs, activeTab, onChange }: SelectTabProps) => {
+  const padding = tabs.length === 2 ? "py-2" : "px-4 pt-3 pb-2";
 
-const SelectTab = ({ activeTab, onChange }: SelectTabProps) => {
   return (
-    <div className="flex px-4 pt-3 pb-2">
+    <div className={`flex ${padding}`}>
       {tabs.map(tab => (
         <button
           key={tab.key}

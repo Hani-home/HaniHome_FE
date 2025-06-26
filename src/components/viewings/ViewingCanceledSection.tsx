@@ -25,6 +25,7 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
         {data.map(item => (
           <li key={item.id}>
             <ViewingManageCard
+              id={item.id}
               status="CANCELLED"
               profileImageUrl={item.profileImageUrl}
               roomImageUrl={item.roomImageUrl}

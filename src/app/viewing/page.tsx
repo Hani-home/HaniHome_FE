@@ -10,6 +10,7 @@ import ViewingCompletedSection from "@/components/viewings/ViewingCompletedSecti
 import ViewingConfirmedSection from "@/components/viewings/ViewingConfirmedSection";
 
 import { mockViewings } from "@/constants/my-viewing-dummies";
+import { viewingTabs } from "@/constants/viewing-tabs";
 
 import { ViewingCardItem } from "@/types/viewing";
 
@@ -29,7 +30,11 @@ const Viewing = () => {
   return (
     <ContentWrapper className="h-screen w-full" bottomOffset={62}>
       <TitleHeader title="뷰잉 관리" />
-      <SelectTab activeTab={activeTab} onChange={setActiveTab} />
+      <SelectTab
+        tabs={viewingTabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+      />
 
       <main>
         {activeTab === "requested" && (
