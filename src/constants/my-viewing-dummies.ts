@@ -72,7 +72,8 @@ export const mockViewings: ViewingCardItem[] = [
     propertyId: 103,
     meetingDay: "2025-07-03T11:00:00.000Z",
     status: "CANCELLED",
-    cancelReason: "개인 사정으로 인해 취소합니다.",
+    cancelReason:
+      "개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.",
     photoUrls: ["/images/room3.png"],
     memo: null,
     optionItemNames: ["역세권", "풀옵션"],

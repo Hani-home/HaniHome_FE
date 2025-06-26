@@ -61,7 +61,7 @@ const ViewingManageCard = ({
         {status === "CANCELLED" ? (
           <button
             onClick={onArrowClick}
-            className="flex flex-col items-center justify-center gap-1"
+            className="flex cursor-pointer flex-col items-center justify-center gap-1"
           >
             <div className="flex h-6 w-6 items-center justify-center">
               <Arrow className="rotate-180 text-gray-800" />
