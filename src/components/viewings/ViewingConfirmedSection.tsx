@@ -4,6 +4,7 @@ import { calculateDday } from "@/utils/dateFormatter";
 
 import { ViewingCardItem } from "@/types/viewing";
 
+import AlertModal from "../common/AlertModal";
 import CancelModal from "./CancelModal";
 import DdayBadge from "./DdayBadge";
 import ViewingManageCard from "./ViewingManageCard";
@@ -17,7 +18,8 @@ const ViewingConfirmedSection = ({
   data,
   currentUserId,
 }: ViewingConfirmedSectionProps) => {
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [openCancelId, setOpenCancelId] = useState<number | null>(null);
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
   return (
     <div className="flex flex-col gap-4">
@@ -41,12 +43,29 @@ const ViewingConfirmedSection = ({
                 roomImageUrl={item.roomImageUrl}
                 nickname={item.nickname}
                 meetingDay={item.meetingDay}
-                onCancelClick={() => setOpenId(item.id)}
+                onCancelClick={() => setOpenCancelId(item.id)}
               />
-              {openId === item.id && (
+              {openCancelId === item.id && (
                 <CancelModal
                   userType={userType}
-                  onClose={() => setOpenId(null)}
+                  onClose={() => setOpenCancelId(null)}
+                  onConfirm={() => {
+                    setOpenCancelId(null);
+                    setShowAlertModal(true);
+                  }}
+                />
+              )}
+              {showAlertModal && (
+                <AlertModal
+                  title="잠깐! 취소는 신중히 진행해주세요"
+                  description={[
+                    "예약을 취소한 후 다른 게스트가 해당 매물을 예약할 시,",
+                    "동일한 시간대에 예약할 수 없습니다.",
+                    "예약 취소를 진행하시겠습니까?",
+                  ]}
+                  actionLabel="취소하기"
+                  onClose={() => setShowAlertModal(false)}
+                  // onActionClick={} 추후 뷰잉 취소하기 API 연결
                 />
               )}
             </div>

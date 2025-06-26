@@ -1,4 +1,3 @@
-// src/components/modal/CancelModal.tsx
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -12,10 +11,11 @@ import SelectableChip from "../common/SelectableChip";
 
 interface CancelModalProps {
   onClose: () => void;
+  onConfirm: () => void;
   userType: "host" | "guest";
 }
 
-const CancelModal = ({ onClose, userType }: CancelModalProps) => {
+const CancelModal = ({ onClose, onConfirm, userType }: CancelModalProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [customReason, setCustomReason] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -24,21 +24,20 @@ const CancelModal = ({ onClose, userType }: CancelModalProps) => {
   const isOtherSelected = selected === "기타";
   const isDisabled = !selected || (isOtherSelected && !customReason.trim());
 
-  /* --- textarea height 조정 로직 --- */
+  /* textarea height 조정 로직 */
   const resizeTextarea = () => {
-    const ta = textareaRef.current;
-    if (!ta) return;
+    const textarea = textareaRef.current;
+    if (!textarea) return;
 
     const [min, max, placeholder] = [46, 176, 68];
-    ta.style.height = "auto";
-    ta.style.height = `${!customReason.trim() ? placeholder : Math.max(min, Math.min(ta.scrollHeight, max))}px`;
+    textarea.style.height = "auto";
+    textarea.style.height = `${!customReason.trim() ? placeholder : Math.max(min, Math.min(textarea.scrollHeight, max))}px`;
   };
 
   useEffect(() => {
     if (isOtherSelected) resizeTextarea();
   }, [customReason, isOtherSelected]);
 
-  /* --- render --- */
   return (
     <ModalLayout
       onClose={onClose}
@@ -46,7 +45,6 @@ const CancelModal = ({ onClose, userType }: CancelModalProps) => {
       closeButtonPosition="top-6 right-4"
     >
       <div className="flex flex-col gap-9">
-        {/* 헤더 */}
         <div className="flex flex-col gap-1">
           <h1 className="text-heading3 text-gray-900">
             취소 사유를 선택해주세요
@@ -56,7 +54,6 @@ const CancelModal = ({ onClose, userType }: CancelModalProps) => {
           </span>
         </div>
 
-        {/* 선택 칩 */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {cancelReasons.map(reason => (
             <SelectableChip
@@ -91,9 +88,9 @@ const CancelModal = ({ onClose, userType }: CancelModalProps) => {
           </div>
         )}
 
-        {/* 액션 버튼 */}
         <button
           disabled={isDisabled}
+          onClick={onConfirm}
           className={`text-lab1-b h-9 rounded text-white ${
             isDisabled
               ? "cursor-not-allowed bg-gray-300"
