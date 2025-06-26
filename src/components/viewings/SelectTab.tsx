@@ -4,14 +4,14 @@ interface SelectTabProps {
 }
 
 const tabs = [
-  { key: "confirmed", label: "예약 확정" },
+  { key: "requested", label: "예약 확정" },
   { key: "canceled", label: "취소" },
   { key: "completed", label: "완료" },
 ] as const;
 
 const SelectTab = ({ activeTab, onChange }: SelectTabProps) => {
   return (
-    <div className="flex px-4 py-3">
+    <div className="flex px-4 pt-3 pb-2">
       {tabs.map(tab => (
         <button
           key={tab.key}
