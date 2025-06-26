@@ -33,7 +33,7 @@ const Mypage = () => {
               <Image
                 src="/svgs/common/profile-img.svg"
                 fill
-                alt="프로필 이미지"
+                alt="profileImg"
                 className="object-cover object-center"
               />
             </div>
@@ -44,7 +44,7 @@ const Mypage = () => {
                   <Image
                     src="/svgs/mypage/verification-badge.svg"
                     fill
-                    alt="인증 배지"
+                    alt="verifyBadge"
                     className="object-contain"
                   />
                 </div>
