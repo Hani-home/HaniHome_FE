@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { calculateDday } from "@/utils/dateFormatter";
 
@@ -21,13 +21,20 @@ const ViewingConfirmedSection = ({
 }: ViewingConfirmedSectionProps) => {
   const [openCancelId, setOpenCancelId] = useState<number | null>(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
+  const [nextModal, setNextModal] = useState<"alert" | null>(null);
+
+  useEffect(() => {
+    if (openCancelId === null && nextModal === "alert") {
+      setShowAlertModal(true);
+      setNextModal(null);
+    }
+  }, [openCancelId, nextModal]);
 
   return (
     <div className="flex flex-col gap-4">
       {data
         .filter(item => calculateDday(item.meetingDay) >= 0)
         .sort(
-          //API에서 meetingDate로 정렬 지원, 추후 삭제
           (a, b) => calculateDday(a.meetingDay) - calculateDday(b.meetingDay),
         )
         .map(item => {
@@ -54,26 +61,31 @@ const ViewingConfirmedSection = ({
                   onClose={() => setOpenCancelId(null)}
                   onConfirm={() => {
                     setOpenCancelId(null);
-                    setShowAlertModal(true);
+                    setNextModal("alert");
                   }}
-                />
-              )}
-              {showAlertModal && (
-                <AlertModal
-                  title="잠깐! 취소는 신중히 진행해주세요"
-                  description={[
-                    "예약을 취소한 후 다른 게스트가 해당 매물을 예약할 시,",
-                    "동일한 시간대에 예약할 수 없습니다.",
-                    "예약 취소를 진행하시겠습니까?",
-                  ]}
-                  actionLabel="취소하기"
-                  onClose={() => setShowAlertModal(false)}
-                  // onActionClick={} 추후 뷰잉 취소하기 API 연결
                 />
               )}
             </div>
           );
         })}
+
+      {openCancelId === null && nextModal === "alert" && (
+        <div className="fixed inset-0 z-50 bg-gray-800/60" />
+      )}
+
+      {showAlertModal && (
+        <AlertModal
+          title="잠깐! 취소는 신중히 진행해주세요"
+          description={[
+            "예약을 취소한 후 다른 게스트가 해당 매물을 예약할 시,",
+            "동일한 시간대에 예약할 수 없습니다.",
+            "예약 취소를 진행하시겠습니까?",
+          ]}
+          actionLabel="취소하기"
+          onClose={() => setShowAlertModal(false)}
+          // onActionClick={} 추후 뷰잉 취소하기 API 연결
+        />
+      )}
     </div>
   );
 };
