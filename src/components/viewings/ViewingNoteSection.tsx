@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 
 import Divider from "@/components/common/Divider";
 
-import CameraIcon from "@/public/svgs/viewings/camera-icon.svg";
+import ImagePreviewSection from "./ImagePreviewSection";
+import ImageUploadButton from "./ImageUploadButton";
 
 const ViewingNoteSection = () => {
   const [memo, setMemo] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -18,25 +20,22 @@ const ViewingNoteSection = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2 p-4">
+    <div className="flex flex-col gap-2 py-4">
       {/* 사진 섹션 */}
-      <section className="flex w-full gap-1">
+      <section className="flex w-full gap-1 px-4">
         <div className="flex flex-1 flex-col gap-1">
           <p className="text-heading3 text-gray-800">사진 기록</p>
           <span className="text-cap1-med text-gray-600">
             뷰잉한 매물의 내/외부 사진을 남겨주세요 (최대 10장)
           </span>
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <CameraIcon />
-          <span className="text-cap1-med text-gray-800">촬영</span>
-        </div>
+        <ImageUploadButton images={images} setImages={setImages} />
       </section>
-
+      <ImagePreviewSection images={images} setImages={setImages} />
       <Divider className="my-4" />
 
       {/* 텍스트 메모 섹션 */}
-      <section className="flex flex-col gap-4 py-3">
+      <section className="flex flex-col gap-4 px-4 py-3">
         <p className="text-heading3 text-gray-800">메모</p>
         <textarea
           ref={textareaRef}
