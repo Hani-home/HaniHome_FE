@@ -8,6 +8,7 @@ import { ViewingCardItem } from "@/types/viewing";
 
 import CancelModal from "./CancelModal";
 import DdayBadge from "./DdayBadge";
+import ViewingEmptyMessage from "./ViewingEmptyMessage";
 import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingConfirmedSectionProps {
@@ -29,6 +30,10 @@ const ViewingConfirmedSection = ({
       setNextModal(null);
     }
   }, [openCancelId, nextModal]);
+
+  if (data.length === 0) {
+    return <ViewingEmptyMessage message="예약된 뷰잉이 없어요" />;
+  }
 
   return (
     <div className="flex flex-col gap-4">

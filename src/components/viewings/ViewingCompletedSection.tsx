@@ -1,5 +1,6 @@
 import { ViewingCardItem } from "@/types/viewing";
 
+import ViewingEmptyMessage from "./ViewingEmptyMessage";
 import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingCompletedSectionProps {
@@ -8,9 +9,7 @@ interface ViewingCompletedSectionProps {
 
 const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
   if (data.length === 0) {
-    return (
-      <p className="mt-8 text-center text-gray-500">완료된 뷰잉이 없습니다.</p>
-    );
+    return <ViewingEmptyMessage message="완료된 뷰잉이 없어요" />;
   }
 
   return (

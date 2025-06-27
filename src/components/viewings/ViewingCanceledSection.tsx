@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ViewingCardItem } from "@/types/viewing";
 
 import CancelReasonModal from "./CancelReasonModal";
+import ViewingEmptyMessage from "./ViewingEmptyMessage";
 import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingCanceledSectionProps {
@@ -11,13 +12,11 @@ interface ViewingCanceledSectionProps {
 
 const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
   const [openId, setOpenId] = useState<number | null>(null);
-  if (data.length === 0) {
-    return (
-      <p className="mt-8 text-center text-gray-500">취소된 뷰잉이 없습니다.</p>
-    );
-  }
-
   const selectedItem = data.find(item => item.id === openId);
+
+  if (data.length === 0) {
+    return <ViewingEmptyMessage message="취소된 뷰잉이 없어요" />;
+  }
 
   return (
     <>

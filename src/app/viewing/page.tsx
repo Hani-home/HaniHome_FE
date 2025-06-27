@@ -28,7 +28,7 @@ const Viewing = () => {
   const completed = withUserType.filter(v => v.status === "COMPLETED");
 
   return (
-    <ContentWrapper className="h-screen w-full" bottomOffset={62}>
+    <ContentWrapper className="flex h-screen w-full flex-col" bottomOffset={62}>
       <TitleHeader title="뷰잉 관리" />
       <SelectTab
         tabs={viewingTabs}
@@ -36,7 +36,7 @@ const Viewing = () => {
         onChange={setActiveTab}
       />
 
-      <main>
+      <main className="flex flex-1 flex-col">
         {activeTab === "requested" && (
           <ViewingConfirmedSection
             data={requested}
