@@ -1,23 +1,14 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import Divider from "@/components/common/Divider";
 
+import TextareaField from "../common/TextareaField";
 import ImagePreviewSection from "./ImagePreviewSection";
 import ImageUploadButton from "./ImageUploadButton";
 
 const ViewingNoteSection = () => {
   const [memo, setMemo] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMemo(e.target.value);
-
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    textarea.style.height = "auto"; // 높이 초기화
-    textarea.style.height = `${textarea.scrollHeight}px`; // 스크롤 높이만큼 늘림
-  };
 
   return (
     <div className="flex flex-col gap-2 py-4">
@@ -35,20 +26,12 @@ const ViewingNoteSection = () => {
       <Divider className="my-4" />
 
       {/* 텍스트 메모 섹션 */}
-      <section className="flex flex-col gap-4 px-4 py-3">
-        <p className="text-heading3 text-gray-800">메모</p>
-        <textarea
-          ref={textareaRef}
-          placeholder="뷰잉한 매물의 특징을 기록해봐요"
-          maxLength={500}
-          rows={1}
-          onChange={handleChange}
-          className="text-body1-med bg-gray-0 w-full resize-none rounded p-3 text-gray-700 outline-none placeholder:text-gray-400"
-        />
-        <span className="text-cap1-med block text-right text-gray-400">
-          {memo.length}/500
-        </span>
-      </section>
+      <TextareaField
+        title="메모"
+        placeholder="뷰잉한 매물의 특징을 기록해봐요"
+        value={memo}
+        onChange={setMemo}
+      />
     </div>
   );
 };
