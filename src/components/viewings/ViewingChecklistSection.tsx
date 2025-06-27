@@ -14,7 +14,7 @@ const ViewingChecklistSection = () => {
   };
 
   return (
-    <div className="pb-15">
+    <div className="pb-37">
       {checklistTerms.map((section, idx) => (
         <Accordion
           key={section.title}
