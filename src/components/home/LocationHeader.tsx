@@ -11,11 +11,11 @@ import SuburbSearchModal from "./SuburbSearchModal";
 const LocationHeader = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { region, setField } = useSignupStore();
+  const { interestRegion, setField } = useSignupStore();
   const displayRegion =
-    region && region.includes(",")
-      ? region.slice(0, region.lastIndexOf(",")).trim()
-      : region || "chatswood";
+    interestRegion && interestRegion.includes(",")
+      ? interestRegion.slice(0, interestRegion.lastIndexOf(",")).trim()
+      : interestRegion || "chatswood";
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -36,7 +36,9 @@ const LocationHeader = () => {
       {isModalOpen && (
         <SuburbSearchModal
           onClose={() => setIsModalOpen(false)}
-          onSelectRegion={region => setField("region", region)}
+          onSelectRegion={interestRegion =>
+            setField("interestRegion", interestRegion)
+          }
         />
       )}
     </>

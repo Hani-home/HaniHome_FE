@@ -18,8 +18,8 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 
 const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { profileimg, setField } = useSignupStore();
-  const [previewUrl, setPreviewUrl] = useState(profileimg || "");
+  const { profileImage, setField } = useSignupStore();
+  const [previewUrl, setPreviewUrl] = useState(profileImage || "");
 
   const [showErrorModal, setShowErrorModal] = useState(false);
 
@@ -37,7 +37,7 @@ const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
 
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    setField("profileimg", url);
+    setField("profileImage", url);
     onUpload?.(file);
   };
 

@@ -1,13 +1,19 @@
 // 회원가입 시 전달할 데이터
+
+export interface Consent {
+  type: string;
+  agreed: boolean;
+}
+
 export interface SignupPayload {
   name: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   nickname: string;
   gender: string;
-  region: string;
-  profileimg: string;
-  agreed: number[];
+  interestRegion: string;
+  profileImage: string;
+  agreed: Consent[];
 }
 
 // 소셜 로그인 코드

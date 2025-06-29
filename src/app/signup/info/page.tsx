@@ -17,7 +17,8 @@ import { AgreementTerm } from "@/constants/agreement-terms";
 
 const SignupInfoPage = () => {
   const router = useRouter();
-  const { name, email, phone, agreed, setField, setAgreed } = useSignupStore();
+  const { name, email, phoneNumber, agreed, setField, setAgreed } =
+    useSignupStore();
 
   const {
     register,
@@ -47,7 +48,7 @@ const SignupInfoPage = () => {
     allRequiredChecked &&
     values.name?.trim() &&
     values.email?.trim() &&
-    values.phone?.trim() &&
+    values.phoneNumber?.trim() &&
     isValid;
 
   useEffect(() => {
@@ -90,9 +91,11 @@ const SignupInfoPage = () => {
         <InputField
           label="전화번호"
           placeholder="전화번호를 입력해주세요"
-          value={phone}
-          {...register("phone")}
-          errorMessage={touchedFields.phone ? errors.phone?.message : undefined}
+          value={phoneNumber}
+          {...register("phoneNumber")}
+          errorMessage={
+            touchedFields.phoneNumber ? errors.phoneNumber?.message : undefined
+          }
         />
       </form>
 

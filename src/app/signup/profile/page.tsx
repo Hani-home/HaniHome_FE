@@ -31,7 +31,7 @@ const SignupProfilePage = () => {
     checkDuplicate,
     reset,
   } = useNickname();
-  const { nickname, gender, region, setField } = useSignupStore();
+  const { nickname, gender, interestRegion, setField } = useSignupStore();
   const [alerts, setAlerts] = useState<string[]>([]);
 
   const showAlert = (message: string) => {
@@ -44,7 +44,7 @@ const SignupProfilePage = () => {
   };
 
   const handleSubmit = () => {
-    if (!isValid || !nickname || !gender || !region) {
+    if (!isValid || !nickname || !gender || !interestRegion) {
       showAlert("모든 항목에 답변해주세요");
       return;
     }
@@ -57,8 +57,8 @@ const SignupProfilePage = () => {
   };
 
   const isFormReady = useMemo(
-    () => nickname && gender && region && result === "available",
-    [nickname, gender, region, result],
+    () => nickname && gender && interestRegion && result === "available",
+    [nickname, gender, interestRegion, result],
   );
 
   return (
@@ -70,7 +70,7 @@ const SignupProfilePage = () => {
       <ProfileImageUploader
         onUpload={file => {
           const url = URL.createObjectURL(file);
-          setField("profileimg", url);
+          setField("profileImage", url);
         }}
       />
 
@@ -98,9 +98,9 @@ const SignupProfilePage = () => {
 
       <SearchField
         label="관심 지역 검색"
-        value={region}
-        onChange={val => setField("region", val)}
-        isSelected={!!region}
+        value={interestRegion}
+        onChange={val => setField("interestRegion", val)}
+        isSelected={!!interestRegion}
       />
 
       <BottomActionBar

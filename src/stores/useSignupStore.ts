@@ -3,13 +3,12 @@ import { create } from "zustand";
 interface SignupState {
   name: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   agreed: number[];
-
   nickname: string;
   gender: string;
-  region: string;
-  profileimg: string;
+  interestRegion: string;
+  profileImage: string;
 
   setField: (key: keyof SignupState, value: string) => void;
   setAgreed: (ids: number[]) => void;
@@ -19,12 +18,12 @@ interface SignupState {
 export const useSignupStore = create<SignupState>(set => ({
   name: "",
   email: "",
-  phone: "",
+  phoneNumber: "",
   agreed: [],
   nickname: "",
   gender: "",
-  region: "",
-  profileimg: "",
+  interestRegion: "",
+  profileImage: "",
 
   setField: (key, value) => set(state => ({ ...state, [key]: value })),
 
@@ -34,11 +33,11 @@ export const useSignupStore = create<SignupState>(set => ({
     set({
       name: "",
       email: "",
-      phone: "",
+      phoneNumber: "",
       agreed: [],
       nickname: "",
       gender: "",
-      region: "",
-      profileimg: "",
+      interestRegion: "",
+      profileImage: "",
     }),
 }));
