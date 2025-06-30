@@ -43,11 +43,9 @@ const NotificationPage = () => {
             "알림 미확인에 의한 책임은 당사자에게 있으며,",
             "이후 동일한 알림을 재전송하지 않습니다",
           ]}
+          actionLabel="삭제"
+          // onActionClick={알림삭제처리}
           onClose={() => setShowDeleteModal(false)}
-          // onConfirm={() => {
-          //   // TODO: 알림 삭제 처리
-          //   setShowDeleteModal(false);
-          // }}
         />
       )}
     </ContentWrapper>
