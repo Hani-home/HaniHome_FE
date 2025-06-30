@@ -10,7 +10,7 @@ interface SectionProps {
 
 const Section = ({ label, items }: SectionProps) => {
   return (
-    <div className="px-5 py-3">
+    <div className={`px-5 ${label === "나의 활동"? "py-3" : "py-4"}`}>
       <div className="mb-2 text-heading3 text-gray-800">{label}</div>
       {items.map(({ label, onClick, color }) => (
         <div
