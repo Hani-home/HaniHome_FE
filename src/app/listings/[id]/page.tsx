@@ -44,7 +44,11 @@ const ListingDetailPage = () => {
   return (
     <>
       <div className="flex min-h-screen flex-col pb-16">
-        <BackHeader hideBackIcon={isConfirmMode} rightIcon="report" />
+        <BackHeader
+          hideBackIcon={isConfirmMode}
+          rightIcon="report"
+          onRightClick={() => router.push(`/listings/${id}/report`)}
+        />
         <div className="relative flex">
           <Image
             src="/svgs/common/room-img.svg"
