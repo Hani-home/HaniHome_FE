@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import clsx from "clsx";
-
 import CheckIcon from "@/components/common/CheckIcon";
 
 import Arrow from "@/public/svgs/common/left-arrow.svg";
@@ -35,18 +33,15 @@ const Accordion = ({
         onClick={() => setIsOpen(prev => !prev)}
       >
         <span
-          className={clsx(
-            "text-heading3",
-            isOpen ? "text-gray-900" : "text-gray-500",
-          )}
+          className={`text-heading3 ${isOpen ? "text-gray-900" : "text-gray-500"}`}
         >
           {title}
         </span>
 
         <Arrow
-          className={clsx(
-            isOpen ? "rotate-90 text-gray-900" : "-rotate-90 text-gray-500",
-          )}
+          className={`${
+            isOpen ? "rotate-90 text-gray-900" : "-rotate-90 text-gray-500"
+          }`}
         />
       </button>
 
