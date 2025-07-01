@@ -2,11 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 
 const MAX_SIZE_MB = 5;
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
-  
-interface UploadImageParams <T extends string = string>{
-  file: File;  
+
+interface UploadImageParams<T extends string = string> {
+  file: File;
   setPreviewUrl: Dispatch<SetStateAction<string>>;
-  setField: (key: T, value: string) => void; // eslint-disable-line no-unused-vars
+  setField: (key: T, value: string) => void;
   fieldName: T;
   setShowErrorModal: Dispatch<SetStateAction<boolean>>;
   onUpload?: (file: File) => void;
