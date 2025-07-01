@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { useSignupStore } from "@/stores/useSignupStore";
 import clsx from "clsx";
 
-import { uploadImage } from "@/utils/imageUploader";
+import { uploadImage } from "@/utils/uploadSingleImage";
 
 import { SignupFieldKey } from "@/types/signup";
 
