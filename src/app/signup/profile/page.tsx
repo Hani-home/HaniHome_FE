@@ -1,12 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { useMemo, useState } from "react";
 
 import { useSignupStore } from "@/stores/useSignupStore";
 
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useNickname } from "@/hooks/signup/useNickname";
+
+import { formatConsents } from "@/utils/formatConsentType";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -16,12 +18,11 @@ import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
 
 const GENDER_OPTIONS = [
-  { label: "남성", value: "male" },
-  { label: "여성", value: "female" },
+  { label: "남성", value: "MALE" },
+  { label: "여성", value: "FEMALE" },
 ];
 
 const SignupProfilePage = () => {
-  const router = useRouter();
   const {
     message,
     isValid,
@@ -31,7 +32,21 @@ const SignupProfilePage = () => {
     checkDuplicate,
     reset,
   } = useNickname();
-  const { nickname, gender, interestRegion, setField } = useSignupStore();
+
+  const {
+    name,
+    email,
+    phoneNumber,
+    nickname,
+    gender,
+    interestRegion,
+    profileImage,
+    agreed,
+    setField,
+  } = useSignupStore();
+
+  const { signup, isSignupLoading } = useAuth();
+
   const [alerts, setAlerts] = useState<string[]>([]);
 
   const showAlert = (message: string) => {
@@ -39,8 +54,10 @@ const SignupProfilePage = () => {
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setField("nickname", e.target.value);
+    const value = e.target.value;
+    setField("nickname", value);
     reset();
+    validate(value);
   };
 
   const handleSubmit = () => {
@@ -48,12 +65,26 @@ const SignupProfilePage = () => {
       showAlert("모든 항목에 답변해주세요");
       return;
     }
+
     if (result === "default") {
       showAlert("닉네임 중복 확인 버튼을 눌러주세요");
       return;
     }
+
     if (result !== "available") return;
-    router.push("/signup/complete");
+
+    const payload = {
+      name,
+      email,
+      phoneNumber: formatPhoneNumber(phoneNumber),
+      nickname,
+      gender,
+      interestRegion,
+      profileImage: profileImage || "",
+      consents: formatConsents(agreed),
+    };
+
+    signup(payload);
   };
 
   const isFormReady = useMemo(
@@ -106,7 +137,7 @@ const SignupProfilePage = () => {
       <BottomActionBar
         label="완료"
         onClick={handleSubmit}
-        disabled={!isFormReady}
+        disabled={!isFormReady || isSignupLoading}
       />
 
       {alerts.length > 0 && (

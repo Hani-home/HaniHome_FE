@@ -10,7 +10,10 @@ interface SignupState {
   interestRegion: string;
   profileImage: string;
 
-  setField: (key: keyof SignupState, value: string) => void;
+  setField: (
+    key: keyof Omit<SignupState, "setField" | "setAgreed" | "reset">,
+    value: string,
+  ) => void;
   setAgreed: (ids: number[]) => void;
   reset: () => void;
 }
@@ -26,9 +29,7 @@ export const useSignupStore = create<SignupState>(set => ({
   profileImage: "",
 
   setField: (key, value) => set(state => ({ ...state, [key]: value })),
-
   setAgreed: ids => set({ agreed: ids }),
-
   reset: () =>
     set({
       name: "",

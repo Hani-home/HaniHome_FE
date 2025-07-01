@@ -12,8 +12,8 @@ export interface SignupPayload {
   nickname: string;
   gender: string;
   interestRegion: string;
-  profileImage: string;
-  agreed: Consent[];
+  profileImage?: string;
+  consents: Consent[];
 }
 
 // 소셜 로그인 코드
