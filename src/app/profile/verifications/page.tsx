@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+
+import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownField from "@/components/common/DropdownField";
 import BackHeader from "@/components/layout/header/BackHeader";
+import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
+import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
 import FilledCheck from "@/public/svgs/common/filled-check.svg";
@@ -18,7 +22,46 @@ const VERIFICATION_OPTIONS = [
 const VerificationPage = () => {
   const [verif, setVerif] = useState("");
   const [isAgree, setIsAgree] = useState(false);
-  // const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [, setUploadedMap] = useState<Record<string, File[]>>({});
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!verif) {
+      alert("인증수단을 선택해주세요.");
+      e.target.value = "";
+      return;
+    }
+    const selectedLabel =
+      VERIFICATION_OPTIONS.find(opt => opt.value === verif)?.label ?? "";
+
+    uploadMultipleImages({
+      file,
+      setPreviewUrls,
+      setUploadedFiles,
+      setField: (key, files) => {
+        setUploadedFiles(files),
+          setUploadedMap(prev => ({ ...prev, [key]: files }));
+      },
+      fieldName: selectedLabel,
+      setShowErrorModal,
+      onUpload: () => {
+        setVerif(""); // 업로드 후 인증수단 초기화
+      },
+    });
+
+    e.target.value = "";
+  };
+
+  const handleDelete = (index: number) => {
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="flex h-screen max-w-[375px] flex-col">
@@ -45,9 +88,25 @@ const VerificationPage = () => {
       <div className="px-4 py-6">
         <div className="flex flex-col gap-3">
           <h3 className="text-heading3 text-gray-800">파일 업로드</h3>
-          <button className="text-lab1-sb flex h-9 w-[343px] cursor-pointer items-center justify-center rounded-[4px] border border-gray-600 py-[10px] text-gray-800">
+          {previewUrls.length > 0 && (
+            <VerifyImageUploader images={previewUrls} onDelete={handleDelete} />
+          )}
+          <button
+            className="text-lab1-sb flex h-9 w-[343px] cursor-pointer items-center justify-center rounded-[4px] border border-gray-600 py-[10px] text-gray-800"
+            onClick={() => fileInputRef.current?.click()}
+            // disabled={!verif}
+          >
             + 사진 업로드
           </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
           <div className="text-cap1-med text-gray-400">
             <p>
               여권 운전면허증의 이름과 사진, 만료일이 명확히 보이도록
@@ -69,13 +128,17 @@ const VerificationPage = () => {
           동의합니다.
         </span>
       </div>
-      {verif && isAgree && (
+      {uploadedFiles.length > 0 && isAgree && (
         <BottomActionBar
           label="인증 신청"
           onClick={() => {
-            // 인증 요청 로직
+            // Todo: 인증 요청 로직
           }}
         />
+      )}
+
+      {showErrorModal && (
+        <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
     </div>
   );
