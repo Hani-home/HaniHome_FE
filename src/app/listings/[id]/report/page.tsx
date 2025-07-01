@@ -19,13 +19,7 @@ const ListingReportPage = () => {
   const handleUploadClick = () => fileInputRef.current?.click();
 
   const isSupportedImage = (file: File) => {
-    const supportedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif",
-      "image/svg+xml",
-    ];
+    const supportedTypes = ["image/jpeg", "image/png"];
     return supportedTypes.includes(file.type);
   };
 
