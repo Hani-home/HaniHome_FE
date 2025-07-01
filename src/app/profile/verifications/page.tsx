@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
@@ -12,6 +12,7 @@ import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
 import FilledCheck from "@/public/svgs/common/filled-check.svg";
+import AssignModal from "@/components/mypage/assignModal";
 
 const VERIFICATION_OPTIONS = [
   { label: "여권", value: "passport" },
@@ -26,6 +27,15 @@ const VerificationPage = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [, setUploadedMap] = useState<Record<string, File[]>>({});
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+
+  useEffect(() => {
+    if (showAssignModal) {
+      const timer = setTimeout(() => setShowAssignModal(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAssignModal]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,11 +139,12 @@ const VerificationPage = () => {
           동의합니다.
         </span>
       </div>
-      {uploadedFiles.length > 0 && isAgree && (
+      {uploadedFiles.length > 0 && isAgree && !showAssignModal && (
         <BottomActionBar
           label="인증 신청"
           onClick={() => {
             // Todo: 인증 요청 로직
+            setShowAssignModal(true);
           }}
         />
       )}
@@ -141,6 +152,7 @@ const VerificationPage = () => {
       {showErrorModal && (
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
+      {showAssignModal && <AssignModal />}
     </div>
   );
 };
