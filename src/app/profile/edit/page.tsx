@@ -119,7 +119,7 @@ const ProfileEdit = () => {
               className="flex cursor-pointer flex-row items-center justify-between py-5"
               onClick={() => router.push("/profile/verifications")}
             >
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start gap-1">
                 <div className="text-body1-sb text-gray-800">인증 강화</div>
                 <div className="text-cap1-med text-gray-600">
                   여권 / 운전면허증 / 거주허가증 등 신원 인증 수단 업로드

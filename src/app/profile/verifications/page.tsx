@@ -68,14 +68,15 @@ const VerificationPage = () => {
       <BackHeader />
 
       {/* 인증수단선택 */}
-      <div className="px-4 py-6">
-        <h3 className="text-heading3 text-gray-800">인증수단선택</h3>
-        <span className="text-cap1-med text-gray-600">
-          여권 / 운전면허증 / 거주허가증 등 신원 인증 수단 업로드
-        </span>
+      <div className="flex flex-col gap-8 px-4 py-6">
+        <div className="flex flex-col">
+          <h3 className="text-heading3 text-gray-800">인증수단선택</h3>
+          <span className="text-cap1-med text-gray-600">
+            여권 / 운전면허증 / 거주허가증 등 신원 인증 수단 업로드
+          </span>
+        </div>
         <div>
           <DropdownField
-            label="인증수단"
             value={verif}
             placeholder="선택"
             onChange={val => setVerif(val)}
@@ -119,7 +120,7 @@ const VerificationPage = () => {
 
       {/* 이용약관동의 */}
       <div
-        className="flex items-center justify-center gap-2 px-4 py-3"
+        className="flex items-center gap-2 px-4 py-3"
         onClick={() => setIsAgree(prev => !prev)}
       >
         {isAgree ? <FilledCheck /> : <EmptyCheck />}
