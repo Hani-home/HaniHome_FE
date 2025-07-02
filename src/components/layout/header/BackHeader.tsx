@@ -32,7 +32,7 @@ const BackHeader = ({
           onClick={onBackClick ?? (() => router.back())}
           className="cursor-pointer"
         >
-          <BackArrow />
+          <BackArrow className="h-6 w-6" />
         </button>
       )}
 

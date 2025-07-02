@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 import Divider from "@/components/common/Divider";
+import TextareaField from "@/components/common/TextareaField";
 
-import TextareaField from "../common/TextareaField";
 import ImagePreviewSection from "./ImagePreviewSection";
 import ImageUploadButton from "./ImageUploadButton";
 
