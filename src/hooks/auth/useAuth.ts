@@ -56,7 +56,7 @@ export const useAuth = () => {
   /* 4. 토큰 재발급 */
   const refreshMutation = useMutation({
     mutationFn: refreshToken,
-    onSuccess: ({ accessToken }) => setAccessToken(accessToken), // ✅
+    onSuccess: ({ accessToken }) => setAccessToken(accessToken),
     onError: () => {
       clearAuth();
       router.push("/");
@@ -110,7 +110,7 @@ export const useAuth = () => {
 
     /* 유저 액션 */
     updateUser: updateUserMutation.mutate,
-    deleteUser: (id = memberId) => deleteUserMutation.mutate(id),
+    deleteUser: deleteUserMutation.mutateAsync,
 
     /* 로딩·에러 */
     isLoginLoading: loginMutation.isPending,
