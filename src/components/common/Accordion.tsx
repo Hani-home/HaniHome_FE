@@ -104,7 +104,7 @@ const Accordion = ({
         </div>
       )}
 
-      {(!isLast || !isOpen) && (
+      {!(mode === "faq" && isLast) && (!isLast || !isOpen) && (
         <Divider className={isLast ? "mt-3 mb-1" : "my-3"} />
       )}
     </section>
