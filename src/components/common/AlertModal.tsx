@@ -9,6 +9,7 @@ interface AlertModalProps {
   actionLabel?: string;
   onActionClick?: () => void;
   actionDisabled?: boolean;
+  loading?: boolean;
 }
 
 const AlertModal = ({
@@ -18,6 +19,7 @@ const AlertModal = ({
   actionLabel,
   onActionClick,
   actionDisabled,
+  loading,
 }: AlertModalProps) => {
   return (
     <ModalLayout closeButtonColor="text-gray-400" onClose={onClose}>
@@ -35,14 +37,14 @@ const AlertModal = ({
       {actionLabel && (
         <button
           onClick={onActionClick}
-          disabled={actionDisabled}
-          className={`text-lab1-b mt-6 h-9 w-full rounded text-white ${
-            actionDisabled
+          disabled={actionDisabled || loading}
+          className={`text-lab1-b mt-6 flex h-9 w-full items-center justify-center rounded text-white ${
+            actionDisabled || loading
               ? "cursor-not-allowed bg-gray-300"
               : "bg-mint cursor-pointer"
           }`}
         >
-          {actionLabel}
+          {/* {loading ? <Spinner size={16} /> : actionLabel} */}
         </button>
       )}
     </ModalLayout>

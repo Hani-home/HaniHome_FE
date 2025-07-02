@@ -2,8 +2,14 @@ import { useRouter } from "next/navigation";
 
 import { SectionItem } from "@/types/mypageSection";
 
+interface SectionHandlers {
+  onLogout: () => void;
+  onOpenWithdrawModal: () => void;
+}
+
 export const getSections = (
   router: ReturnType<typeof useRouter>,
+  handlers: SectionHandlers,
 ): { label: string; items: SectionItem[] }[] => [
   {
     label: "나의 활동",
@@ -26,8 +32,15 @@ export const getSections = (
   {
     label: "계정 관리",
     items: [
-      { label: "로그아웃", onClick: () => router.push("") },
-      { label: "탈퇴", color: "danger", onClick: () => router.push("") },
+      {
+        label: "로그아웃",
+        onClick: handlers.onLogout,
+      },
+      {
+        label: "탈퇴",
+        color: "danger",
+        onClick: handlers.onOpenWithdrawModal,
+      },
     ],
   },
 ];
