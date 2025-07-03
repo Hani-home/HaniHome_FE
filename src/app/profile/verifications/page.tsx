@@ -4,15 +4,16 @@ import { useEffect, useRef, useState } from "react";
 
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
+import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownField from "@/components/common/DropdownField";
 import BackHeader from "@/components/layout/header/BackHeader";
 import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
+import AssignModal from "@/components/mypage/assignModal";
 import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
 import FilledCheck from "@/public/svgs/common/filled-check.svg";
-import AssignModal from "@/components/mypage/assignModal";
 
 const VERIFICATION_OPTIONS = [
   { label: "여권", value: "passport" },
@@ -28,6 +29,7 @@ const VerificationPage = () => {
   const [, setUploadedMap] = useState<Record<string, File[]>>({});
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (showAssignModal) {
@@ -55,11 +57,14 @@ const VerificationPage = () => {
       setPreviewUrls,
       setUploadedFiles,
       setField: (key, files) => {
-        setUploadedFiles(files),
-          setUploadedMap(prev => ({ ...prev, [key]: files }));
+        setUploadedMap(prev => ({ ...prev, [key]: files }));
       },
       fieldName: selectedLabel,
       setShowErrorModal,
+      maxFiles: 2,
+      onLimitExceeded: () => {
+        setAlertMessage("최대 두 장까지만 업로드 가능합니다.");
+      },
       onUpload: () => {
         setVerif(""); // 업로드 후 인증수단 초기화
       },
@@ -133,8 +138,11 @@ const VerificationPage = () => {
         className="flex items-center gap-2 px-4 py-3"
         onClick={() => setIsAgree(prev => !prev)}
       >
-        {isAgree ? <FilledCheck /> : <EmptyCheck />}
-        <span className="text-cap1-med h-8 w-[293px] text-gray-600">
+        <div className="h-[18px] w-[18px]">
+          {isAgree ? <FilledCheck /> : <EmptyCheck />}
+        </div>
+
+        <span className="text-cap1-med text-gray-600">
           본인은 제출한 정보가 사실이며, 인증 목적 외에 사용되지 않음을 이해하고
           동의합니다.
         </span>
@@ -153,6 +161,14 @@ const VerificationPage = () => {
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
       {showAssignModal && <AssignModal />}
+
+      {alertMessage && (
+        <AlertMessage
+          message={alertMessage}
+          className={uploadedFiles.length > 0 && isAgree && !showAssignModal ? "bottom-19" : "bottom-3"}
+          onDone={() => setAlertMessage("")}
+        />
+      )}
     </div>
   );
 };

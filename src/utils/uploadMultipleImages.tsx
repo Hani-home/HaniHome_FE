@@ -11,6 +11,8 @@ interface UploadMultipleImageParams<T extends string = string> {
   fieldName: T;
   setShowErrorModal: Dispatch<SetStateAction<boolean>>;
   onUpload?: (file: File) => void;
+  maxFiles?: number;
+  onLimitExceeded?: () => void;
 }
 
 export const uploadMultipleImages = <T extends string = string>({
@@ -21,6 +23,8 @@ export const uploadMultipleImages = <T extends string = string>({
   fieldName,
   setShowErrorModal,
   onUpload,
+  maxFiles = 2,
+  onLimitExceeded,
 }: UploadMultipleImageParams<T>) => {
   const isValidType = ALLOWED_TYPES.includes(file.type);
   const isValidSize = file.size / 1024 / 1024 <= MAX_SIZE_MB;
@@ -30,19 +34,24 @@ export const uploadMultipleImages = <T extends string = string>({
     return;
   }
 
+
   const url = URL.createObjectURL(file);
 
-  setPreviewUrls(prev => {
-    const next = [...prev, url];
-    return next.length > 2 ? next.slice(-2) : next;
-  });
+  setUploadedFiles(prevFiles => {
+    if (prevFiles.length >= maxFiles) {
+      onLimitExceeded?.();
+      return prevFiles;
+    }
 
-  setUploadedFiles(prev => {
-    const next = [...prev, file];
-    const limited = next.length > 2 ? next.slice(-2) : next;
-    setField(fieldName, limited);
-    return limited;
-  });
+    const nextFiles = [...prevFiles, file];
 
-  onUpload?.(file);
+    setPreviewUrls(prevUrls => {
+      if (prevUrls.includes(url)) return prevUrls;
+      return [...prevUrls, url];
+    });
+
+    setField(fieldName, nextFiles);
+    onUpload?.(file);
+    return nextFiles;
+  });
 };
