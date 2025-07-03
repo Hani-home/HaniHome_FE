@@ -1,6 +1,6 @@
 import CertificatedBadge from "@/public/svgs/common/certificated-icon.svg";
 
-const AssignModal = () => {
+const ApproveModal = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(72,74,79,0.6)]">
       <div className="flex h-28 w-[343px] flex-col items-center justify-center gap-3 rounded-[8px] border border-gray-500 bg-white p-4">
@@ -14,4 +14,4 @@ const AssignModal = () => {
     </div>
   );
 };
-export default AssignModal;
+export default ApproveModal;

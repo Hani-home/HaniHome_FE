@@ -9,7 +9,7 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownField from "@/components/common/DropdownField";
 import BackHeader from "@/components/layout/header/BackHeader";
 import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
-import AssignModal from "@/components/mypage/assignModal";
+import ApproveModal from "@/components/mypage/ApproveModal";
 import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
@@ -160,7 +160,7 @@ const VerificationPage = () => {
       {showErrorModal && (
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
-      {showAssignModal && <AssignModal />}
+      {showAssignModal && <ApproveModal />}
 
       {alertMessage && (
         <AlertMessage
