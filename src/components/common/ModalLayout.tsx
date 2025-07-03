@@ -37,7 +37,7 @@ const ModalLayout = ({
       >
         {!hideCloseButton && (
           <button
-            className={`absolute ${closeButtonPosition} cursor-pointer`}
+            className={`absolute z-20 ${closeButtonPosition} cursor-pointer`}
             onClick={onClose}
             aria-label="닫기"
           >
