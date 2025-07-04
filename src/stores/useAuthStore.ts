@@ -5,7 +5,7 @@ interface AuthStore {
   accessToken: string;
   isLoggedIn: boolean;
 
-  setAccessToken: (token: string) => void;
+  setAccessToken: (accessToken: string) => void;
   clearAuth: () => void;
 }
 

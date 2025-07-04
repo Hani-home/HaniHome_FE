@@ -16,7 +16,7 @@ import {
   updateUser,
 } from "@/apis/auth";
 
-import { SignupPayload } from "@/types/auth";
+import { LoginResponse, SignupPayload } from "@/types/auth";
 import { UserUpdateData } from "@/types/user";
 
 export const useAuth = () => {
@@ -37,10 +37,10 @@ export const useAuth = () => {
     },
   });
 
-  // 2. 로그인
+  /* 2. 로그인 */
   const loginMutation = useMutation({
     mutationFn: (payload: { code: string }) => login(payload),
-    onSuccess: data => {
+    onSuccess: (data: LoginResponse) => {
       if (data.newUser) {
         router.push("/signup/info");
       } else {
@@ -50,7 +50,7 @@ export const useAuth = () => {
     onError: () => console.error("로그인 실패"),
   });
 
-  // 3. 로그아웃
+  /* 3. 로그아웃 */
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
@@ -61,7 +61,7 @@ export const useAuth = () => {
     onError: () => console.error("로그아웃 실패"),
   });
 
-  // 4. 토큰 재발급
+  /* 4. 토큰 재발급 */
   const refreshMutation = useMutation({
     mutationFn: refreshToken,
     onSuccess: ({ accessToken }) => setAccessToken(accessToken),
@@ -71,16 +71,15 @@ export const useAuth = () => {
     },
   });
 
-  // 5. 유저 정보 조회
-  const useUser = (memberId: string) => {
-    return useQuery({
-      queryKey: ["user", memberId],
-      queryFn: () => getUser(memberId),
-      enabled: !!accessToken && !!memberId,
+  /* 5. 유저 조회 */
+  const useUser = (id: string) =>
+    useQuery({
+      queryKey: ["user", id],
+      queryFn: () => getUser(id),
+      enabled: !!accessToken && !!id,
     });
-  };
 
-  // 6. 유저 정보 수정 (memberId 필요)
+  /* 6. 유저 수정 */
   const updateUserMutation = useMutation({
     mutationFn: ({
       memberId,
@@ -89,14 +88,13 @@ export const useAuth = () => {
       memberId: string;
       payload: UserUpdateData;
     }) => updateUser(memberId, payload),
-    onSuccess: data => {
-      queryClient.invalidateQueries({ queryKey: ["user", data.id] });
-    },
+    onSuccess: data =>
+      queryClient.invalidateQueries({ queryKey: ["user", data.id] }),
   });
 
-  // 7. 회원 탈퇴
+  /* 7. 회원 탈퇴 */
   const deleteUserMutation = useMutation({
-    mutationFn: (memberId: string) => deleteUser(memberId),
+    mutationFn: (id: string) => deleteUser(id),
     onSuccess: () => {
       clearAuth();
       queryClient.clear();
@@ -105,24 +103,26 @@ export const useAuth = () => {
   });
 
   return {
+    /* 상태 */
     accessToken,
 
-    // 유저 쿼리
+    /* 쿼리 */
     useUser,
 
-    // 인증
+    /* 인증 액션 */
     signup: signupMutation.mutate,
     login: loginMutation.mutate,
     logout: logoutMutation.mutate,
     refresh: refreshMutation.mutate,
 
-    // 유저 관련
+    /* 유저 액션 */
     updateUser: updateUserMutation.mutate,
-    deleteUser: deleteUserMutation.mutate,
+    deleteUser: deleteUserMutation.mutateAsync,
 
-    // 상태
+    /* 로딩·에러 */
     isLoginLoading: loginMutation.isPending,
     isSignupLoading: signupMutation.isPending,
+    isDeleteLoading: deleteUserMutation.isPending,
     loginError: loginMutation.error,
     signupError: signupMutation.error,
   };
