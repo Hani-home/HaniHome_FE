@@ -5,11 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
 import AlertMessage from "@/components/common/AlertMessage";
+import AlertModal from "@/components/common/AlertModal";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownField from "@/components/common/DropdownField";
 import BackHeader from "@/components/layout/header/BackHeader";
-import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
 import ApproveModal from "@/components/mypage/ApproveModal";
+import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
 import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
@@ -30,6 +31,7 @@ const VerificationPage = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (showAssignModal) {
@@ -45,7 +47,7 @@ const VerificationPage = () => {
     if (!file) return;
 
     if (!verif) {
-      alert("인증수단을 선택해주세요.");
+      setShowDeleteModal(true);
       e.target.value = "";
       return;
     }
@@ -165,8 +167,23 @@ const VerificationPage = () => {
       {alertMessage && (
         <AlertMessage
           message={alertMessage}
-          className={uploadedFiles.length > 0 && isAgree && !showAssignModal ? "bottom-19" : "bottom-3"}
+          className={
+            uploadedFiles.length > 0 && isAgree && !showAssignModal
+              ? "bottom-19"
+              : "bottom-3"
+          }
           onDone={() => setAlertMessage("")}
+        />
+      )}
+
+      {showDeleteModal && (
+        <AlertModal
+          title="인증수단을 선택해주세요"
+          description={[
+            "기존 인증수단 이미지 외 다른 이미지를 업로드하려면",
+            "추가 인증수단 선택 후 인증 사진 업로드가 가능합니다",
+          ]}
+          onClose={() => setShowDeleteModal(false)}
         />
       )}
     </div>
