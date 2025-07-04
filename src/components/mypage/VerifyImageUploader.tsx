@@ -8,7 +8,6 @@ interface Props {
 }
 
 const VerifyImageUploader = ({ images, onDelete }: Props) => {
-  console.log("렌더링된 images:", images); // 디버깅용 로그
   return (
     <div className="flex gap-3">
       {images.map((src, idx) => (
