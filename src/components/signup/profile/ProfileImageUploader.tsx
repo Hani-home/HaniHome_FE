@@ -14,6 +14,12 @@ import ImageAlertModal from "./ImageAlertModal";
 const MAX_SIZE_MB = 5;
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 
+// MIME → 확장자 매핑
+const mimeToExt: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+};
+
 const ProfileImageUploader = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -29,12 +35,21 @@ const ProfileImageUploader = () => {
 
   // presignedUrl 요청 후, fileUrl 상태에 저장
   const saveS3FileUrlToStore = async (file: File) => {
-    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const ext = mimeToExt[file.type] || "jpg";
     try {
-      const { fileUrl } = await getProfilePresignedUrl(ext);
+      const { presignedUrl, fileUrl } = await getProfilePresignedUrl(ext);
+
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+
       setField("profileImage", fileUrl);
     } catch (err) {
-      console.error("S3 presigned URL 요청 실패:", err);
+      console.error("S3 presigned URL 요청 또는 업로드 실패:", err);
     }
   };
 

@@ -10,10 +10,10 @@ export type VerificationType = "ID_CARD" | "PASSPORT" | "DRIVER_LICENSE";
 
 /* 프로필 이미지 업로드용 Presigned URL 요청*/
 export const getProfilePresignedUrl = async (
-  fileExtensions: string,
+  fileExtension: string,
 ): Promise<PresignedUrlResponse> => {
   const res = await axiosInstance.post("/api/v1/s3/profiles/presigned-url", {
-    fileExtensions,
+    fileExtension: fileExtension,
   });
   return res.data.data;
 };
