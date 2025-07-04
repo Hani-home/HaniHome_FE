@@ -1,27 +1,40 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface AuthStore {
   accessToken: string;
+  memberId: string;
   isLoggedIn: boolean;
 
+  setAuth: (accessToken: string, memberId: string) => void;
   setAccessToken: (accessToken: string) => void;
+  setMemberId: (memberId: string) => void;
   clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthStore>()(
-  persist(
-    set => ({
+export const useAuthStore = create<AuthStore>(set => ({
+  accessToken: "",
+  memberId: "",
+  isLoggedIn: false,
+
+  setAuth: (accessToken, memberId) =>
+    set({ accessToken, memberId, isLoggedIn: true }),
+
+  setAccessToken: accessToken =>
+    set(state => ({
+      accessToken,
+      isLoggedIn: !!accessToken && !!state.memberId,
+    })),
+
+  setMemberId: memberId =>
+    set(state => ({
+      memberId,
+      isLoggedIn: !!memberId && !!state.accessToken,
+    })),
+
+  clearAuth: () =>
+    set({
       accessToken: "",
+      memberId: "",
       isLoggedIn: false,
-
-      setAccessToken: token => set({ accessToken: token, isLoggedIn: true }),
-      clearAuth: () => set({ accessToken: "", isLoggedIn: false }),
     }),
-    {
-      name: "auth-storage",
-    },
-  ),
-);
-
-//우선 persist로 저장, 추후 인터셉터에 재발급 로직 추가 예정
+}));

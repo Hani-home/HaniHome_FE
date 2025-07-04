@@ -22,6 +22,14 @@ export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
   return res.data.data;
 };
 
+// 닉네임 중복 확인
+export const checkNicknameDuplicate = async (nickname: string) => {
+  const res = await axiosInstance.get("/api/v1/members/check-nickname", {
+    params: { nickname },
+  });
+  return res.data.data;
+};
+
 // 토큰 재발급
 export const refreshToken = async () => {
   const res = await axiosInstance.post<{ accessToken: string }>(
@@ -34,6 +42,14 @@ export const refreshToken = async () => {
 export const logout = async () => {
   const res = await axiosInstance.post<void>("/api/v1/auth/logout");
   return res.data;
+};
+
+// 내 정보 조회
+export const getMyInfo = async () => {
+  const res = await axiosInstance.get(`/api/v1/members/me`);
+  console.log(res);
+
+  return res.data.data;
 };
 
 // 사용자 상세 조회
