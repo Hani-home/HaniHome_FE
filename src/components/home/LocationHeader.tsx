@@ -30,7 +30,7 @@ const LocationHeader = () => {
         <p className="text-heading2 text-gray-900">
           {displayRegion || "chatswood"}
         </p>
-        <Arrow className="rotate-180 text-gray-600" />
+        <Arrow className="h-6 w-6 rotate-180 text-gray-600" />
       </div>
 
       {isModalOpen && (

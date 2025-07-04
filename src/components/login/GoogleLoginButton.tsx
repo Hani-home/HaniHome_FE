@@ -28,7 +28,9 @@ const GoogleLoginButton = () => {
       className="flex h-12 w-[343px] cursor-pointer items-center justify-center gap-1 rounded-sm border border-gray-500 bg-white py-[10px]"
     >
       <GoogleIcon />
-      <span className="text-body1-sb text-gray-900">구글 계정으로 가입</span>
+      <span className="text-body1-sb text-gray-900">
+        구글 계정으로 계속하기
+      </span>
     </button>
   );
 };

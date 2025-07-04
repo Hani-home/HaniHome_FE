@@ -78,9 +78,7 @@ const Mypage = () => {
               <div className="text-heading2 text-gray-900">
                 {myInfo?.nickname || ""}
               </div>
-              <div className="flex items-center justify-center p-[3px]">
-                <CertificateBadge className="h-[18px] w-[18px]" />
-              </div>
+              <CertificateBadge className="h-6 w-6" />
             </div>
           </div>
           <Arrow className="h-6 w-6 rotate-180 text-gray-700" />
