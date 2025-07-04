@@ -23,6 +23,14 @@ const AlertModal = ({
   actionDisabled,
   loading,
 }: AlertModalProps) => {
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-xs">
+        <LoadingLottie />
+      </div>
+    );
+  }
+
   return (
     <ModalLayout closeButtonColor="text-gray-400" onClose={onClose}>
       <div className="relative">
@@ -40,22 +48,15 @@ const AlertModal = ({
         {actionLabel && (
           <button
             onClick={onActionClick}
-            disabled={actionDisabled || loading}
+            disabled={actionDisabled}
             className={`text-lab1-b mt-6 h-9 w-full rounded text-white ${
-              actionDisabled || loading
+              actionDisabled
                 ? "cursor-not-allowed bg-gray-300"
                 : "bg-mint cursor-pointer"
             }`}
           >
             {actionLabel}
           </button>
-        )}
-
-        {/* 로딩 오버레이 */}
-        {loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center rounded bg-white/60 backdrop-blur-[2px]">
-            <LoadingLottie />
-          </div>
         )}
       </div>
     </ModalLayout>

@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import ModalLayout from "@/components/common/ModalLayout";
 
 import CompletedIcon from "@/public/svgs/common/certificated-icon.svg";
@@ -8,6 +10,14 @@ interface CompleteModalProps {
 }
 
 const CompleteModal = ({ description, onClose }: CompleteModalProps) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
   return (
     <ModalLayout onClose={onClose} hideCloseButton={true}>
       <div className="flex flex-col items-center justify-center gap-3">
