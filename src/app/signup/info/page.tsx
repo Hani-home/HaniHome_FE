@@ -9,8 +9,6 @@ import { SignupInfoInput, signupInfoSchema } from "@/schemas/signup";
 import { useSignupStore } from "@/stores/useSignupStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { formatConsents } from "@/utils/formatConsentType";
-
 import BottomActionBar from "@/components/common/BottomActionBar";
 import InputField from "@/components/common/InputField";
 import AgreementList from "@/components/signup/info/AgreementList";
@@ -39,15 +37,8 @@ const SignupInfoPage = () => {
   ).map(term => term.id);
   const allRequiredChecked = requiredTermIds.every(id => agreed.includes(id));
 
-  const onSubmit = (data: SignupInfoInput) => {
+  const onSubmit = () => {
     if (!allRequiredChecked) return;
-
-    const payload = {
-      ...data,
-      consents: formatConsents(agreed),
-    };
-
-    console.log("제출 성공", payload);
     router.push("/signup/profile");
   };
 

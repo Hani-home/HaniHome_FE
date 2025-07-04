@@ -4,11 +4,14 @@ import { useMemo, useState } from "react";
 
 import { useSignupStore } from "@/stores/useSignupStore";
 
+import { getProfilePresignedUrl } from "@/apis/s3Upload";
+
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useNickname } from "@/hooks/signup/useNickname";
 
 import { formatConsents } from "@/utils/formatConsentType";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
+import { getRandomDefaultProfileFile } from "@/utils/getRandomDefaultProfile";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -16,6 +19,8 @@ import InputField from "@/components/common/InputField";
 import SearchField from "@/components/common/SearchField";
 import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
+
+import { SignupPayload } from "@/types/auth";
 
 const GENDER_OPTIONS = [
   { label: "남성", value: "MALE" },
@@ -48,10 +53,7 @@ const SignupProfilePage = () => {
   const { signup, isSignupLoading } = useAuth();
 
   const [alerts, setAlerts] = useState<string[]>([]);
-
-  const showAlert = (message: string) => {
-    setAlerts(prev => [...prev, message]);
-  };
+  const showAlert = (msg: string) => setAlerts(prev => [...prev, msg]);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -60,31 +62,58 @@ const SignupProfilePage = () => {
     validate(value);
   };
 
-  const handleSubmit = () => {
+  /** 기본 프로필 이미지를 S3에 업로드 후 URL 반환 */
+  const uploadDefaultProfileImage = async (): Promise<string | null> => {
+    try {
+      const defaultFile = await getRandomDefaultProfileFile();
+      const ext = defaultFile.name.split(".").pop() || "jpg";
+      const { presignedUrl, fileUrl } = await getProfilePresignedUrl(ext);
+
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": defaultFile.type },
+        body: defaultFile,
+      });
+
+      return fileUrl;
+    } catch (err) {
+      console.error("기본 프로필 이미지 업로드 실패:", err);
+      showAlert("기본 이미지 업로드에 실패했습니다.");
+      return null;
+    }
+  };
+
+  /* 최종 제출 */
+  const handleSubmit = async () => {
     if (!isValid || !nickname || !gender || !interestRegion) {
       showAlert("모든 항목에 답변해주세요");
       return;
     }
-
     if (result === "default") {
       showAlert("닉네임 중복 확인 버튼을 눌러주세요");
       return;
     }
-
     if (result !== "available") return;
 
-    const payload = {
+    // 프로필 이미지 비어 있으면 기본 이미지 처리
+    let finalProfileImage = profileImage;
+    if (!finalProfileImage) {
+      finalProfileImage = await uploadDefaultProfileImage();
+      if (!finalProfileImage) return;
+    }
+
+    const payload: SignupPayload = {
       name,
       email,
       phoneNumber: formatPhoneNumber(phoneNumber),
       nickname,
       gender,
       interestRegion,
-      profileImage: profileImage || "",
+      profileImage: finalProfileImage ?? null,
       consents: formatConsents(agreed),
     };
-    console.log(payload);
 
+    console.log("signup payload", payload);
     signup(payload);
   };
 
@@ -101,6 +130,7 @@ const SignupProfilePage = () => {
 
       <ProfileImageUploader />
 
+      {/* 닉네임 */}
       <InputField
         label="닉네임"
         placeholder="한영문, 숫자로 5 - 12글자"
@@ -116,6 +146,7 @@ const SignupProfilePage = () => {
         successMessage={result === "available" ? message : undefined}
       />
 
+      {/* 성별 */}
       <DropdownField
         label="성별"
         value={gender}
@@ -123,6 +154,7 @@ const SignupProfilePage = () => {
         options={GENDER_OPTIONS}
       />
 
+      {/* 관심 지역 */}
       <SearchField
         label="관심 지역 검색"
         value={interestRegion}
@@ -140,7 +172,7 @@ const SignupProfilePage = () => {
         <AlertMessage
           message={alerts.at(-1)!}
           className="bottom-17"
-          onDone={() => setAlerts(prev => prev.slice(0, prev.length - 1))}
+          onDone={() => setAlerts(prev => prev.slice(0, -1))}
         />
       )}
     </div>
