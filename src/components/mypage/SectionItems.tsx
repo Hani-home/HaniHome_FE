@@ -15,6 +15,7 @@ const Section = ({ label, items }: SectionProps) => {
       <div className="text-heading3 mb-2 text-gray-800">{label}</div>
       {items.map(({ label, onClick, color }) => (
         <div
+          key={label}
           className="flex h-[46px] cursor-pointer items-center justify-between py-3"
           key={label}
           onClick={onClick}
