@@ -17,11 +17,28 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 const ProfileImageUploader = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
-
   const { profileImagePreview, setField } = useSignupStore();
-
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
+  // 프리뷰 표시용 로컬 URL 처리
+  const previewFile = (file: File) => {
+    const objectUrl = URL.createObjectURL(file);
+    setField("profileImagePreview", objectUrl);
+    setPreviewUrl(objectUrl);
+  };
+
+  // presignedUrl 요청 후, fileUrl 상태에 저장
+  const saveS3FileUrlToStore = async (file: File) => {
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    try {
+      const { fileUrl } = await getProfilePresignedUrl(ext);
+      setField("profileImage", fileUrl);
+    } catch (err) {
+      console.error("S3 presigned URL 요청 실패:", err);
+    }
+  };
+
+  // 파일 변경 시 처리
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -34,17 +51,11 @@ const ProfileImageUploader = () => {
       return;
     }
 
-    const objectUrl = URL.createObjectURL(file);
-    setField("profileImagePreview", objectUrl);
-    setPreviewUrl(objectUrl);
-
-    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-
-    const { fileUrl } = await getProfilePresignedUrl(ext);
-    setField("profileImage", fileUrl);
+    previewFile(file);
+    await saveS3FileUrlToStore(file);
   };
 
-  // 백버튼 뒤 돌아왔을 때 previewUrl 복구
+  //  뒤로가기 시 프리뷰 복구
   useEffect(() => {
     if (profileImagePreview) {
       setPreviewUrl(profileImagePreview);
