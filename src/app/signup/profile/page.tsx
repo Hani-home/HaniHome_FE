@@ -83,6 +83,7 @@ const SignupProfilePage = () => {
       profileImage: profileImage || "",
       consents: formatConsents(agreed),
     };
+    console.log(payload);
 
     signup(payload);
   };
@@ -98,12 +99,7 @@ const SignupProfilePage = () => {
         프로필을 만들어주세요
       </h1>
 
-      <ProfileImageUploader
-        onUpload={file => {
-          const url = URL.createObjectURL(file);
-          setField("profileImage", url);
-        }}
-      />
+      <ProfileImageUploader />
 
       <InputField
         label="닉네임"

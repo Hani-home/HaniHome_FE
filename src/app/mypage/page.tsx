@@ -76,7 +76,7 @@ const Mypage = () => {
             </div>
             <div className="flex items-center gap-1">
               <div className="text-heading2 text-gray-900">
-                {myInfo?.nickname || "닉네임 로딩 중..."}
+                {myInfo?.nickname || ""}
               </div>
               <div className="flex items-center justify-center p-[3px]">
                 <CertificateBadge className="h-[18px] w-[18px]" />

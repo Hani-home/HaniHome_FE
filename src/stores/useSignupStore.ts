@@ -8,11 +8,13 @@ interface SignupState {
   nickname: string;
   gender: string;
   interestRegion: string;
-  profileImage: string;
+
+  profileImagePreview: string; // URL.createObjectURL() 결과
+  profileImage: string | null;
 
   setField: (
     key: keyof Omit<SignupState, "setField" | "setAgreed" | "reset">,
-    value: string,
+    value: SignupState[keyof SignupState],
   ) => void;
   setAgreed: (ids: number[]) => void;
   reset: () => void;
@@ -26,10 +28,17 @@ export const useSignupStore = create<SignupState>(set => ({
   nickname: "",
   gender: "",
   interestRegion: "",
-  profileImage: "",
+  profileImagePreview: "",
+  profileImage: null,
 
-  setField: (key, value) => set(state => ({ ...state, [key]: value })),
+  setField: (key, value) =>
+    set(state => ({
+      ...state,
+      [key]: value,
+    })),
+
   setAgreed: ids => set({ agreed: ids }),
+
   reset: () =>
     set({
       name: "",
@@ -39,6 +48,7 @@ export const useSignupStore = create<SignupState>(set => ({
       nickname: "",
       gender: "",
       interestRegion: "",
-      profileImage: "",
+      profileImagePreview: "",
+      profileImage: null,
     }),
 }));

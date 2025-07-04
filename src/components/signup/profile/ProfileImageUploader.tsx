@@ -1,29 +1,28 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useSignupStore } from "@/stores/useSignupStore";
 import clsx from "clsx";
+
+import { getProfilePresignedUrl } from "@/apis/s3Upload";
 
 import PlusIcon from "@/public/svgs/common/plus-icon.svg";
 
 import ImageAlertModal from "./ImageAlertModal";
 
-interface ProfileImageUploaderProps {
-  onUpload?: (file: File) => void;
-}
-
 const MAX_SIZE_MB = 5;
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 
-const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const { profileImage, setField } = useSignupStore();
-  const [previewUrl, setPreviewUrl] = useState(profileImage || "");
-
+const ProfileImageUploader = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [showErrorModal, setShowErrorModal] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { profileImagePreview, setField } = useSignupStore();
+
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -35,17 +34,28 @@ const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
-    setField("profileImage", url);
-    onUpload?.(file);
+    const objectUrl = URL.createObjectURL(file);
+    setField("profileImagePreview", objectUrl);
+    setPreviewUrl(objectUrl);
+
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+
+    const { fileUrl } = await getProfilePresignedUrl(ext);
+    setField("profileImage", fileUrl);
   };
+
+  // 백버튼 뒤 돌아왔을 때 previewUrl 복구
+  useEffect(() => {
+    if (profileImagePreview) {
+      setPreviewUrl(profileImagePreview);
+    }
+  }, [profileImagePreview]);
 
   return (
     <div className="flex flex-col items-center pt-10 pb-12">
       <div
         className={clsx(
-          "h-[114px] w-[114px] cursor-pointer overflow-hidden rounded-[57px] bg-white",
+          "h-[114px] w-[114px] cursor-pointer overflow-hidden rounded-full bg-white",
           previewUrl ? "border border-gray-600" : "border border-gray-300",
         )}
         onClick={() => inputRef.current?.click()}
@@ -53,7 +63,7 @@ const ProfileImageUploader = ({ onUpload }: ProfileImageUploaderProps) => {
         {previewUrl ? (
           <img
             src={previewUrl}
-            alt="프로필 이미지"
+            alt="프로필"
             className="h-full w-full object-cover"
           />
         ) : (

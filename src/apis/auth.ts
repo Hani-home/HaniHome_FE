@@ -47,8 +47,6 @@ export const logout = async () => {
 // 내 정보 조회
 export const getMyInfo = async () => {
   const res = await axiosInstance.get(`/api/v1/members/me`);
-  console.log(res);
-
   return res.data.data;
 };
 
