@@ -88,7 +88,7 @@ const ProfileEdit = () => {
             )}
           </div>
 
-          <div className="px-4 pb-[66px]">
+          <div className="w-[343px] pb-[66px]">
             <InputField
               label="닉네임"
               placeholder="한영문, 숫자로 5 - 12글자"
@@ -112,9 +112,7 @@ const ProfileEdit = () => {
               onChange={val => setGender(val)}
               options={GENDER_OPTIONS}
             />
-            <div className="py-4">
-              <Divider />
-            </div>
+            <Divider className="my-6"/>
             <div
               className="flex cursor-pointer flex-row items-center justify-between py-5"
               onClick={() => router.push("/profile/verifications")}

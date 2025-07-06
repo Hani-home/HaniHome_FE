@@ -17,7 +17,6 @@ const Section = ({ label, items }: SectionProps) => {
         <div
           key={label}
           className="flex h-[46px] cursor-pointer items-center justify-between py-3"
-          key={label}
           onClick={onClick}
         >
           <div

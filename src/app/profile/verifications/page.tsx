@@ -7,9 +7,9 @@ import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 import AlertMessage from "@/components/common/AlertMessage";
 import AlertModal from "@/components/common/AlertModal";
 import BottomActionBar from "@/components/common/BottomActionBar";
+import CompleteModal from "@/components/common/CompleteModal";
 import DropdownField from "@/components/common/DropdownField";
 import BackHeader from "@/components/layout/header/BackHeader";
-import ApproveModal from "@/components/mypage/ApproveModal";
 import VerifyImageUploader from "@/components/mypage/VerifyImageUploader";
 import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
@@ -86,8 +86,8 @@ const VerificationPage = () => {
 
       {/* 인증수단선택 */}
       <div className="flex flex-col gap-8 px-4 py-6">
-        <div className="flex flex-col">
-          <h3 className="text-heading3 text-gray-800">인증수단선택</h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-heading3 text-gray-800">인증수단 선택</h3>
           <span className="text-cap1-med text-gray-600">
             여권 / 운전면허증 / 거주허가증 등 신원 인증 수단 업로드
           </span>
@@ -162,7 +162,15 @@ const VerificationPage = () => {
       {showErrorModal && (
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
-      {showAssignModal && <ApproveModal />}
+      {showAssignModal && (
+        <CompleteModal
+          description={[
+            "인증 신청이 완료되었어요.",
+            "관리자가 곧 승인해드릴게요.",
+          ]}
+          onClose={() => setShowAssignModal(false)}
+        />
+      )}
 
       {alertMessage && (
         <AlertMessage

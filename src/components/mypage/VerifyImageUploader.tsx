@@ -2,12 +2,12 @@ import Image from "next/image";
 
 import CloseIcon from "@/public/svgs/common/close-icon.svg";
 
-interface Props {
+interface VerifyImageUploaderProps {
   images: string[];
   onDelete: (index: number) => void;
 }
 
-const VerifyImageUploader = ({ images, onDelete }: Props) => {
+const VerifyImageUploader = ({ images, onDelete }: VerifyImageUploaderProps) => {
   return (
     <div className="flex gap-3">
       {images.map((src, idx) => (

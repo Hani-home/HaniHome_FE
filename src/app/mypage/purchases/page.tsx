@@ -1,7 +1,7 @@
 "use client";
 
+import ListingCard from "@/components/home/ListingCard";
 import BackHeader from "@/components/layout/header/BackHeader";
-import RoomList from "@/components/wishlist/roomList";
 
 import { myPurchases } from "@/constants/mock/my-purchases";
 
@@ -10,12 +10,11 @@ const Purchases = () => {
     <div>
       <BackHeader />
       {myPurchases.map(item => (
-        <RoomList
+        <ListingCard
           key={item.id}
           {...item}
           isLiked={false}
           onToggleLike={() => {}}
-          onClick={() => {}}
           heartColor="text-gray-400"
         />
       ))}
