@@ -2,13 +2,18 @@ import { useState } from "react";
 
 import DownArrow from "@/public/svgs/signup/down-arrow.svg";
 
-const DropDownMenu = () => {
-  const TABS = [
-    { label: "거래 중", key: "active" },
-    { label: "거래 완료", key: "completed" },
-  ];
+const TABS = [
+  { label: "거래 중", key: "active" },
+  { label: "거래 완료", key: "completed" },
+] as const;
+interface DropDownMenuProps {
+  selectedKey: TradeStatus;
+  onSelect: (key: TradeStatus) => void;
+}
 
-  const [selectedKey, setSelectedKey] = useState("active");
+type TradeStatus = (typeof TABS)[number]["key"];
+
+const DropDownMenu = ({ selectedKey, onSelect }: DropDownMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedTab = TABS.find(tab => tab.key === selectedKey);
@@ -18,8 +23,8 @@ const DropDownMenu = () => {
     setIsOpen(prev => !prev);
   };
 
-  const handleSelect = (key: string) => {
-    setSelectedKey(key);
+  const handleSelect = (key: TradeStatus) => {
+    onSelect(key);
     setIsOpen(false);
   };
 

@@ -33,7 +33,13 @@ const Listings = () => {
       <SelectTab tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
 
       {filteredListings.map(item => (
-        <div onClick={()=>router.push( `/listings/${item.id}/edit`)}>
+        <div
+          onClick={() => {
+            if (item.status === "거래 중") {
+              router.push(`/listings/${item.id}/edit`);
+            }
+          }}
+        >
           <ListingCard
             key={item.id}
             {...item}
