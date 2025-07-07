@@ -113,7 +113,6 @@ const SignupProfilePage = () => {
       consents: formatConsents(agreed),
     };
 
-    console.log("signup payload", payload);
     signup(payload);
   };
 

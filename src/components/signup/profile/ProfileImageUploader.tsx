@@ -77,6 +77,14 @@ const ProfileImageUploader = () => {
     }
   }, [profileImagePreview]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   return (
     <div className="flex flex-col items-center pt-10 pb-12">
       <div
