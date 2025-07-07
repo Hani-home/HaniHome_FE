@@ -6,9 +6,10 @@ const TABS = [
   { label: "거래 중", key: "active" },
   { label: "거래 완료", key: "completed" },
 ] as const;
+
 interface DropDownMenuProps {
   selectedKey: TradeStatus;
-  onSelect: (_key: TradeStatus) => void;
+  onSelect: (key: TradeStatus) => void;
 }
 
 type TradeStatus = (typeof TABS)[number]["key"];
