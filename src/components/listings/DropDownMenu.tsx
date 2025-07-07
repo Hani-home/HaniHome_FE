@@ -8,7 +8,7 @@ const TABS = [
 ] as const;
 interface DropDownMenuProps {
   selectedKey: TradeStatus;
-  onSelect: (key: TradeStatus) => void;
+  onSelect: (_key: TradeStatus) => void;
 }
 
 type TradeStatus = (typeof TABS)[number]["key"];
