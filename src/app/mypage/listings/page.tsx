@@ -34,6 +34,7 @@ const Listings = () => {
 
       {filteredListings.map(item => (
         <div
+          key={item.id}
           onClick={() => {
             if (item.status === "거래 중") {
               router.push(`/listings/${item.id}/edit`);
@@ -41,7 +42,6 @@ const Listings = () => {
           }}
         >
           <ListingCard
-            key={item.id}
             {...item}
             isLiked={false}
             onToggleLike={() => {}}
