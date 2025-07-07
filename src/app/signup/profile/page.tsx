@@ -15,9 +15,9 @@ import { getRandomDefaultProfileFile } from "@/utils/getRandomDefaultProfile";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
+import DropdownField from "@/components/common/DropdownField";
 import InputField from "@/components/common/InputField";
 import SearchField from "@/components/common/SearchField";
-import DropdownField from "@/components/signup/profile/DropdownField";
 import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
 
 import { SignupPayload } from "@/types/auth";
