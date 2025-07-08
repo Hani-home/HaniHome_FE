@@ -10,6 +10,7 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import CheckIcon from "@/components/common/CheckIcon";
 import BackHeader from "@/components/layout/header/BackHeader";
 import AddressMap from "@/components/listings/AddressMap";
+import BottomSheet from "@/components/listings/BottomSheet";
 import DetailTabs from "@/components/listings/DetailTabs";
 import DropDownMenu from "@/components/listings/DropDownMenu";
 
@@ -34,6 +35,7 @@ const ListingDetailPage = () => {
     "active",
   );
   const isCompleted = tradeStatus === "completed";
+  const [isClicked, setIsClicked] = useState(false);
 
   const region = {
     // 임시 하드코딩
@@ -53,7 +55,11 @@ const ListingDetailPage = () => {
         <BackHeader
           hideBackIcon={isConfirmMode}
           rightIcon={isEditMode ? "more" : "report"}
-          onRightClick={() => router.push(`/listings/${id}/report`)}
+          onRightClick={
+            isEditMode
+              ? () => setIsClicked(true)
+              : () => router.push(`/listings/${id}/report`)
+          }
         />
         <div className="relative flex">
           <Image
@@ -171,6 +177,7 @@ const ListingDetailPage = () => {
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}
         />
       )}
+      {isClicked && <BottomSheet onClose={() => setIsClicked(false)}/>}
     </>
   );
 };
