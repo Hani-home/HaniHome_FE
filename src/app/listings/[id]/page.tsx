@@ -177,7 +177,7 @@ const ListingDetailPage = () => {
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}
         />
       )}
-      {isClicked && <BottomSheet onClose={() => setIsClicked(false)}/>}
+      {isClicked && <BottomSheet onClose={() => setIsClicked(false)} />}
     </>
   );
 };

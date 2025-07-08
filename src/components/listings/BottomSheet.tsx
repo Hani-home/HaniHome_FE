@@ -1,13 +1,21 @@
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+
 import Divider from "../common/Divider";
 
 interface BottomSheetProps {
   onClose: () => void;
 }
 const BottomSheet = ({ onClose }: BottomSheetProps) => {
+  const { id } = useParams();
+  const router = useRouter();
   return (
     <>
       {/* 오버레이 배경 */}
-      <div className="fixed inset-0 z-80 bg-[rgba(72,74,79,0.6)]" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-80 bg-[rgba(72,74,79,0.6)]"
+        onClick={onClose}
+      />
 
       {/* 바텀 시트 */}
       <div
@@ -21,7 +29,7 @@ const BottomSheet = ({ onClose }: BottomSheetProps) => {
         <Divider className="my-1" />
         <div
           className="text-body1-sb w-full cursor-pointer py-2 text-center text-gray-900"
-          onClick={onClose}
+          onClick={() => router.push(`/listings/${id}/edit`)}
         >
           매물정보 수정
         </div>
