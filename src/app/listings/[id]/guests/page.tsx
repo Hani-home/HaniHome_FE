@@ -64,12 +64,26 @@ const ListingsGuests = () => {
               variant="md"
             />
             <div key={index} className="flex flex-col gap-2">
-              <span className="text-body1-sb text-gray-800">
+              <span
+                className={`text-body1-sb ${selectedGuestIndex === index ? "text-mint-contrast" : "text-gray-800"}`}
+              >
                 {guest.nickname}
               </span>
-              <div className="text-cap1-med flex flex-col gap-1 text-gray-700">
-                <span>{guest.date}</span>
-                <span>{guest.time}</span>
+              <div className={`text-cap1-med flex flex-col gap-1 ${selectedGuestIndex===index? "text-mint-contrast":"text-gray-700 "}`}>
+                <div className="flex gap-1">
+                  <span>날짜</span>
+                  <span
+                    className={`h-3 w-px ${selectedGuestIndex === index ? "bg-mint-contrast" : "bg-gray-300"}`}
+                  />
+                  <span>{guest.date}</span>
+                </div>
+                <div className="flex gap-1">
+                  <span>시간</span>
+                  <span
+                    className={`h-3 w-px ${selectedGuestIndex === index ? "bg-mint-contrast" : "bg-gray-300"}`}
+                  />
+                  <span>{guest.time}</span>
+                </div>
               </div>
             </div>
           </div>
