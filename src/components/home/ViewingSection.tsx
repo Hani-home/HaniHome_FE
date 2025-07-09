@@ -2,12 +2,16 @@
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
+// import { useMyViewingList } from "@/hooks/viewing/useViewing";
+
 import ViewingBox from "@/components/home/ViewingBox";
 
 import { viewingLists } from "@/constants/mock/viewing-lists";
 
 const ViewingSection = () => {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+  // const { data, isLoading, isError } = useMyViewingList();
+
   return (
     <div className="flex flex-col gap-3 border-t border-gray-200 bg-white py-5">
       <span className="text-heading3 px-4 text-gray-900">
