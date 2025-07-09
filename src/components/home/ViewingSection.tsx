@@ -30,7 +30,6 @@ const ViewingSection = () => {
       ) : (
         <div className="mx-4 mt-1 flex w-[343px]">
           <span className="bg-mint-light border-mint text-mint text-lab1-sb flex h-10 w-full items-center justify-center rounded border">
-            {" "}
             로그인 후 이용할 수 있습니다
           </span>
         </div>

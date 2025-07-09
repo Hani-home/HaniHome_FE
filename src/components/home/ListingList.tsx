@@ -4,11 +4,18 @@ import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useLoginModalStore } from "@/stores/useLoginModalStore";
+
 import { ListingDummies } from "@/constants/mock/listing-card-dummies";
 
 import ListingCard from "./ListingCard";
 
 const ListingList = () => {
+  const router = useRouter();
+  const { isLoggedIn } = useAuthStore();
+  const { openModal } = useLoginModalStore();
+
   const [likedState, setLikedState] = useState<Record<number, boolean>>({});
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>(() =>
     ListingDummies.reduce(
@@ -20,9 +27,12 @@ const ListingList = () => {
     ),
   );
 
-  const router = useRouter();
-
   const toggleLike = (id: number) => {
+    if (!isLoggedIn) {
+      openModal();
+      return;
+    }
+
     setLikedState(prev => ({
       ...prev,
       [id]: !prev[id],
@@ -35,6 +45,10 @@ const ListingList = () => {
   };
 
   const handleCardClick = (id: number) => {
+    if (!isLoggedIn) {
+      openModal();
+      return;
+    }
     router.push(`/listings/${id}`);
   };
 
