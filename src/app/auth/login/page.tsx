@@ -1,7 +1,8 @@
 "use client";
 
-// import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+
+import { useAuthStore } from "@/stores/useAuthStore";
 
 import GoogleLoginButton from "@/components/login/GoogleLoginButton";
 
@@ -11,6 +12,8 @@ import GuestIcon from "@/public/svgs/login/guest-icon.svg";
 
 const LoginPage = () => {
   const router = useRouter();
+  const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+
   const handleGuestClick = () => {
     router.push("/home");
   };
@@ -22,18 +25,20 @@ const LoginPage = () => {
         <LogoWordmark width={225} height={31} />
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-3">
-        <GoogleLoginButton />
-        <button
-          onClick={handleGuestClick}
-          className="flex h-6 w-[343px] cursor-pointer items-center justify-center gap-2 bg-white py-[10px]"
-        >
-          <GuestIcon />
-          <span className="text-lab1-b text-mint underline">
-            게스트 모드로 시작하기
-          </span>
-        </button>
-      </div>
+      {!isLoggedIn && (
+        <div className="flex flex-col gap-4 px-4 py-3">
+          <GoogleLoginButton />
+          <button
+            onClick={handleGuestClick}
+            className="flex h-6 w-[343px] cursor-pointer items-center justify-center gap-2 bg-white py-[10px]"
+          >
+            <GuestIcon />
+            <span className="text-lab1-b text-mint underline">
+              게스트 모드로 시작하기
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
