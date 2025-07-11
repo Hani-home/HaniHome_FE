@@ -19,7 +19,7 @@ const BottomSheet = ({ onClose }: BottomSheetProps) => {
 
       {/* 바텀 시트 */}
       <div
-        className="fixed bottom-0 left-1/2 z-90 w-[375px] -translate-x-1/2 rounded-t-2xl border border-gray-500 bg-white pt-3"
+        className="fixed bottom-0 left-1/2 z-100 w-[375px] -translate-x-1/2 rounded-t-2xl border border-gray-500 bg-white pt-3"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-center pb-2">

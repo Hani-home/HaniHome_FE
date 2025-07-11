@@ -1,0 +1,16 @@
+export const listingDetailCategories = [
+  { key: "rentalType", label: "매물 종류" },
+  { key: "address", label: "주소" },
+  { key: "propertyType", label: "매물 유형" },
+  { key: "maxOccupants", label: "거주 가능 인원" },
+  { key: "propertyDetails", label: "매물 정보" },
+  { key: "isBrokered", label: "부동산 중개 여부" },
+  { key: "highlights", label: "매물 장점" },
+  { key: "furniture", label: "기본 제공 가구" },
+  { key: "guestGender", label: "게스트 성별" },
+  { key: "livingConditions", label: "거주 조건" },
+  { key: "costs", label: "거래 비용" },
+  { key: "moveInDates", label: "입주 가능일" },
+  { key: "additionalInfo", label: "추가 항목" },
+  { key: "hostDescription", label: "호스트 설명" },
+] as const;
