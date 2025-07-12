@@ -5,6 +5,7 @@ import { useState } from "react";
 import useFunnel from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
+import AddressPhoto from "@/components/listings/create/AddressPhoto";
 import ListingType from "@/components/listings/create/ListingType";
 
 const steps = [
@@ -17,8 +18,10 @@ const steps = [
   "CreateSuccess",
 ];
 const ListingCreatePage = () => {
-  const { step, onNextStep,  } = useFunnel({ steps });
-  const [, setListingType] = useState<"SHARE" | "RENT" | null>(null);
+  const { step, onNextStep, onPrevStep } = useFunnel({ steps });
+  const [listingType, setListingType] = useState<"SHARE" | "RENT" | null>(null);
+  const [addressData, setAddressData] =
+    useState<AddressDataType>(initialAddressData);
 
   return (
     <Funnel step={step}>
@@ -31,15 +34,17 @@ const ListingCreatePage = () => {
         />
       </Funnel.Step>
 
-      {/* <Funnel.Step name="AddressPhoto">
+      <Funnel.Step name="AddressPhoto">
         <AddressPhoto
           listingType={listingType}
+          addressData={addressData}
+          setAddressData={setAddressData}
           onNext={onNextStep}
           onPrev={onPrevStep}
         />
       </Funnel.Step>
 
-      <Funnel.Step name="ListingDetail">
+      {/* <Funnel.Step name="ListingDetail">
         <ListingDetail onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
 

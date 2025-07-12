@@ -8,6 +8,7 @@ interface AuthStore {
 
   setAuth: (accessToken: string, memberId: string) => void;
   setAccessToken: (accessToken: string) => void;
+  setMemberId: (memberId: string) => void;
   clearAuth: () => void;
 }
 
@@ -22,14 +23,30 @@ export const useAuthStore = create<AuthStore>()(
         set({ accessToken, memberId, isLoggedIn: true }),
 
       setAccessToken: accessToken =>
-        set({ accessToken, isLoggedIn: !!accessToken }),
+        set({
+          accessToken,
+          isLoggedIn: !!accessToken,
+        }),
+
+      setMemberId: memberId =>
+        set({
+          memberId,
+        }),
 
       clearAuth: () =>
-        set({ accessToken: "", memberId: "", isLoggedIn: false }),
+        set({
+          accessToken: "",
+          memberId: "",
+          isLoggedIn: false,
+        }),
     }),
     {
       name: "auth-storage",
-      partialize: state => ({ memberId: state.memberId }),
+      partialize: state => ({
+        accessToken: state.accessToken,
+        memberId: state.memberId,
+        isLoggedIn: state.isLoggedIn,
+      }),
     },
   ),
 );

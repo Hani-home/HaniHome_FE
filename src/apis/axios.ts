@@ -9,20 +9,22 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// 백에서 자동 재발급 하는 방식임.
-// 요청 인터셉터: accessToken을 Zustand에서 가져와 주입
 axiosInstance.interceptors.request.use(
   config => {
-    const token = useAuthStore.getState().accessToken;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const isAuthRequest = config.url?.includes("api/v1/auth/social/login");
+
+    if (!isAuthRequest) {
+      const token = useAuthStore.getState().accessToken;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+
     return config;
   },
   error => Promise.reject(error),
 );
 
-// 응답 인터셉터: 새 accessToken이 있으면 Zustand에 저장
 axiosInstance.interceptors.response.use(
   response => {
     const authHeader = response.headers["authorization"];
@@ -32,5 +34,33 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  error => Promise.reject(error),
+  async error => {
+    const originalRequest = error.config;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const res = await axiosInstance.post("/api/v1/auth/refresh");
+
+        const newTokenHeader = res.headers["authorization"];
+        if (newTokenHeader?.startsWith("Bearer ")) {
+          const newToken = newTokenHeader.split(" ")[1];
+          useAuthStore.getState().setAccessToken(newToken);
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return axiosInstance(originalRequest);
+        }
+      } catch (refreshError) {
+        console.error("토큰 재발급 실패", refreshError);
+        useAuthStore.getState().clearAuth();
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  },
 );
