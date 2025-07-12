@@ -110,3 +110,12 @@ export interface RentProperty extends BaseProperty {
 
 // 전체 유니언 타입
 export type Property = ShareProperty | RentProperty;
+
+export interface FilteredPropertyParams {
+  kinds?: ("SHARE" | "RENT")[];
+  sharePropertySubTypes?: string[];
+  rentPropertySubTypes?: string[];
+  minWeeklyCost?: number;
+  maxWeeklyCost?: number;
+  billIncluded?: boolean;
+}
