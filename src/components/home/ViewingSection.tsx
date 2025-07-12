@@ -10,7 +10,10 @@ import { viewingLists } from "@/constants/mock/viewing-lists";
 
 const ViewingSection = () => {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
-  // const { data, isLoading, isError } = useMyViewingList();
+  // const { data, isLoading, isError } = useMyViewingList({
+  //   view: "DATE_PROFILE",
+  //   enabled: isLoggedIn === true,
+  // });
 
   return (
     <div className="flex flex-col gap-3 border-t border-gray-200 bg-white py-5">

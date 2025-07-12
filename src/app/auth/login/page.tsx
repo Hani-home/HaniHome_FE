@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
+import { useEffect } from "react";
+
 import { useAuthStore } from "@/stores/useAuthStore";
 
 import GoogleLoginButton from "@/components/login/GoogleLoginButton";
@@ -14,9 +16,17 @@ const LoginPage = () => {
   const router = useRouter();
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/home");
+    }
+  }, [isLoggedIn, router]);
+
   const handleGuestClick = () => {
     router.push("/home");
   };
+
+  if (isLoggedIn === null) return null;
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center pt-52">

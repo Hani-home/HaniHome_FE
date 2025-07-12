@@ -15,7 +15,10 @@ const Home = () => {
   const { isLoggedIn } = useAuthStore();
 
   return (
-    <ContentWrapper className="bg-gray-0" bottomOffset={62}>
+    <ContentWrapper
+      className="bg-gray-0 flex min-h-screen flex-col"
+      bottomOffset={62}
+    >
       <MainHeader />
       <div className="bg-gray-0 flex flex-col pt-6 pb-2">
         <CategoryHeader />
