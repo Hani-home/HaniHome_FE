@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import { addWish, removeWish } from "@/apis/wishlist";
+
 import { usePropertySearch } from "@/hooks/filter/useFilter";
 import { usePropertyList } from "@/hooks/property/useProperty";
 
@@ -83,16 +85,32 @@ const ListingList = () => {
     });
   }, [properties]);
 
-  const toggleLike = (id: number) => {
+  const toggleLike = async (id: number) => {
     if (!isLoggedIn) {
       openModal();
       return;
     }
-    setLikedState(prev => ({ ...prev, [id]: !prev[id] }));
+
+    const isCurrentlyLiked = likedState[id] ?? false;
+    setLikedState(prev => ({ ...prev, [id]: !isCurrentlyLiked }));
     setLikeCounts(prev => ({
       ...prev,
-      [id]: prev[id] + (likedState[id] ? -1 : 1),
+      [id]: prev[id] + (isCurrentlyLiked ? -1 : 1),
     }));
+
+    try {
+      if (isCurrentlyLiked) {
+        await removeWish(id);
+      } else {
+        await addWish(id);
+      }
+    } catch (error) {
+      setLikedState(prev => ({ ...prev, [id]: isCurrentlyLiked }));
+      setLikeCounts(prev => ({
+        ...prev,
+        [id]: prev[id] + (isCurrentlyLiked ? 1 : -1),
+      }));
+    }
   };
 
   const handleCardClick = (id: number) => {
