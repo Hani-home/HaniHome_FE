@@ -2,11 +2,12 @@
 
 import { useRouter } from "next/navigation";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useFilterStore } from "@/stores/useFilterStore";
 import { useLoginModalStore } from "@/stores/useLoginModalStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -15,6 +16,7 @@ import { addWish, removeWish } from "@/apis/wishlist";
 
 import { usePropertySearch } from "@/hooks/filter/useFilter";
 import { usePropertyList } from "@/hooks/property/useProperty";
+import { useWishList } from "@/hooks/wishlist/useWishList";
 
 import { buildQueryParams } from "@/utils/buildQueryParams";
 
@@ -27,6 +29,8 @@ dayjs.locale("ko");
 
 const ListingList = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { isLoggedIn, isAuthInitialized } = useAuthStore();
   const { openModal } = useLoginModalStore();
   const {
@@ -64,53 +68,60 @@ const ListingList = () => {
     enabled: isAuthInitialized && isLoggedIn,
   });
 
-  const [likedState, setLikedState] = useState<Record<number, boolean>>({});
-  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+  const { data: wishList = [] } = useWishList();
 
   const properties: SummaryProperty[] = useMemo(() => {
     return isLoggedIn ? (searchData?.list ?? []) : (listData ?? []);
   }, [isLoggedIn, searchData, listData]);
 
-  useEffect(() => {
+  const likedMap = useMemo(() => {
+    const map: Record<number, boolean> = {};
+    wishList.forEach(item => {
+      map[item.id] = true;
+    });
+    return map;
+  }, [wishList]);
+
+  const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
+
+  useMemo(() => {
     if (!properties.length) return;
 
-    setLikeCounts(prev => {
-      if (Object.keys(prev).length === properties.length) return prev;
-
-      const init: Record<number, number> = {};
-      properties.forEach(p => {
-        init[p.id] = p.wishCount ?? 0;
-      });
-      return init;
+    const init: Record<number, number> = {};
+    properties.forEach(p => {
+      init[p.id] = p.wishCount ?? 0;
     });
+    setLikeCounts(init);
   }, [properties]);
 
-  const toggleLike = async (id: number) => {
-    if (!isLoggedIn) {
-      openModal();
-      return;
-    }
-
-    const isCurrentlyLiked = likedState[id] ?? false;
-    setLikedState(prev => ({ ...prev, [id]: !isCurrentlyLiked }));
-    setLikeCounts(prev => ({
-      ...prev,
-      [id]: prev[id] + (isCurrentlyLiked ? -1 : 1),
-    }));
-
-    try {
-      if (isCurrentlyLiked) {
+  const mutation = useMutation({
+    mutationFn: async (id: number) => {
+      if (likedMap[id]) {
         await removeWish(id);
       } else {
         await addWish(id);
       }
-    } catch (error) {
-      setLikedState(prev => ({ ...prev, [id]: isCurrentlyLiked }));
+    },
+    onMutate: async id => {
       setLikeCounts(prev => ({
         ...prev,
-        [id]: prev[id] + (isCurrentlyLiked ? 1 : -1),
+        [id]: prev[id] + (likedMap[id] ? -1 : 1),
       }));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishList"] as const });
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishList"] as const });
+    },
+  });
+
+  const handleToggleLike = (id: number) => {
+    if (!isLoggedIn) {
+      openModal();
+      return;
     }
+    mutation.mutate(id);
   };
 
   const handleCardClick = (id: number) => {
@@ -123,7 +134,7 @@ const ListingList = () => {
 
   return (
     <div className="flex flex-1 flex-col">
-      {properties?.map(p => (
+      {properties.map(p => (
         <ListingCard
           key={p.id}
           id={p.id}
@@ -136,9 +147,9 @@ const ListingList = () => {
           billIncluded={p.billIncluded}
           suburb={p.suburb}
           createdAt={p.createdAt}
-          wishCount={likeCounts[p.id] ?? 0}
-          isLiked={likedState[p.id] ?? false}
-          onToggleLike={() => toggleLike(p.id)}
+          wishCount={likeCounts[p.id] ?? p.wishCount ?? 0}
+          isLiked={likedMap[p.id] ?? false}
+          onToggleLike={() => handleToggleLike(p.id)}
           onClick={() => handleCardClick(p.id)}
         />
       ))}

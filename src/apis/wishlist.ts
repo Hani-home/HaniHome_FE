@@ -1,3 +1,5 @@
+import { SummaryProperty } from "@/types/property";
+
 import { axiosInstance } from "./axios";
 
 export const addWish = async (propertyId: number) => {
@@ -14,4 +16,9 @@ export const removeWish = async (propertyId: number) => {
       targetId: propertyId,
     },
   });
+};
+
+export const getMyWishList = async (): Promise<SummaryProperty[]> => {
+  const res = await axiosInstance.get("/api/v1/wish-items");
+  return res.data.data.PROPERTY;
 };
