@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { useFilterStore } from "@/stores/useFilterStore";
+import { format, parseISO } from "date-fns";
+
 import CheckIcon from "@/components/common/CheckIcon";
 import Calendar from "@/components/common/calendar/Calendar";
 
@@ -15,22 +18,51 @@ const AvailableDatePicker = () => {
   const [focusedRange, setFocusedRange] = useState<[number, number]>([0, 0]);
   const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
   const [range, setRange] = useState<Range[] | null>(null);
-  const [availableImmediately, setAvailableImmediately] = useState(false);
-  const [negotiableDate, setNegotiableDate] = useState(false);
   const [, setIsWheelOpen] = useState(false);
 
-  // 클라이언트에서만 날짜 초기화
+  const { immediate, negotiable, setFilters, availableFrom, availableTo } =
+    useFilterStore();
+
   useEffect(() => {
     const today = new Date();
-    setCurrentMonth(today);
+    const fromDate = availableFrom ? parseISO(availableFrom) : today;
+    const toDate = availableTo ? parseISO(availableTo) : today;
+
+    setCurrentMonth(fromDate);
     setRange([
       {
-        startDate: today,
-        endDate: today,
+        startDate: toStartOfDay(fromDate),
+        endDate: toStartOfDay(toDate),
         key: "selection",
       },
     ]);
-  }, []);
+  }, [availableFrom, availableTo]);
+
+  const toStartOfDay = (date: Date) => {
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+  };
+
+  const handleRangeChange = (newRange: Range[]) => {
+    const { startDate, endDate } = newRange[0];
+
+    const startOfDay = toStartOfDay(startDate);
+    const endOfDay = toStartOfDay(endDate);
+
+    setRange([
+      {
+        startDate: startOfDay,
+        endDate: endOfDay,
+        key: "selection",
+      },
+    ]);
+
+    setFilters({
+      availableFrom: format(startOfDay, "yyyy-MM-dd'T'00:00:00"),
+      availableTo: format(endOfDay, "yyyy-MM-dd'T'00:00:00"),
+    });
+  };
 
   const isSingleSelection = useMemo(() => {
     if (!range) return true;
@@ -50,7 +82,7 @@ const AvailableDatePicker = () => {
         currentMonth={currentMonth}
         setCurrentMonth={setCurrentMonth}
         isSingleSelection={isSingleSelection}
-        onRangeChange={setRange}
+        onRangeChange={handleRangeChange}
         onFocusChange={setFocusedRange}
         onShownDateChange={setCurrentMonth}
         onOpenWheel={() => setTimeout(() => setIsWheelOpen(true), 0)}
@@ -60,17 +92,17 @@ const AvailableDatePicker = () => {
       <div className="mt-[6px] flex flex-col gap-2 px-4 py-3 transition-all duration-300">
         <div
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
-          onClick={() => setAvailableImmediately(prev => !prev)}
+          onClick={() => setFilters({ immediate: !immediate })}
         >
-          <CheckIcon checked={availableImmediately} />
+          <CheckIcon checked={immediate} />
           즉시 입주 가능
         </div>
 
         <div
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
-          onClick={() => setNegotiableDate(prev => !prev)}
+          onClick={() => setFilters({ negotiable: !negotiable })}
         >
-          <CheckIcon checked={negotiableDate} />
+          <CheckIcon checked={negotiable} />
           입주 일자 협의 가능
         </div>
       </div>

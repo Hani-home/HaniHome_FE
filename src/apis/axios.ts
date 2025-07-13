@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/useAuthStore";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -37,7 +37,7 @@ axiosInstance.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
     if (
-      error.response?.status === 401 &&
+      (error.response?.status === 401 || error.response?.status === 403) &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth/refresh")
     ) {
@@ -55,12 +55,13 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
-        console.error("토큰 재발급 실패", refreshError);
-        useAuthStore.getState().clearAuth();
+        const err = refreshError as AxiosError;
+        if (err.response?.status === 401) {
+          useAuthStore.getState().clearAuth();
+          return;
+        }
         return Promise.reject(refreshError);
       }
     }
-
-    return Promise.reject(error);
   },
 );

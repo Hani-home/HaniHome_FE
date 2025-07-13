@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useFilterStore } from "@/stores/useFilterStore";
 
-import { getFilteredPropertyCount } from "@/apis/property";
-
+import { usePropertyCount } from "@/hooks/filter/filter";
 import { useDebouncedValue } from "@/hooks/filter/useDebouncedValue";
 
 import AlertMessage from "@/components/common/AlertMessage";
@@ -29,21 +28,90 @@ import { FilteredPropertyParams } from "@/types/property";
 export type RoomKind = "SHARE" | "RENT";
 
 const Filter = () => {
-  const [selectedTypes, setSelectedTypes] = useState<("쉐어" | "렌트")[]>([]);
-  const [selectedRoomTypes, setSelectedRoomTypes] = useState<string[]>([]);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const [count, setCount] = useState<number>(0);
 
   const {
+    selectedTypes,
+    setSelectedTypes,
+    selectedRoomTypes,
+    setSelectedRoomTypes,
     setFilters,
     resetFilters,
     billIncluded,
+    availableFrom,
+    availableTo,
+    immediate,
+    negotiable,
     minWeeklyCost,
     maxWeeklyCost,
+    radiusKm,
   } = useFilterStore();
 
   const debouncedMinCost = useDebouncedValue(minWeeklyCost, 500);
   const debouncedMaxCost = useDebouncedValue(maxWeeklyCost, 500);
+  const debouncedRadiusKm = useDebouncedValue(radiusKm, 500);
+
+  const mapRoomTypesToApi = (
+    selectedTypes: ("쉐어" | "렌트")[],
+    selectedRoomTypes: string[],
+  ) => {
+    const sharePropertySubTypes: string[] = [];
+    const rentPropertySubTypes: string[] = [];
+
+    for (const room of selectedRoomTypes) {
+      if (selectedTypes.includes("쉐어") && SHARE_TYPE_MAP[room]) {
+        sharePropertySubTypes.push(SHARE_TYPE_MAP[room]);
+      }
+      if (selectedTypes.includes("렌트") && RENT_TYPE_MAP[room]) {
+        rentPropertySubTypes.push(RENT_TYPE_MAP[room]);
+      }
+    }
+
+    return { sharePropertySubTypes, rentPropertySubTypes };
+  };
+
+  const buildQueryParams = (
+    minCost: number | null,
+    maxCost: number | null,
+    radiusKm: number | null,
+  ): FilteredPropertyParams => {
+    const kinds = selectedTypes
+      .map(type => (type === "쉐어" ? "SHARE" : "RENT"))
+      .filter((k): k is "SHARE" | "RENT" => k !== null);
+
+    const { sharePropertySubTypes, rentPropertySubTypes } = mapRoomTypesToApi(
+      selectedTypes,
+      selectedRoomTypes,
+    );
+
+    const params: FilteredPropertyParams = {
+      kinds,
+      sharePropertySubTypes,
+      rentPropertySubTypes,
+      billIncluded: billIncluded ?? false,
+      immediate: immediate ?? false,
+      negotiable: negotiable ?? false,
+    };
+
+    if (minCost !== null) params.minWeeklyCost = minCost;
+    if (maxCost !== null) params.maxWeeklyCost = maxCost;
+    if (radiusKm !== null) params.radiusKm = radiusKm;
+
+    if (availableFrom && availableTo && availableFrom !== availableTo) {
+      params.availableFrom = availableFrom;
+      params.availableTo = availableTo;
+    }
+
+    return params;
+  };
+
+  const params = buildQueryParams(
+    debouncedMinCost,
+    debouncedMaxCost,
+    debouncedRadiusKm,
+  );
+
+  const { data: count } = usePropertyCount(params);
 
   const isDisabled = (type: string) => {
     if (selectedTypes.includes("쉐어") && selectedTypes.includes("렌트"))
@@ -72,6 +140,7 @@ const Filter = () => {
       return;
     }
     if (isDisabled(type)) return;
+
     setSelectedRoomTypes(prev =>
       prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type],
     );
@@ -79,27 +148,6 @@ const Filter = () => {
 
   const handleReset = () => {
     resetFilters();
-    setSelectedTypes([]);
-    setSelectedRoomTypes([]);
-  };
-
-  const mapRoomTypesToApi = (
-    selectedTypes: ("쉐어" | "렌트")[],
-    selectedRoomTypes: string[],
-  ) => {
-    const sharePropertySubTypes: string[] = [];
-    const rentPropertySubTypes: string[] = [];
-
-    for (const room of selectedRoomTypes) {
-      if (selectedTypes.includes("쉐어") && SHARE_TYPE_MAP[room]) {
-        sharePropertySubTypes.push(SHARE_TYPE_MAP[room]);
-      }
-      if (selectedTypes.includes("렌트") && RENT_TYPE_MAP[room]) {
-        rentPropertySubTypes.push(RENT_TYPE_MAP[room]);
-      }
-    }
-
-    return { sharePropertySubTypes, rentPropertySubTypes };
   };
 
   const handleApply = () => {
@@ -116,59 +164,12 @@ const Filter = () => {
       kinds,
       sharePropertySubTypes,
       rentPropertySubTypes,
-    });
-  };
-
-  const buildQueryParams = (): FilteredPropertyParams => {
-    const kinds = selectedTypes
-      .map(type =>
-        type === "쉐어" ? "SHARE" : type === "렌트" ? "RENT" : null,
-      )
-      .filter((k): k is "SHARE" | "RENT" => k !== null);
-
-    const { sharePropertySubTypes, rentPropertySubTypes } = mapRoomTypesToApi(
       selectedTypes,
       selectedRoomTypes,
-    );
-
-    const { minWeeklyCost, maxWeeklyCost, billIncluded } =
-      useFilterStore.getState();
-
-    const params: FilteredPropertyParams = {
-      kinds,
-      sharePropertySubTypes,
-      rentPropertySubTypes,
-      minWeeklyCost: minWeeklyCost ?? undefined,
-      maxWeeklyCost: maxWeeklyCost ?? undefined,
-    };
-
-    if (typeof billIncluded === "boolean") {
-      params.billIncluded = billIncluded;
-    }
-
-    return params;
+      availableFrom,
+      availableTo,
+    });
   };
-
-  useEffect(() => {
-    const fetchCount = async () => {
-      const params = buildQueryParams();
-      try {
-        const res = await getFilteredPropertyCount(params);
-        setCount(res.totalElements ?? 0);
-      } catch (err) {
-        console.error("매물 수 조회 실패", err);
-        setCount(0);
-      }
-    };
-
-    fetchCount();
-  }, [
-    selectedTypes,
-    selectedRoomTypes,
-    debouncedMinCost,
-    debouncedMaxCost,
-    billIncluded,
-  ]);
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden pb-39.5">

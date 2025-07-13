@@ -23,7 +23,7 @@ const BudgetSlider = () => {
         <div className="text-heading3 text-mint flex items-center gap-2">
           <span className="text-gray-500">주/$</span>
           <span>{budgetRange[0]}</span>
-          <span>–</span>
+          <span>-</span>
           <span>{budgetRange[1]}</span>
         </div>
       </div>

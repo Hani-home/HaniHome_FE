@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useFilterStore } from "@/stores/useFilterStore";
 import Slider from "rc-slider";
 
 import SearchField from "@/components/common/SearchField";
@@ -8,17 +9,18 @@ const MIN_DISTANCE = 0.5;
 const MAX_DISTANCE = 10;
 
 const SubwayStationSelector = () => {
+  const { radiusKm, setFilters } = useFilterStore();
   const [inputValue, setInputValue] = useState("");
-  const [distanceRange, setDistanceRange] = useState(MAX_DISTANCE);
+  const distance = radiusKm ?? MAX_DISTANCE;
 
   const handleChange = (value: number | number[]) => {
-    setDistanceRange(value as number);
+    setFilters({ radiusKm: value as number });
   };
 
   const handleAfterChange = (value: number | number[]) => {
     const v = value as number;
     if (v === 0) {
-      setDistanceRange(MIN_DISTANCE);
+      setFilters({ radiusKm: MIN_DISTANCE });
     }
   };
 
@@ -44,7 +46,7 @@ const SubwayStationSelector = () => {
           <div className="w-[327px] pb-[30px]">
             <Slider
               className="custom-slider my-[1px]"
-              value={distanceRange}
+              value={radiusKm ?? 10}
               min={0}
               max={MAX_DISTANCE}
               step={0.5}
@@ -72,7 +74,7 @@ const SubwayStationSelector = () => {
 
         <div className="text-lab1-sb flex gap-2 py-1">
           <span className="text-gray-600">지하철 역으로부터</span>
-          <span className="text-mint">{distanceRange}km</span>
+          <span className="text-mint">{distance}km</span>
           <span className="text-gray-600">내 매물까지 포함해요</span>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { serializePropertyFilters } from "@/utils/serializePropertyFilters";
+
 import { Property, PropertyViewType, SummaryProperty } from "@/types/property";
 import { FilteredPropertyParams } from "@/types/property";
 
@@ -17,44 +19,15 @@ export const fetchPropertyDetailList = async (
   return res.data.data;
 };
 
-export const getFilteredPropertyCount = async (
-  params: FilteredPropertyParams,
-) => {
-  const searchParams = new URLSearchParams();
+export const fetchPropertyCount = async (params: FilteredPropertyParams) => {
+  const searchParams = serializePropertyFilters(params);
+  const queryString = searchParams.toString();
 
-  params.kinds?.forEach(kind => searchParams.append("kinds", kind));
-  params.sharePropertySubTypes?.forEach(type =>
-    searchParams.append("sharePropertySubTypes", type),
-  );
-  params.rentPropertySubTypes?.forEach(type =>
-    searchParams.append("rentPropertySubTypes", type),
-  );
+  const url = queryString
+    ? `/api/v1/properties/search?${queryString}`
+    : `/api/v1/properties/search`;
 
-  const restParams: (keyof FilteredPropertyParams)[] = [
-    "minWeeklyCost",
-    "maxWeeklyCost",
-    "billIncluded",
-    "availableFrom",
-    "availableTo",
-    "immediate",
-    "negotiable",
-    "metroStopLatitude",
-    "metroStopLongitude",
-    "radiusKm",
-  ];
+  const res = await axiosInstance.get(url);
 
-  restParams.forEach(key => {
-    const value = params[key];
-    if (value !== undefined && value !== null) {
-      searchParams.append(key, String(value));
-    }
-  });
-
-  const res = await axiosInstance.get(
-    `/api/v1/properties/search?${searchParams.toString()}`,
-  );
-
-  return {
-    totalElements: res.data.totalElements ?? res.data.data?.length ?? 0,
-  };
+  return res.data.data?.length ?? 0;
 };

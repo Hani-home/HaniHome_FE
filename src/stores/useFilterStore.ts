@@ -7,21 +7,43 @@ interface FilterStore {
   selectedFilters: string[];
   setSelectedFilters: (filters: string[]) => void;
 
+  selectedTypes: ("쉐어" | "렌트")[];
+  selectedRoomTypes: string[];
+
+  setSelectedTypes: (
+    types:
+      | ("쉐어" | "렌트")[]
+      | ((prev: ("쉐어" | "렌트")[]) => ("쉐어" | "렌트")[]),
+  ) => void;
+
+  setSelectedRoomTypes: (
+    types: string[] | ((prev: string[]) => string[]),
+  ) => void;
+
   kinds: RoomKind[];
   sharePropertySubTypes: string[];
   rentPropertySubTypes: string[];
   minWeeklyCost: number | null;
   maxWeeklyCost: number | null;
-  billIncluded: boolean | null;
+  billIncluded: boolean;
   availableFrom: string | null;
   availableTo: string | null;
   metroStopLatitude: number | null;
   metroStopLongitude: number | null;
   radiusKm: number | null;
+  immediate: boolean;
+  negotiable: boolean;
 
   setFilters: (
     filters: Partial<
-      Omit<FilterStore, "setFilters" | "resetFilters" | "setSelectedFilters">
+      Omit<
+        FilterStore,
+        | "setFilters"
+        | "resetFilters"
+        | "setSelectedFilters"
+        | "setSelectedTypes"
+        | "setSelectedRoomTypes"
+      >
     >,
   ) => void;
 
@@ -34,34 +56,59 @@ export const useFilterStore = create(
       selectedFilters: [],
       setSelectedFilters: filters => set({ selectedFilters: filters }),
 
+      selectedTypes: [],
+      selectedRoomTypes: [],
+
+      setSelectedTypes: updater =>
+        set(state => ({
+          selectedTypes:
+            typeof updater === "function"
+              ? updater(state.selectedTypes)
+              : updater,
+        })),
+
+      setSelectedRoomTypes: updater =>
+        set(state => ({
+          selectedRoomTypes:
+            typeof updater === "function"
+              ? updater(state.selectedRoomTypes)
+              : updater,
+        })),
+
       kinds: [],
       sharePropertySubTypes: [],
       rentPropertySubTypes: [],
       minWeeklyCost: null,
       maxWeeklyCost: null,
-      billIncluded: null,
+      billIncluded: false,
       availableFrom: null,
       availableTo: null,
       metroStopLatitude: null,
       metroStopLongitude: null,
       radiusKm: null,
+      immediate: false,
+      negotiable: false,
 
       setFilters: filters => set(state => ({ ...state, ...filters })),
 
       resetFilters: () =>
         set({
           selectedFilters: [],
+          selectedTypes: [],
+          selectedRoomTypes: [],
           kinds: [],
           sharePropertySubTypes: [],
           rentPropertySubTypes: [],
           minWeeklyCost: null,
           maxWeeklyCost: null,
-          billIncluded: null,
+          billIncluded: false,
           availableFrom: null,
           availableTo: null,
           metroStopLatitude: null,
           metroStopLongitude: null,
           radiusKm: null,
+          immediate: false,
+          negotiable: false,
         }),
     }),
     {
