@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { useFilterStore } from "@/stores/useFilterStore";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 
 import CheckIcon from "@/components/common/CheckIcon";
 import Calendar from "@/components/common/calendar/Calendar";
@@ -14,19 +13,40 @@ type Range = {
   key: string;
 };
 
-const AvailableDatePicker = () => {
+interface AvailableDatePickerProps {
+  availableFrom: string | null;
+  availableTo: string | null;
+  immediate: boolean;
+  negotiable: boolean;
+  onDateChange: (from: string, to: string) => void;
+  onImmediateToggle: () => void;
+  onNegotiableToggle: () => void;
+}
+
+const toStartOfDay = (date: Date) => {
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
+};
+
+const AvailableDatePicker = ({
+  availableFrom,
+  availableTo,
+  immediate,
+  negotiable,
+  onDateChange,
+  onImmediateToggle,
+  onNegotiableToggle,
+}: AvailableDatePickerProps) => {
   const [focusedRange, setFocusedRange] = useState<[number, number]>([0, 0]);
   const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
   const [range, setRange] = useState<Range[] | null>(null);
   const [, setIsWheelOpen] = useState(false);
 
-  const { immediate, negotiable, setFilters, availableFrom, availableTo } =
-    useFilterStore();
-
   useEffect(() => {
     const today = new Date();
-    const fromDate = availableFrom ? parseISO(availableFrom) : today;
-    const toDate = availableTo ? parseISO(availableTo) : today;
+    const fromDate = availableFrom ? new Date(availableFrom) : today;
+    const toDate = availableTo ? new Date(availableTo) : today;
 
     setCurrentMonth(fromDate);
     setRange([
@@ -38,37 +58,30 @@ const AvailableDatePicker = () => {
     ]);
   }, [availableFrom, availableTo]);
 
-  const toStartOfDay = (date: Date) => {
-    const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0);
-    return newDate;
-  };
-
-  const handleRangeChange = (newRange: Range[]) => {
-    const { startDate, endDate } = newRange[0];
-
-    const startOfDay = toStartOfDay(startDate);
-    const endOfDay = toStartOfDay(endDate);
-
-    setRange([
-      {
-        startDate: startOfDay,
-        endDate: endOfDay,
-        key: "selection",
-      },
-    ]);
-
-    setFilters({
-      availableFrom: format(startOfDay, "yyyy-MM-dd'T'00:00:00"),
-      availableTo: format(endOfDay, "yyyy-MM-dd'T'00:00:00"),
-    });
-  };
-
   const isSingleSelection = useMemo(() => {
     if (!range) return true;
     const { startDate, endDate } = range[0];
     return startDate.toDateString() === endDate.toDateString();
   }, [range]);
+
+  const handleRangeChange = (newRange: Range[]) => {
+    const { startDate, endDate } = newRange[0];
+    const start = toStartOfDay(startDate);
+    const end = toStartOfDay(endDate);
+
+    setRange([
+      {
+        startDate: start,
+        endDate: end,
+        key: "selection",
+      },
+    ]);
+
+    onDateChange(
+      format(start, "yyyy-MM-dd'T'00:00:00"),
+      format(end, "yyyy-MM-dd'T'00:00:00"),
+    );
+  };
 
   if (!range || !currentMonth) return null;
 
@@ -89,10 +102,10 @@ const AvailableDatePicker = () => {
         onCloseWheel={() => setTimeout(() => setIsWheelOpen(false), 0)}
       />
 
-      <div className="mt-[6px] flex flex-col gap-2 px-4 py-3 transition-all duration-300">
+      <div className="mt-[6px] flex flex-col gap-2 px-4 py-3">
         <div
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
-          onClick={() => setFilters({ immediate: !immediate })}
+          onClick={onImmediateToggle}
         >
           <CheckIcon checked={immediate} />
           즉시 입주 가능
@@ -100,7 +113,7 @@ const AvailableDatePicker = () => {
 
         <div
           className="text-cap1-med flex cursor-pointer items-center gap-1 text-gray-700"
-          onClick={() => setFilters({ negotiable: !negotiable })}
+          onClick={onNegotiableToggle}
         >
           <CheckIcon checked={negotiable} />
           입주 일자 협의 가능

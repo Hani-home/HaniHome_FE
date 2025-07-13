@@ -4,6 +4,8 @@ import { persist } from "zustand/middleware";
 type RoomKind = "SHARE" | "RENT";
 
 interface FilterStore {
+  isHydrated: boolean;
+
   selectedFilters: string[];
   setSelectedFilters: (filters: string[]) => void;
 
@@ -53,6 +55,8 @@ interface FilterStore {
 export const useFilterStore = create(
   persist<FilterStore>(
     set => ({
+      isHydrated: false,
+
       selectedFilters: [],
       setSelectedFilters: filters => set({ selectedFilters: filters }),
 
@@ -113,6 +117,11 @@ export const useFilterStore = create(
     }),
     {
       name: "filter-storage",
+      onRehydrateStorage: () => state => {
+        if (state) {
+          state.isHydrated = true;
+        }
+      },
     },
   ),
 );

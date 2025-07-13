@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/stores/useAuthStore";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
@@ -11,7 +11,9 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   config => {
-    const isAuthRequest = config.url?.includes("api/v1/auth/social/login");
+    const isAuthRequest =
+      config.url?.includes("api/v1/auth/social/login") ||
+      config.url?.includes("api/v1/auth/refresh");
 
     if (!isAuthRequest) {
       const token = useAuthStore.getState().accessToken;
@@ -34,34 +36,5 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  async error => {
-    const originalRequest = error.config;
-    if (
-      (error.response?.status === 401 || error.response?.status === 403) &&
-      !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh")
-    ) {
-      originalRequest._retry = true;
-
-      try {
-        const res = await axiosInstance.post("/api/v1/auth/refresh");
-
-        const newTokenHeader = res.headers["authorization"];
-        if (newTokenHeader?.startsWith("Bearer ")) {
-          const newToken = newTokenHeader.split(" ")[1];
-          useAuthStore.getState().setAccessToken(newToken);
-
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return axiosInstance(originalRequest);
-        }
-      } catch (refreshError) {
-        const err = refreshError as AxiosError;
-        if (err.response?.status === 401) {
-          useAuthStore.getState().clearAuth();
-          return;
-        }
-        return Promise.reject(refreshError);
-      }
-    }
-  },
+  error => Promise.reject(error),
 );

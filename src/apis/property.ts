@@ -19,7 +19,7 @@ export const fetchPropertyDetailList = async (
   return res.data.data;
 };
 
-export const fetchPropertyCount = async (params: FilteredPropertyParams) => {
+export const fetchPropertySearch = async (params: FilteredPropertyParams) => {
   const searchParams = serializePropertyFilters(params);
   const queryString = searchParams.toString();
 
@@ -28,6 +28,10 @@ export const fetchPropertyCount = async (params: FilteredPropertyParams) => {
     : `/api/v1/properties/search`;
 
   const res = await axiosInstance.get(url);
+  const { data } = res.data;
 
-  return res.data.data?.length ?? 0;
+  return {
+    list: data,
+    count: data?.length ?? 0,
+  };
 };
