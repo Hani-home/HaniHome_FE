@@ -34,6 +34,7 @@ const Mypage = () => {
   const [myInfo, setMyInfo] = useState<{
     nickname: string;
     profileImage: string;
+    verifiedUser: boolean;
   } | null>(null);
 
   const sections = getSections(router, {
@@ -49,6 +50,7 @@ const Mypage = () => {
         setMyInfo({
           nickname: data.nickname,
           profileImage: data.profileImage,
+          verifiedUser: data.verifiedUser,
         });
       } catch (error) {
         console.error("유저 정보 조회 실패:", error);
@@ -91,7 +93,9 @@ const Mypage = () => {
               >
                 {isLoggedIn ? (myInfo?.nickname ?? "닉네임") : "게스트"}
               </div>
-              {isLoggedIn && <CertificateBadge className="h-6 w-6" />}
+              {isLoggedIn && myInfo?.verifiedUser && (
+                <CertificateBadge className="h-6 w-6" />
+              )}
             </div>
           </div>
           {isLoggedIn && <Arrow className="h-6 w-6 rotate-180 text-gray-700" />}
