@@ -4,16 +4,14 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import Dot from "@/components/common/Dot";
+
 import { ListingCardProps } from "@/types/listingCard";
 
 import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";
 import HeartOutlineIcon from "@/public/svgs/common/heart-outline-icon.svg";
 
 dayjs.extend(relativeTime);
-
-const Dot = () => (
-  <span className="inline-block h-1 w-1 rounded-full bg-gray-400" />
-);
 
 const ListingCard = ({
   thumbnailUrl,
@@ -33,7 +31,7 @@ const ListingCard = ({
 }: ListingCardProps) => {
   const displayStatus = tradeStatus === "BEFORE" ? "거래 중" : "거래 완료";
 
-  const displayType = propertySubType === "SECOND_ROOM" ? "쉐어" : "렌트";
+  const displayType = propertySubType === "SECOND_ROOM" ? "쉐어" : "렌트"; // 수정 필요
 
   return (
     <div

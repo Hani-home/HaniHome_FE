@@ -10,18 +10,10 @@ import AfternoonIcon from "@/public/svgs/reservation/afternoon-icon.svg";
 import EveningIcon from "@/public/svgs/reservation/evening-icon.svg";
 import MorningIcon from "@/public/svgs/reservation/morning-icon.svg";
 
-const TimePicker = ({
-  activeIndex,
-  schedules,
-  updateSchedule,
-  selectedLabel,
-  setSelectedLabel,
-  usedDateTimeSet,
-  viewingTimeSlots,
-}: {
-  activeIndex: number;
-  schedules: { date: Date | null; time: string }[];
-  updateSchedule: (index: number, key: "time", value: string) => void;
+interface TimePickerProps {
+  selectedDate: Date | null;
+  selectedTime: string;
+  setSelectedTime: (time: string) => void;
   selectedLabel: TimeLabel;
   setSelectedLabel: (label: TimeLabel) => void;
   usedDateTimeSet: Set<string>;
@@ -30,15 +22,25 @@ const TimePicker = ({
     start: string;
     end: string;
   }[];
-}) => {
+}
+
+const TimePicker = ({
+  selectedDate,
+  selectedTime,
+  setSelectedTime,
+  selectedLabel,
+  setSelectedLabel,
+  usedDateTimeSet,
+  viewingTimeSlots,
+}: TimePickerProps) => {
   const [tempLabel, setTempLabel] = useState<TimeLabel>("아침");
 
   useEffect(() => {
     setTempLabel(selectedLabel ?? "아침");
-  }, [activeIndex, selectedLabel]);
+  }, [selectedLabel]);
 
   const handleSelectTime = (time: string) => {
-    updateSchedule(activeIndex, "time", time);
+    setSelectedTime(time);
     setSelectedLabel(tempLabel);
   };
 
@@ -79,8 +81,6 @@ const TimePicker = ({
       {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
         {TIME_OPTIONS[tempLabel].map(time => {
-          const currentDate = schedules[activeIndex].date;
-
           const isAllowed = viewingTimeSlots.some(
             slot =>
               slot.label === tempLabel &&
@@ -88,20 +88,21 @@ const TimePicker = ({
           );
 
           const isUsed =
-            currentDate instanceof Date &&
-            usedDateTimeSet.has(`${currentDate.toDateString()}-${time}`);
+            selectedDate instanceof Date &&
+            usedDateTimeSet.has(`${selectedDate.toDateString()}-${time}`);
+
           const isDisabled = !isAllowed || isUsed;
 
           return (
             <button
               key={time}
-              disabled={!!isDisabled}
+              disabled={isDisabled}
               onClick={() => handleSelectTime(time)}
               className={clsx(
                 "text-body1-sb h-10 w-24 rounded border py-2 text-center",
                 isDisabled
                   ? "cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400"
-                  : schedules[activeIndex].time === time
+                  : selectedTime === time
                     ? "bg-mint-light text-mint-contrast border-mint-contrast cursor-pointer"
                     : "border-mint-contrast cursor-pointer bg-white text-gray-700",
               )}

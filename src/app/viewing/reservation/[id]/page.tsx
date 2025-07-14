@@ -2,12 +2,11 @@
 
 import { useParams, useRouter } from "next/navigation";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
 
 import { useSingleDateCalendar } from "@/hooks/calendar/useSingleDateHandlers";
-import { useViewingSchedules } from "@/hooks/reservation/useViewingSchedule";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
@@ -16,133 +15,85 @@ import SingleDateCalendar from "@/components/reservation/SingleDateCalendar";
 import TimePicker from "@/components/reservation/TimePicker";
 
 import { VIEWING_TIME_SLOTS } from "@/constants/mock/viewing-schedule-dummies";
-import { TimeLabel } from "@/constants/time-options";
-
-import PlusIcon from "@/public/svgs/reservation/plus-squared-icon.svg";
 
 const ViewingReservationPage = () => {
   const { id } = useParams() as { id: string };
   const { moveMonthBy, shownDate, setShownDate } = useSingleDateCalendar();
+  const router = useRouter();
+
+  const {
+    setActiveId,
+    reset,
+    getSchedule,
+    setSchedule,
+    getSelectedTimeLabel,
+    setSelectedTimeLabel,
+  } = useViewingScheduleStore();
+
+  const [mode, setMode] = useState<"calendar" | "time">("calendar");
 
   useEffect(() => {
     setActiveId(id);
+    return () => reset();
   }, [id]);
 
-  const {
-    schedules,
-    selectedDates,
-    selectedTimeLabels,
-    activeIndex,
-    mode,
-    usedDateTimeSet,
-    disabledDates,
-    isAllSchedulesFilled,
-    updateSchedule,
-    addSchedule,
-    removeSchedule,
-    setActiveIndex,
-    setMode,
-    setSelectedTimeLabels,
-  } = useViewingSchedules(shownDate, setShownDate);
+  const schedule = getSchedule();
+  const selectedTimeLabel = getSelectedTimeLabel();
 
-  const { push, pop, reset, setActiveId } = useViewingScheduleStore();
-  const correctedShownDate = useMemo(() => {
-    return shownDate instanceof Date ? shownDate : new Date(shownDate);
-  }, [shownDate]);
-
-  const router = useRouter();
-  const handleBack = () => {
-    let prev = pop();
-    while (prev !== undefined && prev >= schedules.length) {
-      prev = pop();
-    }
-    if (prev !== undefined && prev !== activeIndex) {
-      setActiveIndex(prev);
-      setMode("time");
-    } else {
-      router.back();
-    }
+  const updateSchedule = (key: "date" | "time", value: Date | string) => {
+    setSchedule(id, { ...schedule, [key]: value });
   };
 
-  useEffect(() => {
-    return () => {
-      reset(); // 페이지 이탈 시 히스토리 초기화
-    };
-  }, []);
+  const isAllFilled = !!schedule.date && schedule.time !== "NN : NN";
 
   return (
     <div className="pb-16">
-      <BackHeader title="뷰잉 예약" onBackClick={handleBack} />
+      <BackHeader title="뷰잉 예약" onBackClick={() => router.back()} />
 
       <div className="flex flex-col justify-center gap-1 p-4">
         <h1 className="text-heading3 text-gray-900">
           원하는 뷰잉 날짜를 선택해주세요
         </h1>
         <span className="text-cap1-med text-gray-500">
-          최대 3개까지 일정 신청이 가능하고, <br />
-          가능한 가장 빠른 일정으로 예약이 자동 확정됩니다.
+          호스트가 설정하지 않은 일정, 다른 게스트가 예약한 일정, <br />
+          나의 다른 매물 뷰잉 예약과 중복되는 일정은 선택할 수 없어요
         </span>
       </div>
 
       <ScheduleInputList
-        schedules={schedules}
-        activeIndex={activeIndex}
+        schedules={[schedule]}
+        activeIndex={0}
         mode={mode}
         setMode={setMode}
-        setActiveIndex={index => {
-          setActiveIndex(index);
-          push(index);
-        }}
-        removeSchedule={removeSchedule}
+        setActiveIndex={() => {}}
       />
 
-      {schedules.length < 3 && (
-        <div className="flex justify-center pb-3">
-          <button
-            type="button"
-            onClick={addSchedule}
-            className="bg-mint-contrast h-fit w-fit cursor-pointer rounded-full p-1"
-          >
-            <PlusIcon className="h-4.5 w-4.5 text-white" />
-          </button>
-        </div>
+      {mode === "calendar" && (
+        <SingleDateCalendar
+          selectedDate={schedule.date}
+          onSelectDate={date => updateSchedule("date", date)}
+          moveMonthBy={moveMonthBy}
+          shownDate={shownDate}
+          setShownDate={setShownDate}
+          disabledDates={[]}
+        />
       )}
 
       {mode === "time" && (
         <TimePicker
-          activeIndex={activeIndex}
-          schedules={schedules}
-          updateSchedule={updateSchedule}
-          selectedLabel={selectedTimeLabels[activeIndex] ?? "아침"}
-          setSelectedLabel={label =>
-            setSelectedTimeLabels(
-              id,
-              selectedTimeLabels.map((l: TimeLabel, i: number) =>
-                i === activeIndex ? label : l,
-              ),
-            )
-          }
-          usedDateTimeSet={usedDateTimeSet as Set<string>}
+          selectedDate={schedule.date}
+          selectedTime={schedule.time}
+          setSelectedTime={time => updateSchedule("time", time)}
+          selectedLabel={selectedTimeLabel}
+          setSelectedLabel={label => setSelectedTimeLabel(id, label)}
           viewingTimeSlots={VIEWING_TIME_SLOTS}
-        />
-      )}
-
-      {mode === "calendar" && (
-        <SingleDateCalendar
-          activeIndex={activeIndex}
-          schedules={schedules}
-          updateSchedule={updateSchedule}
-          selectedDates={selectedDates}
-          moveMonthBy={moveMonthBy}
-          shownDate={correctedShownDate}
-          setShownDate={setShownDate}
-          disabledDates={disabledDates}
+          usedDateTimeSet={new Set()}
         />
       )}
 
       <BottomActionBar
-        label="뷰잉 예약하기"
-        disabled={!isAllSchedulesFilled}
+        label="다음"
+        disabled={!isAllFilled}
         onClick={() => router.push(`/viewing/reservation/${id}/confirm`)}
       />
     </div>
