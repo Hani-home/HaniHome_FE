@@ -1,37 +1,37 @@
-export type ListingType = "렌트" | "쉐어";
+export type PropertySuperType = "RENT" | "SHARE";
 
-interface CommonListingFields {
-  id: string;
-  type: ListingType;
-  parking: string;
-  furniture: string[];
-  hostDescription: string;
-  tags: string[];
+export type GenderPreference = 'ANY' | 'MALE_ONLY' | 'FEMALE_ONLY' | 'COUPLE';
+
+export type ParkingOption = 'NONE' | 'STREET_PARKING' | 'RESERVED_SPACE';
+
+export type SharePropertySubType = 'SECOND_ROOM' | 'MASTER_ROOM' | 'LIVING_SHARE';
+
+export type RentPropertySubType = 'HOUSE' | 'APARTMENT' | 'UNIT' | 'STUDIO' | 'GRANNY_FLAT';
+
+export type RealEstateType = 'INDIVIDUAL' | 'REAL_ESTATE';
+
+export type CapacityShare = 'SINGLE' | 'DOUBLE' | 'TRIPLE' | 'OTHER';
+
+export type CapacityRent = 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'OTHER';
+
+export type Exposure = 'NORTHERN' | 'SOUTHERN' | 'EASTERN' | 'WESTERN';
+export interface Category {
+  id: number;
+  categoryCode: string;
+  name: string;
 }
 
-export interface RentListingDetail extends CommonListingFields {
-  type: "렌트";
-  residentCount: number;
-  isBrokered: boolean;
-  roomCount: number;
-  bathroomCount: number;
-  totalFloors: number;
-  currentFloor: number;
-  hasYard: boolean;
-  hasBalcony: boolean;
-  direction: string;
+export interface OptionItem {
+  optionItemId: number;
+  itemName: string;
+  isActive: boolean;
+  isCustom: boolean;
+  categoryId: number;
+  categoryName: string;
+  parentItemId: number | null;
 }
 
-export interface ShareListingDetail extends CommonListingFields {
-  type: "쉐어";
-  shareCount: number;
-  totalFloors: number;
-  floorLocation: string;
-}
-
-export type ListingDetail = RentListingDetail | ShareListingDetail;
-
-export interface RegionType {
+export interface PropertyRegion {
   country: string;
   postCode: string;
   state: string;
@@ -40,55 +40,89 @@ export interface RegionType {
   streetNumber: string;
   unit: string;
   buildingName: string;
+  longitude: number;
+  latitude: number;
 }
 
-export interface Furniture {
-  [category: string]: string[];
-}
-
-export interface AdditionalInfo {
-  smokingAllowed: boolean;
-  petsAllowed: boolean;
-  visitorsAllowed: boolean;
-  parking: string[];
-  kitchenAccess: boolean;
-}
-
-export interface PropertyDetails {
-  internalArea: string;
-  totalArea: string;
-  totalResidents: string;
-  sharedBathrooms: string;
-  buildingFloors: string;
-  floor: string;
-}
-
-export interface Costs {
-  weeklyCost: string;
-  billsIncluded: boolean;
-  includedItems: string[];
-  deposit: string;
+export interface CostDetails {
+  weeklyCost: number;
+  costDescription: string;
+  deposit: number;
+  keyDeposit: number;
+  depositAdjustable: boolean;
+  billIncluded: boolean;
 }
 
 export interface LivingConditions {
-  noticePeriod: string;
-  minStayDuration: string;
-  contractType: string;
+  noticePeriodWeeks: number;
+  minimumStayWeeks: number;
+  contractTerms: string;
+  contractExtendable: boolean;
 }
 
-export type ListingValueMap = {
-  rentalType: ListingDetail["type"];
-  address: string;
-  propertyType: string;
-  maxOccupants: string;
-  propertyDetails: PropertyDetails;
-  isBrokered: boolean;
-  furniture: Furniture;
-  highlights: string[];
-  guestGender: string[];
+export interface MoveInInfo {
+  availableFrom: string;
+  availableTo: string;
+  isImmediate: boolean;
+  isNegotiable: boolean;
+}
+
+export interface TimeSlot {
+  timeFrom: string;
+  timeTo: string;
+}
+
+export interface InternalDetailsBase {
+  internalArea: number;
+  totalArea: number;
+  totalFloors: number;
+  propertyFloor: number;
+}
+
+export interface ShareInternalDetails extends InternalDetailsBase {
+  totalResidents: number;
+  totalBathUser: number;
+}
+
+export interface RentInternalDetails extends InternalDetailsBase {
+  numberOfRoom: number;
+  numberOfBath: number;
+}
+
+interface PropertyBase {
+  memberId: number;
+  kind: PropertySuperType;
+  genderPreference: string;
+  lgbtAvailable: boolean;
+  region: PropertyRegion;
+  photoUrls: string[];
+  thumbnailUrl: string | null;
+  costDetails: CostDetails;
+  optionItems: OptionItem[];
   livingConditions: LivingConditions;
-  costs: Costs;
-  moveInDates: string[];
-  hostDescription: string;
-  additionalInfo: AdditionalInfo;
-};
+  moveInInfo: MoveInInfo;
+  parkingOption: string;
+  meetingDateFrom: string;
+  meetingDateTo: string;
+  timeSlots: TimeSlot[];
+  viewingAlwaysAvailable: boolean;
+  description: string;
+}
+
+export interface SharePropertyDetail extends PropertyBase {
+  jsonDiscriminator: "SHARE";
+  sharePropertySubType: string;
+  internalDetails: ShareInternalDetails;
+  capacityShare: string;
+}
+
+export interface RentPropertyDetail extends PropertyBase {
+  jsonDiscriminator: "RENT";
+  rentPropertySubType: string;
+  isRealEstateIntervention: string;
+  internalDetails: RentInternalDetails;
+  capacityRent: string;
+  exposure: string;
+}
+
+export type PropertyDetail = SharePropertyDetail | RentPropertyDetail;
