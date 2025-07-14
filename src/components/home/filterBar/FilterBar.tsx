@@ -22,8 +22,7 @@ const FilterBar = () => {
     maxWeeklyCost,
     availableFrom,
     availableTo,
-    metroStopLatitude,
-    metroStopLongitude,
+    selectedMetroStop,
     radiusKm,
   } = useFilterStore();
 
@@ -65,15 +64,15 @@ const FilterBar = () => {
     },
     {
       label: "지하철 역",
-      // value:
-      //     isLoggedIn && metroStopLatitude && metroStopLongitude
-      //     ? `역에서 ${radiusKm}km 이내`
-      //     : null,
+      value:
+        isLoggedIn && selectedMetroStop && selectedMetroStop.name
+          ? `${selectedMetroStop.name}`
+          : null,
     },
     {
       label: "거리",
       value:
-        isLoggedIn && radiusKm && metroStopLatitude && metroStopLongitude
+        isLoggedIn && radiusKm && selectedMetroStop
           ? `역에서 ${radiusKm}km 이내`
           : null,
     },

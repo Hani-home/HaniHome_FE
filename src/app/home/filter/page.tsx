@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useFilterStore } from "@/stores/useFilterStore";
+import { useMetroStore } from "@/stores/useMetroStore";
 
 import { useCountUp } from "@/hooks/filter/useCountup";
 import { useDebouncedValue } from "@/hooks/filter/useDebouncedValue";
 import { usePropertySearch } from "@/hooks/filter/useFilter";
+import { useMetroStops } from "@/hooks/filter/useMetro";
 
 import { buildQueryParams } from "@/utils/buildQueryParams";
 
@@ -44,6 +46,14 @@ const Filter = () => {
     resetFilters,
   } = useFilterStore();
 
+  const { data: metroStops } = useMetroStops();
+
+  useEffect(() => {
+    if (metroStops) {
+      useMetroStore.getState().setStops(metroStops);
+    }
+  }, [metroStops]);
+
   const [tempFilters, setTempFilters] = useState({
     selectedTypes,
     selectedRoomTypes,
@@ -55,6 +65,12 @@ const Filter = () => {
     minWeeklyCost,
     maxWeeklyCost,
     radiusKm,
+    selectedMetroStop: null as null | {
+      id: number | null;
+      name: string;
+      latitude: number | null;
+      longitude: number | null;
+    },
   });
 
   const debouncedMinCost = useDebouncedValue(tempFilters.minWeeklyCost, 500);
@@ -66,6 +82,8 @@ const Filter = () => {
     minWeeklyCost: debouncedMinCost,
     maxWeeklyCost: debouncedMaxCost,
     radiusKm: debouncedRadiusKm,
+    metroStopLatitude: tempFilters.selectedMetroStop?.latitude ?? null,
+    metroStopLongitude: tempFilters.selectedMetroStop?.longitude ?? null,
   });
 
   const { data } = usePropertySearch(params);
@@ -143,27 +161,37 @@ const Filter = () => {
       availableTo: null,
       immediate: false,
       negotiable: false,
-      minWeeklyCost: 100,
-      maxWeeklyCost: 3000,
+      minWeeklyCost: null,
+      maxWeeklyCost: null,
       radiusKm: null,
+      selectedMetroStop: null,
     });
     resetFilters();
   };
 
   const handleApply = () => {
-    const builtParams = buildQueryParams(tempFilters);
     setFilters({
-      ...builtParams,
-      ...tempFilters,
+      selectedTypes: tempFilters.selectedTypes,
+      selectedRoomTypes: tempFilters.selectedRoomTypes,
+      billIncluded: tempFilters.billIncluded,
+      availableFrom: tempFilters.availableFrom,
+      availableTo: tempFilters.availableTo,
+      immediate: tempFilters.immediate,
+      negotiable: tempFilters.negotiable,
+      minWeeklyCost: debouncedMinCost,
+      maxWeeklyCost: debouncedMaxCost,
+      radiusKm: debouncedRadiusKm,
+      selectedMetroStop: tempFilters.selectedMetroStop,
     });
+
     router.push("/home");
   };
-
   const animatedCount = useCountUp(count, 800);
 
   useEffect(() => {
     if (isHydrated) {
-      setTempFilters({
+      setTempFilters(prev => ({
+        ...prev,
         selectedTypes,
         selectedRoomTypes,
         billIncluded,
@@ -174,7 +202,8 @@ const Filter = () => {
         minWeeklyCost,
         maxWeeklyCost,
         radiusKm,
-      });
+        selectedMetroStop: useFilterStore.getState().selectedMetroStop ?? null,
+      }));
     }
   }, [isHydrated]);
 
@@ -230,6 +259,19 @@ const Filter = () => {
       <SubwayStationSelector
         radiusKm={tempFilters.radiusKm}
         onChangeRadiusKm={value => handleChange("radiusKm", value)}
+        onSelectStop={id => {
+          const stop = useMetroStore.getState().stops.find(s => s.id === id);
+          if (stop) {
+            handleChange("selectedMetroStop", {
+              id: stop.id,
+              name: stop.stopName,
+              latitude: stop.stopLatitude,
+              longitude: stop.stopLongitude,
+            });
+          } else {
+            handleChange("selectedMetroStop", null);
+          }
+        }}
       />
 
       <BottomActionBar
