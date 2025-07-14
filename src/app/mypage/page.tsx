@@ -7,9 +7,8 @@ import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { getMyInfo } from "@/apis/auth";
-
 import { useAuth } from "@/hooks/auth/useAuth";
+import { useMyInfo } from "@/hooks/member/useMember";
 
 import Divider from "@/components/common/Divider";
 import TitleHeader from "@/components/layout/header/TitleHeader";
@@ -31,34 +30,18 @@ const Mypage = () => {
   const { logout } = useAuth();
   const { isLoggedIn, setMemberId } = useAuthStore();
 
-  const [myInfo, setMyInfo] = useState<{
-    nickname: string;
-    profileImage: string;
-    verifiedUser: boolean;
-  } | null>(null);
+  const { data: myInfo } = useMyInfo();
+
+  useEffect(() => {
+    if (isLoggedIn && myInfo?.id) {
+      setMemberId(String(myInfo.id));
+    }
+  }, [isLoggedIn, myInfo, setMemberId]);
 
   const sections = getSections(router, {
     onLogout: logout,
     onOpenWithdrawModal: () => setIsWithdrawModalOpen(true),
   });
-
-  useEffect(() => {
-    const fetchMyInfo = async () => {
-      try {
-        const data = await getMyInfo();
-        setMemberId(String(data.id));
-        setMyInfo({
-          nickname: data.nickname,
-          profileImage: data.profileImage,
-          verifiedUser: data.verifiedUser,
-        });
-      } catch (error) {
-        console.error("유저 정보 조회 실패:", error);
-      }
-    };
-
-    if (isLoggedIn) fetchMyInfo();
-  }, [isLoggedIn, setMemberId]);
 
   return (
     <div>
