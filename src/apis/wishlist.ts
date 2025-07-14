@@ -20,5 +20,5 @@ export const removeWish = async (propertyId: number) => {
 
 export const getMyWishList = async (): Promise<SummaryProperty[]> => {
   const res = await axiosInstance.get("/api/v1/wish-items");
-  return res.data.data.PROPERTY;
+  return res.data.data.PROPERTY ?? [];
 };

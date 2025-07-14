@@ -36,5 +36,39 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  error => Promise.reject(error),
+  async error => {
+    const originalRequest = error.config;
+
+    const resData = error.response?.data;
+
+    const isTokenExpired =
+      error.response?.status === 400 &&
+      (resData?.serviceCode === "ACCESS_TOKEN_EXPIRED" ||
+        resData?.data?.codeName === "ACCESS_TOKEN_EXPIRED");
+
+    if (isTokenExpired && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshResponse = await axiosInstance.post(
+          "/api/v1/auth/refresh",
+        );
+
+        const newAuthHeader = refreshResponse.headers["authorization"];
+        if (newAuthHeader?.startsWith("Bearer ")) {
+          const newToken = newAuthHeader.split(" ")[1];
+          useAuthStore.getState().setAccessToken(newToken);
+
+          // 원래 요청 재시도
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return axiosInstance(originalRequest);
+        }
+      } catch (refreshError) {
+        useAuthStore.getState().clearAuth();
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  },
 );
