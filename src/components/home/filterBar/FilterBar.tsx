@@ -66,7 +66,9 @@ const FilterBar = () => {
       label: "지하철 역",
       value:
         isLoggedIn && selectedMetroStop && selectedMetroStop.name
-          ? `${selectedMetroStop.name}`
+          ? selectedMetroStop.name.length > 8
+            ? `${selectedMetroStop.name.slice(0, 8)}··`
+            : selectedMetroStop.name
           : null,
     },
     {
