@@ -11,32 +11,31 @@ interface StorePerId {
 
 interface ViewingScheduleStore {
   data: Record<string, StorePerId>;
-  activeId: string | null;
 
-  setActiveId: (id: string) => void;
+  init: (id: string) => void;
   setSchedule: (id: string, schedule: Schedule) => void;
   setSelectedTimeLabel: (id: string, label: TimeLabel) => void;
 
-  getSchedule: () => Schedule;
-  getSelectedTimeLabel: () => TimeLabel;
+  getSchedule: (id: string) => Schedule;
+  getSelectedTimeLabel: (id: string) => TimeLabel;
 
-  reset: () => void;
+  reset: (id: string) => void;
 }
 
 export const useViewingScheduleStore = create<ViewingScheduleStore>(
   (set, get) => ({
     data: {},
-    activeId: null,
 
-    setActiveId: id => {
-      const state = get();
-      if (!state.data[id]) {
-        state.data[id] = {
-          schedule: { date: null, time: "NN : NN" },
-          selectedTimeLabel: "아침",
-        };
-      }
-      set({ activeId: id });
+    init: id => {
+      set(state => ({
+        data: {
+          ...state.data,
+          [id]: state.data[id] ?? {
+            schedule: { date: null, time: "NN : NN" },
+            selectedTimeLabel: "아침",
+          },
+        },
+      }));
     },
 
     setSchedule: (id, schedule) =>
@@ -61,33 +60,22 @@ export const useViewingScheduleStore = create<ViewingScheduleStore>(
         },
       })),
 
-    getSchedule: () => {
-      const { activeId, data } = get();
-      return activeId && data[activeId]?.schedule
-        ? data[activeId].schedule
-        : { date: null, time: "NN : NN" };
+    getSchedule: id => {
+      const { data } = get();
+      return data[id]?.schedule ?? { date: null, time: "NN : NN" };
     },
 
-    getSelectedTimeLabel: () => {
-      const { activeId, data } = get();
-      return activeId && data[activeId]?.selectedTimeLabel
-        ? data[activeId].selectedTimeLabel
-        : "아침";
+    getSelectedTimeLabel: id => {
+      const { data } = get();
+      return data[id]?.selectedTimeLabel ?? "아침";
     },
 
-    reset: () => {
-      const id = get().activeId;
-      if (!id) return;
-
-      set(state => ({
-        data: {
-          ...state.data,
-          [id]: {
-            schedule: { date: null, time: "NN : NN" },
-            selectedTimeLabel: "아침",
-          },
-        },
-      }));
+    reset: id => {
+      set(state => {
+        const newData = { ...state.data };
+        delete newData[id];
+        return { data: newData };
+      });
     },
   }),
 );

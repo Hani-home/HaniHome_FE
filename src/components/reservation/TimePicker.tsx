@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import clsx from "clsx";
 
-import { getTimeRange } from "@/utils/getTimeRange";
-
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
 import AfternoonIcon from "@/public/svgs/reservation/afternoon-icon.svg";
@@ -17,21 +15,16 @@ interface TimePickerProps {
   selectedLabel: TimeLabel;
   setSelectedLabel: (label: TimeLabel) => void;
   usedDateTimeSet: Set<string>;
-  viewingTimeSlots: {
-    label: TimeLabel;
-    start: string;
-    end: string;
-  }[];
+
+  isDisabledTime: (time: string) => boolean;
 }
 
 const TimePicker = ({
-  selectedDate,
   selectedTime,
   setSelectedTime,
   selectedLabel,
   setSelectedLabel,
-  usedDateTimeSet,
-  viewingTimeSlots,
+  isDisabledTime,
 }: TimePickerProps) => {
   const [tempLabel, setTempLabel] = useState<TimeLabel>("아침");
 
@@ -81,17 +74,7 @@ const TimePicker = ({
       {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
         {TIME_OPTIONS[tempLabel].map(time => {
-          const isAllowed = viewingTimeSlots.some(
-            slot =>
-              slot.label === tempLabel &&
-              getTimeRange(slot.start, slot.end).includes(time),
-          );
-
-          const isUsed =
-            selectedDate instanceof Date &&
-            usedDateTimeSet.has(`${selectedDate.toDateString()}-${time}`);
-
-          const isDisabled = !isAllowed || isUsed;
+          const isDisabled = isDisabledTime(time);
 
           return (
             <button
@@ -104,7 +87,7 @@ const TimePicker = ({
                   ? "cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400"
                   : selectedTime === time
                     ? "bg-mint-light text-mint-contrast border-mint-contrast cursor-pointer"
-                    : "border-mint-contrast cursor-pointer bg-white text-gray-700",
+                    : "hover:text-mint-contrast hover:border-mint-contrast hover:bg-mint-light cursor-pointer border-gray-400 bg-white text-gray-700",
               )}
             >
               {time}

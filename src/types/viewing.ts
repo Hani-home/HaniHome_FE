@@ -18,3 +18,14 @@ export interface ViewingCardItem extends ViewingItem {
 }
 
 export type ViewingViewType = "DEFAULT" | "DATE_PROFILE" | "DATE_WITH_PROPERTY";
+
+export interface ViewingTime {
+  time: string;
+  reserved: boolean;
+}
+
+export type MyViewingDate = {
+  propertyId: number;
+  viewingDate: string;
+  viewingTime: string;
+};

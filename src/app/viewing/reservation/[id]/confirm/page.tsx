@@ -3,8 +3,11 @@
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
+import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
+
+import { createViewing } from "@/apis/viewing";
+
 import { usePropertyList } from "@/hooks/property/useProperty";
-import { useConfirmSchedules } from "@/hooks/reservation/useConfirmSchedule";
 
 import { formatDateTime, getTimeLabel } from "@/utils/dateFormatter";
 
@@ -18,13 +21,14 @@ const ViewingConfirmPage = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
 
-  const { selectedSchedule } = useConfirmSchedules(id);
   const { data: summaryList, isLoading } = usePropertyList({ view: "SUMMARY" });
+  const { getSchedule, reset } = useViewingScheduleStore();
+  const selectedSchedule = getSchedule(id);
 
-  if (!selectedSchedule || isLoading) return null;
+  if (isLoading) return null;
+  if (!selectedSchedule.date) return null;
 
   const summary = summaryList?.find(item => item.id === Number(id));
-
   if (!summary) return null;
 
   const {
@@ -36,7 +40,32 @@ const ViewingConfirmPage = () => {
     propertySubType,
     billIncluded,
   } = summary;
+
   const periodInfo = getTimeLabel(selectedSchedule.time);
+
+  const submitViewingReservation = async ({
+    propertyId,
+    date,
+    time,
+  }: {
+    propertyId: number;
+    date: Date;
+    time: string;
+  }) => {
+    const [hour, minute] = time.split(":");
+
+    const bookingDate = new Date(date);
+    bookingDate.setHours(Number(hour));
+    bookingDate.setMinutes(Number(minute));
+    bookingDate.setSeconds(0);
+    bookingDate.setMilliseconds(0);
+
+    return createViewing({
+      propertyId,
+      preferredTimes: [bookingDate.toISOString()],
+    });
+  };
+
   return (
     <div className="pb-31">
       <BackHeader title="뷰잉 예약" />
@@ -119,7 +148,15 @@ const ViewingConfirmPage = () => {
 
       <BottomActionBar
         label="뷰잉 예약 확정"
-        onClick={() => router.push(`/viewing/reservation/${id}/complete`)}
+        onClick={async () => {
+          await submitViewingReservation({
+            propertyId: Number(id),
+            date: selectedSchedule.date!,
+            time: selectedSchedule.time,
+          });
+          reset(id);
+          router.push(`/viewing/reservation/${id}/complete`);
+        }}
       />
     </div>
   );

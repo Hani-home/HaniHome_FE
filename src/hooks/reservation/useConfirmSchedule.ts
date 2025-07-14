@@ -1,63 +1,114 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
-import { format } from "date-fns";
+import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
 
-import { normalizeTime } from "@/utils/dateFormatter";
+import { useViewingAvailableDates } from "@/hooks/viewing/useViewing";
 
-// 임시 겹치는 일정
-const mockedOverlappingTimes = [
-  { date: "2025-06-19", time: "06:30" },
-  { date: "2025-06-30", time: "14:00" },
-];
+import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
-const isOverlapping = (date: Date, time: string) => {
-  const formatted = format(date, "yyyy-MM-dd");
-  const normalized = normalizeTime(time);
-  return mockedOverlappingTimes.some(
-    o => o.date === formatted && o.time === normalized,
-  );
-};
+import { MyViewingDate } from "@/types/viewing";
 
-export const useConfirmSchedules = (id: string) => {
-  const { setActiveId, getSchedule, setSchedule } = useViewingScheduleStore();
-  const [selectedSchedule, setSelectedSchedule] = useState<{
-    date: Date;
-    time: string;
-  } | null>(null);
+export const useViewingReservation = ({
+  propertyId,
+  shownDate,
+  selectedTime,
+  currentId,
+  myViewingDatesData,
+}: {
+  propertyId: number;
+  shownDate: Date;
+  selectedTime: string;
+  selectedDate: Date | null;
+  currentId: string;
+  myViewingDatesData: MyViewingDate[] | undefined;
+}) => {
+  const { data: availableDatesData } = useViewingAvailableDates(propertyId);
 
-  useEffect(() => {
-    setActiveId(id);
-  }, [id, setActiveId]);
+  const getTimeLabelByTime = (time: string): TimeLabel => {
+    const found = (Object.keys(TIME_OPTIONS) as TimeLabel[]).find(label =>
+      TIME_OPTIONS[label].includes(time),
+    );
+    if (!found) throw new Error(`Invalid time: ${time}`);
+    return found;
+  };
 
-  const raw = getSchedule();
+  const filteredAvailableDates = useMemo(() => {
+    if (!availableDatesData || selectedTime === "NN : NN") return null;
 
-  const isValid = raw.date !== null && raw.time !== "NN : NN";
+    return Object.entries(availableDatesData)
+      .filter(([, slots]) =>
+        slots.some(slot => {
+          const timeStr = slot.time.slice(0, 5);
+          return timeStr === selectedTime && !slot.reserved;
+        }),
+      )
+      .map(([date]) => date);
+  }, [availableDatesData, selectedTime]);
 
-  // 겹치는지 여부 판단
-  const isOverlap = isValid && isOverlapping(raw.date!, raw.time);
+  const disabledDates = useMemo(() => {
+    if (!availableDatesData) return [];
 
-  // 선택 가능한 경우
-  useEffect(() => {
-    if (isValid && !isOverlap) {
-      setSelectedSchedule({ date: raw.date!, time: raw.time });
+    const allDatesInMonth = eachDayOfInterval({
+      start: startOfMonth(shownDate),
+      end: endOfMonth(shownDate),
+    });
+
+    return allDatesInMonth.filter(date => {
+      const formatted = format(date, "yyyy-MM-dd");
+
+      if (selectedTime !== "NN : NN" && filteredAvailableDates) {
+        return !filteredAvailableDates.includes(formatted);
+      }
+
+      return !availableDatesData[formatted];
+    });
+  }, [availableDatesData, shownDate, selectedTime, filteredAvailableDates]);
+
+  const usedDateTimeSet = useMemo(() => {
+    const set = new Set<string>();
+
+    if (availableDatesData) {
+      Object.entries(availableDatesData).forEach(([date, slots]) => {
+        slots.forEach(slot => {
+          if (slot.reserved) {
+            const timeStr = slot.time.slice(0, 5);
+            set.add(`${date}-${timeStr}`);
+          }
+        });
+      });
     }
-  }, [raw]);
+
+    const myViewingDates = Array.isArray(myViewingDatesData)
+      ? myViewingDatesData
+      : [];
+
+    myViewingDates.forEach(item => {
+      if (item.propertyId === Number(currentId)) return;
+      set.add(`${item.viewingDate}-${item.viewingTime}`);
+    });
+
+    return set;
+  }, [availableDatesData, myViewingDatesData, currentId]);
+
+  const isDisabledTime = (time: string) => {
+    if (!availableDatesData) return true;
+
+    const hasAvailableSlot = Object.values(availableDatesData).some(slots => {
+      return slots.some(slot => {
+        const slotTime = slot.time.slice(0, 5);
+        return slotTime === time && !slot.reserved;
+      });
+    });
+
+    return !hasAvailableSlot;
+  };
 
   return {
-    selectedSchedule, // 선택된 일정 (겹치지 않음)
-
-    changeableSchedules:
-      isValid && isOverlap
-        ? [] // 서버로부터 받은 대체 일정 넣기 (현재는 없음)
-        : [],
-
-    overlappingSchedules:
-      isValid && isOverlap ? [{ date: raw.date!, time: raw.time }] : [],
-
-    handleSelectSchedule: (s: { date: Date; time: string }) => {
-      setSchedule(id, s);
-      setSelectedSchedule(s);
-    },
+    availableDatesData,
+    getTimeLabelByTime,
+    filteredAvailableDates,
+    disabledDates,
+    usedDateTimeSet,
+    isDisabledTime,
   };
 };
