@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import clsx from "clsx";
+import dayjs from "dayjs";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
@@ -16,11 +17,12 @@ interface TimePickerProps {
   setSelectedLabel: (label: TimeLabel) => void;
   usedDateTimeSet: Set<string>;
 
-  isDisabledTime: (time: string) => boolean;
+  isDisabledTime: (time: string, date: string) => boolean;
 }
 
 const TimePicker = ({
   selectedTime,
+  selectedDate,
   setSelectedTime,
   selectedLabel,
   setSelectedLabel,
@@ -74,7 +76,11 @@ const TimePicker = ({
       {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
         {TIME_OPTIONS[tempLabel].map(time => {
-          const isDisabled = isDisabledTime(time);
+          const date = selectedDate
+            ? dayjs(selectedDate).format("YYYY-MM-DD")
+            : "";
+
+          const isDisabled = date ? isDisabledTime(time, date) : true;
 
           return (
             <button

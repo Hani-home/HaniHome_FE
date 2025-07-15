@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/apis/axios";
 
 import {
-  MyViewingDate,
+  MyViewingDates,
   ViewingItem,
   ViewingTime,
   ViewingViewType,
@@ -37,7 +37,7 @@ export const getViewingAvailableDates = async (
 export const getMyViewingDates = async (
   status: "REQUESTED" | "CANCELLED" | "COMPLETED",
 ) => {
-  const res = await axiosInstance.get<{ data: MyViewingDate[] }>(
+  const res = await axiosInstance.get<{ data: MyViewingDates }>(
     "/api/v1/viewings/my-viewings/dates",
     {
       params: { status },

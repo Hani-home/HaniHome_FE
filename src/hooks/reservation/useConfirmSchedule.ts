@@ -9,7 +9,7 @@ import { useViewingAvailableDates } from "@/hooks/viewing/useViewing";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
-import { MyViewingDate } from "@/types/viewing";
+import { MyViewingDates } from "@/types/viewing";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,7 +28,7 @@ export const useViewingReservation = ({
   selectedTime: string;
   selectedDate: Date | null;
   currentId: string;
-  myViewingDatesData: MyViewingDate[] | undefined;
+  myViewingDatesData: MyViewingDates | undefined;
 }) => {
   const { data: availableDatesData } = useViewingAvailableDates(propertyId);
 
@@ -81,12 +81,12 @@ export const useViewingReservation = ({
   const usedDateTimeSet = useMemo(() => {
     const set = new Set<string>();
 
+    //  이미 예약된 slot (호스트가 지정한)
     if (availableDatesData) {
       Object.entries(availableDatesData).forEach(([date, slots]) => {
         slots.forEach(slot => {
           if (slot.reserved) {
             const utcDatetime = `${date}T${slot.time}Z`;
-
             const localTime = dayjs
               .utc(utcDatetime)
               .tz(userTimeZone)
@@ -98,34 +98,45 @@ export const useViewingReservation = ({
       });
     }
 
-    const myViewingDates = Array.isArray(myViewingDatesData)
-      ? myViewingDatesData
-      : [];
-
-    myViewingDates.forEach(item => {
-      if (item.propertyId === Number(currentId)) return;
-      set.add(`${item.viewingDate}-${item.viewingTime}`);
-    });
-
-    return set;
-  }, [availableDatesData, myViewingDatesData, currentId]);
-
-  const isDisabledTime = (time: string) => {
-    if (!availableDatesData) return true;
-
-    const hasAvailableSlot = Object.entries(availableDatesData).some(
-      ([date, slots]) =>
-        slots.some(slot => {
-          const utcDatetime = `${date}T${slot.time}Z`;
+    //  내 뷰잉 데이터
+    if (myViewingDatesData) {
+      Object.entries<string[]>(myViewingDatesData).forEach(([date, times]) => {
+        times.forEach(time => {
+          const utcDatetime = `${date}T${time}Z`;
           const localTime = dayjs
             .utc(utcDatetime)
             .tz(userTimeZone)
             .format("HH:mm");
 
-          return localTime === time && !slot.reserved;
-        }),
-    );
-    return !hasAvailableSlot;
+          set.add(`${date}-${localTime}`);
+        });
+      });
+    }
+
+    return set;
+  }, [availableDatesData, myViewingDatesData, currentId]);
+
+  const isDisabledTime = (time: string, date: string) => {
+    if (!availableDatesData) return true;
+
+    const hasAvailableSlot = (availableDatesData[date] ?? []).some(slot => {
+      const utcDatetime = `${date}T${slot.time}Z`;
+      const localTime = dayjs.utc(utcDatetime).tz(userTimeZone).format("HH:mm");
+
+      return localTime === time && !slot.reserved;
+    });
+
+    if (!hasAvailableSlot) return true; // 호스트 slot 중 사용가능한 게 없으면 비활성화
+
+    // 내 뷰잉 일정과 겹치는지 체크
+    const isMyViewingConflict = (myViewingDatesData?.[date] ?? []).some(t => {
+      const utcDatetime = `${date}T${t}Z`;
+      const localTime = dayjs.utc(utcDatetime).tz(userTimeZone).format("HH:mm");
+
+      return localTime === time;
+    });
+
+    return isMyViewingConflict;
   };
 
   return {
