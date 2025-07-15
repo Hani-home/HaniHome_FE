@@ -40,44 +40,6 @@ export const useViewingReservation = ({
     return found;
   };
 
-  const filteredAvailableDates = useMemo(() => {
-    if (!availableDatesData || selectedTime === "NN : NN") return null;
-
-    return Object.entries(availableDatesData)
-      .filter(([date, slots]) =>
-        slots.some(slot => {
-          const utcDatetime = `${date}T${slot.time}Z`;
-
-          const localTime = dayjs
-            .utc(utcDatetime)
-            .tz(userTimeZone)
-            .format("HH:mm");
-
-          return localTime === selectedTime && !slot.reserved;
-        }),
-      )
-      .map(([date]) => date);
-  }, [availableDatesData, selectedTime]);
-
-  const disabledDates = useMemo(() => {
-    if (!availableDatesData) return [];
-
-    const allDatesInMonth = eachDayOfInterval({
-      start: startOfMonth(shownDate),
-      end: endOfMonth(shownDate),
-    });
-
-    return allDatesInMonth.filter(date => {
-      const formatted = format(date, "yyyy-MM-dd");
-
-      if (selectedTime !== "NN : NN" && filteredAvailableDates) {
-        return !filteredAvailableDates.includes(formatted);
-      }
-
-      return !availableDatesData[formatted];
-    });
-  }, [availableDatesData, shownDate, selectedTime, filteredAvailableDates]);
-
   const usedDateTimeSet = useMemo(() => {
     const set = new Set<string>();
 
@@ -116,6 +78,59 @@ export const useViewingReservation = ({
     return set;
   }, [availableDatesData, myViewingDatesData, currentId]);
 
+  const filteredAvailableDates = useMemo(() => {
+    if (!availableDatesData || selectedTime === "NN : NN") return null;
+
+    return Object.entries(availableDatesData)
+      .filter(([date, slots]) =>
+        slots.some(slot => {
+          const utcDatetime = `${date}T${slot.time}Z`;
+
+          const localTime = dayjs
+            .utc(utcDatetime)
+            .tz(userTimeZone)
+            .format("HH:mm");
+
+          const isMyReserved = myViewingDatesData?.[date]?.some(t => {
+            const myLocalTime = dayjs
+              .utc(`${date}T${t}Z`)
+              .tz(userTimeZone)
+              .format("HH:mm");
+            return myLocalTime === localTime;
+          });
+
+          const isAlreadyReserved = usedDateTimeSet.has(`${date}-${localTime}`);
+
+          return (
+            localTime === selectedTime &&
+            !slot.reserved &&
+            !isAlreadyReserved &&
+            !isMyReserved
+          );
+        }),
+      )
+      .map(([date]) => date);
+  }, [availableDatesData, selectedTime, myViewingDatesData, usedDateTimeSet]);
+
+  const disabledDates = useMemo(() => {
+    if (!availableDatesData) return [];
+
+    const allDatesInMonth = eachDayOfInterval({
+      start: startOfMonth(shownDate),
+      end: endOfMonth(shownDate),
+    });
+
+    return allDatesInMonth.filter(date => {
+      const formatted = format(date, "yyyy-MM-dd");
+
+      if (selectedTime !== "NN : NN" && filteredAvailableDates) {
+        return !filteredAvailableDates.includes(formatted);
+      }
+
+      return !availableDatesData[formatted];
+    });
+  }, [availableDatesData, shownDate, selectedTime, filteredAvailableDates]);
+
   const isDisabledTime = (time: string, date: string) => {
     if (!availableDatesData) return true;
 
@@ -139,6 +154,26 @@ export const useViewingReservation = ({
     return isMyViewingConflict;
   };
 
+  const isDisabledTimeWithoutDate = (time: string) => {
+    if (!availableDatesData) return true;
+
+    // 모든 날짜 중 해당 시간 슬롯이 하나라도 있으면 활성화
+    const hasTimeSlot = Object.entries(availableDatesData).some(
+      ([date, slots]) =>
+        slots.some(slot => {
+          const utcDatetime = `${date}T${slot.time}Z`;
+          const localTime = dayjs
+            .utc(utcDatetime)
+            .tz(userTimeZone)
+            .format("HH:mm");
+
+          return localTime === time;
+        }),
+    );
+
+    return !hasTimeSlot;
+  };
+
   return {
     availableDatesData,
     getTimeLabelByTime,
@@ -146,5 +181,6 @@ export const useViewingReservation = ({
     disabledDates,
     usedDateTimeSet,
     isDisabledTime,
+    isDisabledTimeWithoutDate,
   };
 };

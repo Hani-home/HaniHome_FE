@@ -41,15 +41,20 @@ const ViewingReservationPage = () => {
 
   const { data: myViewingDatesData } = useMyViewingDates("REQUESTED");
 
-  const { getTimeLabelByTime, disabledDates, usedDateTimeSet, isDisabledTime } =
-    useViewingReservation({
-      propertyId: Number(id),
-      shownDate,
-      selectedTime: schedule.time,
-      selectedDate: schedule.date,
-      currentId: id,
-      myViewingDatesData,
-    });
+  const {
+    getTimeLabelByTime,
+    disabledDates,
+    usedDateTimeSet,
+    isDisabledTime,
+    isDisabledTimeWithoutDate,
+  } = useViewingReservation({
+    propertyId: Number(id),
+    shownDate,
+    selectedTime: schedule.time,
+    selectedDate: schedule.date,
+    currentId: id,
+    myViewingDatesData,
+  });
 
   const updateSchedule = (key: "date" | "time", value: Date | string) => {
     setSchedule(id, { ...schedule, [key]: value });
@@ -104,6 +109,7 @@ const ViewingReservationPage = () => {
           setSelectedLabel={label => setSelectedTimeLabel(id, label)}
           usedDateTimeSet={usedDateTimeSet}
           isDisabledTime={isDisabledTime}
+          isDisabledTimeWithoutDate={isDisabledTimeWithoutDate}
         />
       )}
 

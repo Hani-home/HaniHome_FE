@@ -18,6 +18,7 @@ interface TimePickerProps {
   usedDateTimeSet: Set<string>;
 
   isDisabledTime: (time: string, date: string) => boolean;
+  isDisabledTimeWithoutDate: (time: string) => boolean;
 }
 
 const TimePicker = ({
@@ -27,6 +28,7 @@ const TimePicker = ({
   selectedLabel,
   setSelectedLabel,
   isDisabledTime,
+  isDisabledTimeWithoutDate,
 }: TimePickerProps) => {
   const [tempLabel, setTempLabel] = useState<TimeLabel>("아침");
 
@@ -76,11 +78,9 @@ const TimePicker = ({
       {/* 시간 버튼 목록 */}
       <div className="grid grid-cols-3 gap-x-3 gap-y-2 px-[31.5px] pt-5">
         {TIME_OPTIONS[tempLabel].map(time => {
-          const date = selectedDate
-            ? dayjs(selectedDate).format("YYYY-MM-DD")
-            : "";
-
-          const isDisabled = date ? isDisabledTime(time, date) : true;
+          const isDisabled = selectedDate
+            ? isDisabledTime(time, dayjs(selectedDate).format("YYYY-MM-DD"))
+            : isDisabledTimeWithoutDate(time); // ✅ 날짜 없으면 이걸로 판단
 
           return (
             <button
