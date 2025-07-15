@@ -13,6 +13,8 @@ interface ParamsInput {
   radiusKm: number | null;
   availableFrom: string | null;
   availableTo: string | null;
+  metroStopLatitude: number | null;
+  metroStopLongitude: number | null;
 }
 
 export const buildQueryParams = (
@@ -29,6 +31,8 @@ export const buildQueryParams = (
     radiusKm,
     availableFrom,
     availableTo,
+    metroStopLatitude,
+    metroStopLongitude,
   } = input;
 
   const kinds = selectedTypes
@@ -59,6 +63,10 @@ export const buildQueryParams = (
   if (minWeeklyCost !== null) params.minWeeklyCost = minWeeklyCost;
   if (maxWeeklyCost !== null) params.maxWeeklyCost = maxWeeklyCost;
   if (radiusKm !== null) params.radiusKm = radiusKm;
+
+  if (metroStopLatitude !== null) params.metroStopLatitude = metroStopLatitude;
+  if (metroStopLongitude !== null)
+    params.metroStopLongitude = metroStopLongitude;
 
   if (availableFrom && availableTo && availableFrom !== availableTo) {
     params.availableFrom = availableFrom;

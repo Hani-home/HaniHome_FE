@@ -30,8 +30,14 @@ interface FilterStore {
   billIncluded: boolean;
   availableFrom: string | null;
   availableTo: string | null;
-  metroStopLatitude: number | null;
-  metroStopLongitude: number | null;
+
+  selectedMetroStop: {
+    id: number | null;
+    name: string;
+    latitude: number | null;
+    longitude: number | null;
+  } | null;
+
   radiusKm: number | null;
   immediate: boolean;
   negotiable: boolean;
@@ -87,8 +93,9 @@ export const useFilterStore = create(
       billIncluded: false,
       availableFrom: null,
       availableTo: null,
-      metroStopLatitude: null,
-      metroStopLongitude: null,
+
+      selectedMetroStop: null,
+
       radiusKm: null,
       immediate: false,
       negotiable: false,
@@ -108,8 +115,7 @@ export const useFilterStore = create(
           billIncluded: false,
           availableFrom: null,
           availableTo: null,
-          metroStopLatitude: null,
-          metroStopLongitude: null,
+          selectedMetroStop: null,
           radiusKm: null,
           immediate: false,
           negotiable: false,

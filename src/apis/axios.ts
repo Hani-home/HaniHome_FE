@@ -36,5 +36,19 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  error => Promise.reject(error),
+  error => {
+    const res = error.response;
+    const resData = res?.data;
+
+    const isAccessTokenExpired =
+      res?.status === 400 &&
+      (resData?.serviceCode === "ACCESS_TOKEN_EXPIRED" ||
+        resData?.data?.codeName === "ACCESS_TOKEN_EXPIRED");
+
+    if (isAccessTokenExpired) {
+      useAuthStore.getState().clearAuth();
+    }
+
+    return Promise.reject(error);
+  },
 );
