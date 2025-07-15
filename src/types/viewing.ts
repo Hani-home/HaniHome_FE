@@ -29,3 +29,10 @@ export type MyViewingDate = {
   viewingDate: string;
   viewingTime: string;
 };
+
+export type MyViewingDateProfile = {
+  id: number;
+  meetingDay: string;
+  myImageUrl: string;
+  counterpartImageUrl: string | null;
+};

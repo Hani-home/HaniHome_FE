@@ -11,13 +11,13 @@ interface UseMyViewingListOptions {
   enabled?: boolean;
 }
 
-export const useMyViewingList = ({
+export const useMyViewingList = <T>({
   view = "DEFAULT",
   enabled = true,
 }: UseMyViewingListOptions = {}) => {
-  return useQuery({
+  return useQuery<T>({
     queryKey: ["myViewingList", view],
-    queryFn: () => getMyViewingList(view),
+    queryFn: () => getMyViewingList<T>(view),
     enabled,
   });
 };

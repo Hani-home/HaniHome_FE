@@ -7,13 +7,17 @@ import {
   ViewingViewType,
 } from "@/types/viewing";
 
-export const getMyViewingList = async (
+export const getMyViewingList = async <T>(
   view: ViewingViewType,
-): Promise<ViewingItem[]> => {
-  const res = await axiosInstance.get(
-    `/api/v1/viewings/my-viewings?view=${view}`,
-  );
-  return res.data;
+): Promise<T> => {
+  const res = await axiosInstance.get<{
+    serviceCode: string;
+    message: string;
+    data: T;
+    success: boolean;
+  }>(`/api/v1/viewings/my-viewings?view=${view}`);
+
+  return res.data.data;
 };
 
 export const getViewingList = async (): Promise<ViewingItem[]> => {

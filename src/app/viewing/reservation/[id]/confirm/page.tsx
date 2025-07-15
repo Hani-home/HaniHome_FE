@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
 import { useViewingScheduleStore } from "@/stores/useViewingScheduleStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { createViewing } from "@/apis/viewing";
 
@@ -20,6 +21,7 @@ import NoteIcon from "@/public/svgs/reservation/note-icon.svg";
 const ViewingConfirmPage = () => {
   const { id } = useParams() as { id: string };
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: summaryList, isLoading } = usePropertyList({ view: "SUMMARY" });
   const { getSchedule, reset } = useViewingScheduleStore();
@@ -155,6 +157,9 @@ const ViewingConfirmPage = () => {
             time: selectedSchedule.time,
           });
           reset(id);
+          await queryClient.invalidateQueries({
+            queryKey: ["myViewingList", "DATE_PROFILE"],
+          });
           router.push(`/viewing/reservation/${id}/complete`);
         }}
       />

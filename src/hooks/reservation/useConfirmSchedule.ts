@@ -1,12 +1,20 @@
 import { useMemo } from "react";
 
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
 import { useViewingAvailableDates } from "@/hooks/viewing/useViewing";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
 import { MyViewingDate } from "@/types/viewing";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const userTimeZone = dayjs.tz.guess();
 
 export const useViewingReservation = ({
   propertyId,
@@ -36,10 +44,16 @@ export const useViewingReservation = ({
     if (!availableDatesData || selectedTime === "NN : NN") return null;
 
     return Object.entries(availableDatesData)
-      .filter(([, slots]) =>
+      .filter(([date, slots]) =>
         slots.some(slot => {
-          const timeStr = slot.time.slice(0, 5);
-          return timeStr === selectedTime && !slot.reserved;
+          const utcDatetime = `${date}T${slot.time}Z`;
+
+          const localTime = dayjs
+            .utc(utcDatetime)
+            .tz(userTimeZone)
+            .format("HH:mm");
+
+          return localTime === selectedTime && !slot.reserved;
         }),
       )
       .map(([date]) => date);
@@ -71,8 +85,14 @@ export const useViewingReservation = ({
       Object.entries(availableDatesData).forEach(([date, slots]) => {
         slots.forEach(slot => {
           if (slot.reserved) {
-            const timeStr = slot.time.slice(0, 5);
-            set.add(`${date}-${timeStr}`);
+            const utcDatetime = `${date}T${slot.time}Z`;
+
+            const localTime = dayjs
+              .utc(utcDatetime)
+              .tz(userTimeZone)
+              .format("HH:mm");
+
+            set.add(`${date}-${localTime}`);
           }
         });
       });
@@ -93,13 +113,18 @@ export const useViewingReservation = ({
   const isDisabledTime = (time: string) => {
     if (!availableDatesData) return true;
 
-    const hasAvailableSlot = Object.values(availableDatesData).some(slots => {
-      return slots.some(slot => {
-        const slotTime = slot.time.slice(0, 5);
-        return slotTime === time && !slot.reserved;
-      });
-    });
+    const hasAvailableSlot = Object.entries(availableDatesData).some(
+      ([date, slots]) =>
+        slots.some(slot => {
+          const utcDatetime = `${date}T${slot.time}Z`;
+          const localTime = dayjs
+            .utc(utcDatetime)
+            .tz(userTimeZone)
+            .format("HH:mm");
 
+          return localTime === time && !slot.reserved;
+        }),
+    );
     return !hasAvailableSlot;
   };
 
