@@ -31,4 +31,5 @@ export const RENT_TYPE_MAP: Record<RentPropertySubType, string> = {
   UNIT: "유닛",
   STUDIO: "원룸",
   GRANNY_FLAT: "그라니플랫",
+
 };
