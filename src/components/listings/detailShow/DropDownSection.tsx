@@ -62,8 +62,6 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
       );
     }
   }
-
-  console.log("Structured Data:", structuredData);
   
   return (
     <div className="py-3">
