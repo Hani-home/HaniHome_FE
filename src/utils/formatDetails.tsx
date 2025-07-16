@@ -59,6 +59,7 @@ export const formatPropertySubType = (
   subType: SharePropertySubType | RentPropertySubType,
   kind: "SHARE" | "RENT",
 ) => {
+  if (!subType) return "N/A";
   return kind === "SHARE"
     ? SHARE_TYPE_MAP[subType as SharePropertySubType]
     : RENT_TYPE_MAP[subType as RentPropertySubType];
@@ -95,64 +96,88 @@ export const formatInternalDetails = (
 ) => {
   if (!details) return <div>N/A</div>;
 
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      <div className="flex justify-end gap-2">
-        <span>Internal area</span>
-        <span className="text-mint">{details.internalArea}</span>
-        <span>m²</span>
-      </div>
-      <div className="flex justify-end gap-2">
-        <span>Total area</span>
-        <span className="text-mint">{details.totalArea}</span>
-        <span>m²</span>
-      </div>
+  const displayValue = (value: number | undefined | null) =>
+    value === null || value === undefined ? "(-)" : value;
 
+  return (
+    <div className="flex flex-col divide-y divide-gray-100">
+      {/* 면적 줄 */}
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>Internal area</span>
+          <span className="text-mint">
+            {displayValue(details.internalArea)}
+          </span>
+          <span>m²</span>
+        </div>
+
+        <div className="mx-6 h-3 w-px bg-gray-200" />
+
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>Total area</span>
+          <span className="text-mint">{displayValue(details.totalArea)}</span>
+          <span>m²</span>
+        </div>
+      </div>
+      {/* 방개수 / 욕실 개수 */}
       {kind === "RENT" ? (
         <>
-          <div className="flex justify-end gap-2">
-            <span>방 개수</span>
-            <span className="text-mint">
-              {(details as RentInternalDetails).numberOfRoom}
-            </span>
-            <span>개</span>
-          </div>
-          <div className="flex justify-end gap-2">
-            <span>욕실 개수</span>
-            <span className="text-mint">
-              {(details as RentInternalDetails).numberOfBath}
-            </span>
-            <span>개</span>
+          <div className="flex items-center justify-end py-2">
+            <div className="flex basis-1/2 items-center justify-end gap-2">
+              <span>방 개수</span>
+              <span className="text-mint">
+                {displayValue((details as RentInternalDetails).numberOfRoom)}
+              </span>
+              <span>개</span>
+            </div>
+            <div className="mx-6 h-3 w-px bg-gray-200" />
+            <div className="flex basis-1/2 items-center justify-end gap-2">
+              <span>욕실 개수</span>
+              <span className="text-mint">
+                {displayValue((details as RentInternalDetails).numberOfBath)}
+              </span>
+              <span>개</span>
+            </div>
           </div>
         </>
       ) : (
         <>
-          <div className="flex justify-end gap-2">
-            <span>총 거주</span>
-            <span className="text-mint">
-              {(details as ShareInternalDetails).totalResidents}
-            </span>
-            <span>명</span>
-          </div>
-          <div className="flex justify-end gap-2">
-            <span>욕실 쉐어자수</span>
-            <span className="text-mint">
-              {(details as ShareInternalDetails).totalBathUser}
-            </span>
-            <span>명</span>
+          {/* 총거주 / 욕실 줄 */}
+          <div className="flex items-center justify-end py-2">
+            <div className="flex basis-1/2 items-center justify-end gap-2">
+              <span>총 거주</span>
+              <span className="text-mint">
+                {displayValue((details as ShareInternalDetails).totalResidents)}
+              </span>
+              <span>명</span>
+            </div>
+            <div className="mx-6 h-3 w-px bg-gray-200" />
+            <div className="flex basis-1/2 items-center justify-end gap-2">
+              <span>욕실 쉐어자수</span>
+              <span className="text-mint">
+                {displayValue((details as ShareInternalDetails).totalBathUser)}
+              </span>
+              <span>명</span>
+            </div>
           </div>
         </>
       )}
 
-      <div className="flex justify-end gap-2">
-        <span>건물 전체 층</span>
-        <span className="text-mint">{details.totalFloors}</span>
-        <span>층</span>
-      </div>
-      <div className="flex justify-end gap-2">
-        <span>해당 층</span>
-        <span className="text-mint">{details.propertyFloor}</span>
-        <span>층</span>
+      {/* 건물층 / 해당층 줄 */}
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>건물 전체 층</span>
+          <span className="text-mint">{displayValue(details.totalFloors)}</span>
+          <span>층</span>
+        </div>
+        <div className="mx-6 h-3 w-px bg-gray-200" />
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>해당 층</span>
+          <span className="text-mint">
+            {displayValue(details.propertyFloor)}
+          </span>
+          <span>층</span>
+        </div>
       </div>
     </div>
   );
@@ -184,18 +209,27 @@ export const formatLivingConditions = (
 ) => {
   if (!livingConditions) return <div>N/A</div>;
   return (
-    <div className="grid grid-cols-2">
-      <div className="flex justify-end gap-2">
-        <span>노티스</span>
-        <span className="text-mint">{livingConditions.noticePeriodWeeks}</span>
-        <span>주</span>
+    <div className="flex flex-col divide-y divide-gray-100">
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>노티스</span>
+          <span className="text-mint">
+            {livingConditions.noticePeriodWeeks}
+          </span>
+          <span>주</span>
+        </div>
+        <div className="mx-6 h-3 w-px bg-gray-200" />
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>최소거주기간</span>
+          <span className="text-mint">{livingConditions.minimumStayWeeks}</span>
+          <span>주</span>
+        </div>
       </div>
-      <div className="flex justify-end gap-2">
-        <span>최소거주기간</span>
-        <span className="text-mint">{livingConditions.minimumStayWeeks}</span>
-        <span>주</span>
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          {livingConditions.contractTerms}
+        </div>
       </div>
-      <div>{livingConditions.contractTerms}</div>
     </div>
   );
 };
@@ -234,18 +268,25 @@ export const formatMoveInDates = (
 ) => {
   if (!moveInInfo) return <div>N/A</div>;
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <div className="flex justify-end gap-2">
-        <span>입주 가능일</span>
-        <span className="text-mint">
-          {formatDateToMonthDay(moveInInfo.availableFrom)}
-        </span>
-      </div>
-      <div className="flex justify-end gap-2">
+    <div className="flex flex-col divide-y divide-gray-100">
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          <span>입주 가능일</span>
+          <span className="text-mint">
+            {formatDateToMonthDay(moveInInfo.availableFrom)}
+          </span>
+        </div>
+        <div className="mx-6 h-3 w-px bg-gray-200" />
+        <div className="flex basis-1/2 items-center justify-end gap-2">
           {moveInInfo.isImmediate ? "즉시 입주 가능" : "즉시 입주 불가"}
-      </div>
-      <div className="flex justify-end gap-2">
-        {moveInInfo.isNegotiable ? "입주 일자 협의 가능" : "입주 일자 협의 불가"}
+        </div>
+      </div>{" "}
+      <div className="flex items-center justify-end py-2">
+        <div className="flex basis-1/2 items-center justify-end gap-2">
+          {moveInInfo.isNegotiable
+            ? "입주 일자 협의 가능"
+            : "입주 일자 협의 불가"}
+        </div>
       </div>
     </div>
   );
