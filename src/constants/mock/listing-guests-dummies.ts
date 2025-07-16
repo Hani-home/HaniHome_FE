@@ -4,33 +4,27 @@ export const listingGuests = [
     guests: [
       {
         nickname: "suding1",
-        date: "2025-07-12",
-        time: "14:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding2",
-        date: "2025-07-12",
-        time: "15:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding3",
-        date: "2025-07-12",
-        time: "16:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding4",
-        date: "2025-07-13",
-        time: "11:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding5",
-        date: "2025-07-13",
-        time: "12:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding6",
-        date: "2025-07-13",
-        time: "13:00",
+        meetingDay: "2025-07-12T15:00",
       },
     ],
   },
@@ -39,33 +33,27 @@ export const listingGuests = [
     guests: [
       {
         nickname: "suding1",
-        date: "2025-07-12",
-        time: "14:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding2",
-        date: "2025-07-12",
-        time: "15:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding3",
-        date: "2025-07-12",
-        time: "16:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding4",
-        date: "2025-07-13",
-        time: "11:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding5",
-        date: "2025-07-13",
-        time: "12:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding6",
-        date: "2025-07-13",
-        time: "13:00",
+        meetingDay: "2025-07-12T15:00",
       },
     ],
   },
@@ -74,33 +62,27 @@ export const listingGuests = [
     guests: [
       {
         nickname: "suding1",
-        date: "2025-07-12",
-        time: "14:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding2",
-        date: "2025-07-12",
-        time: "15:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding3",
-        date: "2025-07-12",
-        time: "16:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding4",
-        date: "2025-07-13",
-        time: "11:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding5",
-        date: "2025-07-13",
-        time: "12:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding6",
-        date: "2025-07-13",
-        time: "13:00",
+        meetingDay: "2025-07-12T15:00",
       },
     ],
   },
@@ -109,33 +91,27 @@ export const listingGuests = [
     guests: [
       {
         nickname: "suding1",
-        date: "2025-07-12",
-        time: "14:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding2",
-        date: "2025-07-12",
-        time: "15:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding3",
-        date: "2025-07-12",
-        time: "16:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding4",
-        date: "2025-07-13",
-        time: "11:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding5",
-        date: "2025-07-13",
-        time: "12:00",
+        meetingDay: "2025-07-12T15:00",
       },
       {
         nickname: "suding6",
-        date: "2025-07-13",
-        time: "13:00",
+        meetingDay: "2025-07-12T15:00",
       },
     ],
   },

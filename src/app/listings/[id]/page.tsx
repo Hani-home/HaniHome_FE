@@ -111,18 +111,16 @@ const ListingDetailPage = () => {
 
           {/* 거래 상태 드롭다운 */}
           {isEditMode && (
-            <div className="pr-4">
-              <DropDownMenu
-                selectedKey={
-                  data.tradeStatus === "COMPLETED"
-                    ? "completed"
-                    : data.tradeStatus === "BEFORE"
-                      ? "active"
-                      : "active"
-                }
-                onSelect={() => {}}
-              />
-            </div>
+            <DropDownMenu
+              selectedKey={
+                data.tradeStatus === "COMPLETED"
+                  ? "completed"
+                  : data.tradeStatus === "BEFORE"
+                    ? "active"
+                    : "active"
+              }
+              onSelect={() => {}}
+            />
           )}
         </div>
 

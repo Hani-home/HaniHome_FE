@@ -26,7 +26,7 @@ import {
   SharePropertySubType,
 } from "@/types/listingDetail";
 
-import { formatDateToMonthDay } from "./formateDate";
+import { formatDateToMonthDay } from "./dateFormatter";
 
 export const formatKind = (propertyKind: PropertySuperType) => {
   if (!propertyKind) return "N/A";

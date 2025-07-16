@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 
 import { useState } from "react";
 
+import { formatMeetingDay } from "@/utils/dateFormatter";
+
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CheckIcon from "@/components/common/CheckIcon";
 import UserRoomPreview from "@/components/common/UserRoomPreview";
@@ -26,9 +28,11 @@ const ListingsGuests = () => {
     setSelectedGuestIndex(null);
   };
   const showBottomBar = checked || selectedGuestIndex !== null;
+
   return (
     <>
       <BackHeader />
+      <div className="flex flex-col gap-2"></div>
       <div className="pb-[70px]">
         <div className="item-start flex flex-col gap-1 px-4 py-3">
           <h3 className="text-heading3 text-gray-800">
@@ -50,44 +54,70 @@ const ListingsGuests = () => {
           </span>
         </div>
 
-        {selectedListing?.guests.map((guest, index) => (
-          <div
-            className={`flex cursor-pointer items-center gap-4 px-4 py-3 ${selectedGuestIndex === index ? "bg-mint-light" : ""}`}
-            onClick={() => {
-              setSelectedGuestIndex(index);
-              setChecked(false);
-            }}
-          >
-            <UserRoomPreview
-              userImg="/svgs/common/profile-img.svg"
-              roomImg="/svgs/common/room-img.svg"
-              variant="md"
-            />
-            <div key={index} className="flex flex-col gap-2">
-              <span
-                className={`text-body1-sb ${selectedGuestIndex === index ? "text-mint-contrast" : "text-gray-800"}`}
-              >
-                {guest.nickname}
-              </span>
-              <div className={`text-cap1-med flex flex-col gap-1 ${selectedGuestIndex===index? "text-mint-contrast":"text-gray-700 "}`}>
-                <div className="flex gap-1">
-                  <span>날짜</span>
-                  <span
-                    className={`h-3 w-px ${selectedGuestIndex === index ? "bg-mint-contrast" : "bg-gray-300"}`}
-                  />
-                  <span>{guest.date}</span>
-                </div>
-                <div className="flex gap-1">
-                  <span>시간</span>
-                  <span
-                    className={`h-3 w-px ${selectedGuestIndex === index ? "bg-mint-contrast" : "bg-gray-300"}`}
-                  />
-                  <span>{guest.time}</span>
+        {selectedListing?.guests.map((guest, index) => {
+          const { date, time } = formatMeetingDay(guest.meetingDay);
+
+          return (
+            <div
+              key={index}
+              className={`flex cursor-pointer items-center gap-4 px-4 py-3 ${
+                selectedGuestIndex === index ? "bg-mint-light" : ""
+              }`}
+              onClick={() => {
+                setSelectedGuestIndex(index);
+                setChecked(false);
+              }}
+            >
+              <UserRoomPreview
+                userImg="/svgs/common/profile-img.svg"
+                roomImg="/svgs/common/room-img.svg"
+                variant="md"
+              />
+              <div className="flex flex-col gap-2">
+                <span
+                  className={`text-body1-sb ${
+                    selectedGuestIndex === index
+                      ? "text-mint-contrast"
+                      : "text-gray-800"
+                  }`}
+                >
+                  {guest.nickname}
+                </span>
+                <div
+                  className={`text-cap1-med flex flex-col gap-1 ${
+                    selectedGuestIndex === index
+                      ? "text-mint-contrast"
+                      : "text-gray-700"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span>날짜</span>
+                    <span
+                      className={`h-3 w-px ${
+                        selectedGuestIndex === index
+                          ? "bg-mint-contrast"
+                          : "bg-gray-300"
+                      }`}
+                    />
+                    <span>{date}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>시간</span>
+                    <span
+                      className={`h-3 w-px ${
+                        selectedGuestIndex === index
+                          ? "bg-mint-contrast"
+                          : "bg-gray-300"
+                      }`}
+                    />
+                    <span>{time}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+
         {showBottomBar && <BottomActionBar label="저장" onClick={() => {}} />}
       </div>
     </>
