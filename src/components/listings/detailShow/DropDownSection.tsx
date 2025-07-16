@@ -28,13 +28,21 @@ interface DropDownSectionProps {
 }
 
 const DropDownSection = ({ listingData }: DropDownSectionProps) => {
-  const [openCategoryKey, setOpenCategoryKey] = useState<string | null>(null);
+  const [openCategoryKeys, setOpenCategoryKeys] = useState<Set<string>>(new Set());
   const structuredData = convertOptionIdsToStructuredData(
     listingData.optionItemIds,
   );
 
   const handleToggle = (key: string) => {
-    setOpenCategoryKey(prev => (prev === key ? null : key));
+    setOpenCategoryKeys(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(key)) {
+        newSet.delete(key); // 다시 누르면 닫힘
+      } else {
+        newSet.add(key); // 누르면 열림
+      }
+      return newSet;
+    });
   };
 
   //카테고리 드롭다운 메뉴 순서 정렬
@@ -101,10 +109,10 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
                   {item.label}
                 </span>
                 <DownArrow
-                  className={`h-[18px] w-[18px] text-gray-600 ${openCategoryKey === itemKeyStr ? "rotate-180" : ""}`}
+                  className={`h-[18px] w-[18px] text-gray-600 ${openCategoryKeys.has(itemKeyStr) ? "rotate-180" : ""}`}
                 />
               </div>
-              {openCategoryKey === itemKeyStr && (
+              {openCategoryKeys.has(itemKeyStr) && (
                 <div className="border-t px-3 py-2 text-gray-100">
                   <CategoryContent
                     keyName={itemKeyStr}
