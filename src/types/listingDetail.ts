@@ -1,36 +1,37 @@
 export type PropertySuperType = "RENT" | "SHARE";
 
-export type GenderPreference = 'ANY' | 'MALE_ONLY' | 'FEMALE_ONLY' | 'COUPLE';
+export type GenderPreference = "ANY" | "MALE_ONLY" | "FEMALE_ONLY" | "COUPLE";
 
-export type ParkingOption = 'NONE' | 'STREET_PARKING' | 'RESERVED_SPACE';
+export type ParkingOption = "NONE" | "STREET_PARKING" | "RESERVED_SPACE";
 
-export type SharePropertySubType = 'SECOND_ROOM' | 'MASTER_ROOM' | 'LIVING_SHARE';
+export type SharePropertySubType =
+  | "SECOND_ROOM"
+  | "MASTER_ROOM"
+  | "LIVING_SHARE";
 
-export type RentPropertySubType = 'HOUSE' | 'APARTMENT' | 'UNIT' | 'STUDIO' | 'GRANNY_FLAT';
+export type RentPropertySubType =
+  | "HOUSE"
+  | "APARTMENT"
+  | "UNIT"
+  | "STUDIO"
+  | "GRANNY_FLAT";
 
-export type RealEstateType = 'INDIVIDUAL' | 'REAL_ESTATE';
+export type CapacityShare = "SINGLE" | "DOUBLE" | "TRIPLE" | "OTHER";
 
-export type CapacityShare = 'SINGLE' | 'DOUBLE' | 'TRIPLE' | 'OTHER';
+export type CapacityRent = "ONE" | "TWO" | "THREE" | "FOUR" | "OTHER";
 
-export type CapacityRent = 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'OTHER';
-
-export type Exposure = 'NORTHERN' | 'SOUTHERN' | 'EASTERN' | 'WESTERN';
-export interface Category {
-  id: number;
-  categoryCode: string;
-  name: string;
+export interface Furniture {
+  [subCategory: string]: string[];
 }
 
-export interface OptionItem {
-  optionItemId: number;
-  itemName: string;
-  isActive: boolean;
-  isCustom: boolean;
-  categoryId: number;
-  categoryName: string;
-  parentItemId: number | null;
+export interface AdditionalInfo {
+  smokingAllowed: boolean | null;
+  petsAllowed: boolean | null;
+  visitorsAllowed: boolean | null;
+  parking: string[]; // 주차 옵션 목록
+  kitchenAccess: boolean | null;
 }
-
+// --- 공통 타입 ---
 export interface PropertyRegion {
   country: string;
   postCode: string;
@@ -79,29 +80,21 @@ export interface InternalDetailsBase {
   propertyFloor: number;
 }
 
-export interface ShareInternalDetails extends InternalDetailsBase {
-  totalResidents: number;
-  totalBathUser: number;
-}
-
-export interface RentInternalDetails extends InternalDetailsBase {
-  numberOfRoom: number;
-  numberOfBath: number;
-}
-
+// --- 공통 베이스 ---
 interface PropertyBase {
+  jsonDiscriminator: PropertySuperType;
   memberId: number;
   kind: PropertySuperType;
-  genderPreference: string;
+  genderPreference: GenderPreference;
   lgbtAvailable: boolean;
   region: PropertyRegion;
   photoUrls: string[];
   thumbnailUrl: string | null;
   costDetails: CostDetails;
-  optionItems: OptionItem[];
+  optionItemIds: number[];
   livingConditions: LivingConditions;
   moveInInfo: MoveInInfo;
-  parkingOption: string;
+  parkingOption: ParkingOption;
   meetingDateFrom: string;
   meetingDateTo: string;
   timeSlots: TimeSlot[];
@@ -109,20 +102,30 @@ interface PropertyBase {
   description: string;
 }
 
+// --- SHARE 전용 ---
+export interface ShareInternalDetails extends InternalDetailsBase {
+  totalResidents: number; //총거주
+  totalBathUser: number; //욕실쉐어자수
+}
+
 export interface SharePropertyDetail extends PropertyBase {
   jsonDiscriminator: "SHARE";
-  sharePropertySubType: string;
+  sharePropertySubType: SharePropertySubType;
   internalDetails: ShareInternalDetails;
-  capacityShare: string;
+  capacityShare: CapacityShare;
+}
+
+// --- RENT 전용 ---
+export interface RentInternalDetails extends InternalDetailsBase {
+  numberOfRoom: number;
+  numberOfBath: number;
 }
 
 export interface RentPropertyDetail extends PropertyBase {
   jsonDiscriminator: "RENT";
-  rentPropertySubType: string;
-  isRealEstateIntervention: string;
+  rentPropertySubType: RentPropertySubType;
   internalDetails: RentInternalDetails;
-  capacityRent: string;
-  exposure: string;
+  capacityRent: CapacityRent;
 }
 
 export type PropertyDetail = SharePropertyDetail | RentPropertyDetail;

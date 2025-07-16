@@ -5,12 +5,11 @@ import BackHeader from "@/components/layout/header/BackHeader";
 import DropDownSection from "@/components/listings/detailShow/DropDownSection";
 import ImageSlider from "@/components/listings/detailShow/ImageSlider";
 import TitleSection from "@/components/listings/detailShow/TitleSection";
-import { ListingValueMap } from "@/types/listingDetail";
 
-import { listingDetails } from "@/constants/mock/listing-detail-dummies";
+import { propertyInfo } from "@/constants/mock/listing-detail-dummies";
 
-const images = listingDetails[1].image;
-const listingData = listingDetails[1] as ListingValueMap; // 타입 캐스팅
+const images = propertyInfo[0].photoUrls;
+const propertyDetail = propertyInfo[1];
 
 const ListingsEdit = () => {
   return (
@@ -24,7 +23,7 @@ const ListingsEdit = () => {
         <div className="px-4">
           <ImageSlider images={images} />
         </div>
-        {listingData && <DropDownSection listingData={listingData} />}
+        {propertyDetail && <DropDownSection listingData={propertyDetail} />}
       </div>
       <BottomActionBar label="저장" />
     </>

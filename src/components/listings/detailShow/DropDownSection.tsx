@@ -2,56 +2,124 @@
 
 import { useState } from "react";
 
+import { convertOptionIdsToStructuredData } from "@/utils/convertOptionIdToStructureData";
+
 import Divider from "@/components/common/Divider";
 
-import { listingDetailCategories } from "@/constants/listing-detail-categories";
+import {
+  CategoryItem,
+  commonDetailCategories,
+  rentDetailCategories,
+  shareDetailCategories,
+} from "@/constants/listing-detail-categories";
 
-import { ListingValueMap } from "@/types/listingDetail"
+import {
+  PropertyDetail,
+  RentPropertyDetail,
+  SharePropertyDetail,
+} from "@/types/listingDetail";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
 import CategoryContent from "./CategoryContent";
 
 interface DropDownSectionProps {
-  listingData: ListingValueMap;
+  listingData: PropertyDetail;
 }
 
 const DropDownSection = ({ listingData }: DropDownSectionProps) => {
   const [openCategoryKey, setOpenCategoryKey] = useState<string | null>(null);
+  const structuredData = convertOptionIdsToStructuredData(
+    listingData.optionItemIds,
+  );
 
   const handleToggle = (key: string) => {
     setOpenCategoryKey(prev => (prev === key ? null : key));
   };
 
-  // "쉐어"일 경우 isBrokered 제외
-  const filteredCategories =
-    listingData.rentalType === "쉐어"
-      ? listingDetailCategories.filter(item => item.key !== "isBrokered")
-      : listingDetailCategories;
+  //카테고리 드롭다운 메뉴 순서 정렬
+  const filteredCategories: CategoryItem[] = [...commonDetailCategories];
 
+  if (listingData.kind === "SHARE") {
+    const regionIdx = filteredCategories.findIndex(cat => cat.key === "region");
+    if (regionIdx !== -1) {
+      filteredCategories.splice(regionIdx + 1, 0, shareDetailCategories[0]);
+    }
+  } else {
+    const regionIdx = filteredCategories.findIndex(cat => cat.key === "region");
+    if (regionIdx !== -1) {
+      filteredCategories.splice(regionIdx + 1, 0, rentDetailCategories[0]);
+    }
+
+    const internalDetailsIdx = filteredCategories.findIndex(
+      cat => cat.key === "internalDetails",
+    );
+    if (internalDetailsIdx !== -1) {
+      filteredCategories.splice(
+        internalDetailsIdx + 1,
+        0,
+        rentDetailCategories[1],
+      );
+    }
+  }
+
+  console.log("Structured Data:", structuredData);
+  
   return (
     <div className="py-3">
-      {filteredCategories.map((item, index) => (
-        <div key={index} onClick={() => handleToggle(item.key)}>
-          <div className="px-4">
-            <div className="flex cursor-pointer justify-between px-1 py-2">
-              <span className="text-body2-med text-gray-900">{item.label}</span>
-              <DownArrow
-                className={`h-[18px] w-[18px] text-gray-600 ${openCategoryKey === item.key ? "rotate-180" : ""}`}
-              />
-            </div>
-            {openCategoryKey === item.key && (
-              <div className="border-t px-3 py-2 text-gray-100">
-                <CategoryContent
-                  keyName={item.key}
-                  value={listingData[item.key]}
+      {filteredCategories.map((item, index) => {
+        const itemKeyStr = String(item.key);
+        let value;
+        if (itemKeyStr === "highlights") {
+          value = structuredData.highlights;
+        } else if (itemKeyStr === "furniture") {
+          value = structuredData.furniture;
+        } else if (itemKeyStr === "isBrokered") {
+          value = structuredData.isBrokered;
+        } else if (itemKeyStr === "costDetails") {
+          value = {
+            costDetails: listingData.costDetails,
+            includedItems: structuredData.includedItems,
+          };
+        } else if (itemKeyStr === "additionalInfo") {
+          value = structuredData.additionalInfo;
+        } else if (itemKeyStr === "capacityPeople") {
+          if (listingData.kind === "RENT") {
+            value = (listingData as RentPropertyDetail).capacityRent;
+          } else {
+            value = (listingData as SharePropertyDetail).capacityShare;
+          }
+        } else {
+          value = Array.isArray(item.key)
+            ? item.key.map(k => listingData[k as keyof PropertyDetail])
+            : listingData[item.key as keyof PropertyDetail];
+        }
+
+        return (
+          <div key={index} onClick={() => handleToggle(itemKeyStr)}>
+            <div className="px-4">
+              <div className="flex cursor-pointer justify-between px-1 py-2">
+                <span className="text-body2-med text-gray-900">
+                  {item.label}
+                </span>
+                <DownArrow
+                  className={`h-[18px] w-[18px] text-gray-600 ${openCategoryKey === itemKeyStr ? "rotate-180" : ""}`}
                 />
               </div>
-            )}
+              {openCategoryKey === itemKeyStr && (
+                <div className="border-t px-3 py-2 text-gray-100">
+                  <CategoryContent
+                    keyName={itemKeyStr}
+                    value={value}
+                    listingData={listingData}
+                  />
+                </div>
+              )}
+            </div>
+            {index !== filteredCategories.length - 1 && <Divider />}
           </div>
-          {index !== filteredCategories.length - 1 && <Divider />}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

@@ -1,103 +1,128 @@
-export const listingDetails = [
+import { PropertyDetail } from "@/types/listingDetail";
+
+export const propertyInfo: PropertyDetail[] = [
   {
-    rentalType: "쉐어",
-    image: ["/svgs/common/room-img.svg", "/svgs/common/room-img.svg"],
-    address: "25 Smith St, Chatswood NSW 2067",
-    propertyType: "세컨드 룸",
-    propertyDetails: {
-      internalArea: "nn", //m^2
-      totalArea: "nn", //m^2
-      totalResidents: "nn", //개
-      sharedBathrooms: "nn", //개
-      buildingFloors: "nn", //층
-      floor: "nn", //층
+    jsonDiscriminator: "SHARE",
+    memberId: 1,
+    kind: "SHARE",
+    genderPreference: "FEMALE_ONLY",
+    lgbtAvailable: true,
+    region: {
+      country: "Korea",
+      postCode: "06763",
+      state: "Seoul",
+      suburb: "Gangnam-gu",
+      streetName: "Teheran-ro",
+      streetNumber: "10",
+      unit: "101",
+      buildingName: "HaniHome Building",
+      longitude: 100.123456,
+      latitude: 100.123456,
     },
-    maxOccupants: "독방",
-    furniture: {
-      bedroom: ["침대 프레임", "책상", "침구류", "옷장", "수납장"],
-      kitchen: ["전자렌지", "냉동고", "가스렌지", "식기류", "조리도구"],
-      livingRoom: ["TV", "소파", "커피테이블"],
-      others: ["청소기", "엘레베이터", "고속인터넷망 Wifi", "에어컨"],
+    photoUrls: ["/svgs/common/room-img.svg", "/svgs/common/room-img.svg"],
+    thumbnailUrl: null,
+    costDetails: {
+      weeklyCost: 130000,
+      costDescription: "관리비 포함",
+      deposit: 300000,
+      keyDeposit: 70000,
+      depositAdjustable: false,
+      billIncluded: false,
     },
-    highlights: [
-      "햇빛이 잘 들어요",
-      "주변 편의시설이 많아요",
-      "전망이 좋아요",
-      "주변보다 저렴해요",
-      "테라스가 있어요",
-    ],
-    guestGender: ["무관", "LGBTQ 가능"],
+    optionItemIds: [1, 2, 3, 12, 13, 14, 25, 26, 94, 95],
     livingConditions: {
-      noticePeriod: "nn",
-      minStayDuration: "nn",
-      contractType: "월단위계약",
+      noticePeriodWeeks: 3,
+      minimumStayWeeks: 12,
+      contractTerms: "12개월 계약",
+      contractExtendable: false,
     },
-    costs: {
-      weeklyCost: "nn",
-      billsIncluded: false,
-      includedItems: ["수도세", "전기세", "인터넷비", "가스비", "청소비"],
-      deposit: "nn",
+    moveInInfo: {
+      availableFrom: "2025-11-01T00:00:00",
+      availableTo: "2026-10-31T23:59:59",
+      isImmediate: false,
+      isNegotiable: false,
     },
-    moveInDates: ["2025-07-08", "즉시입주가능"],
-    additionalInfo: {
-      smokingAllowed: true,
-      petsAllowed: true,
-      visitorsAllowed: true,
-      parking: ["전용 공간", "노상 주차"],
-      kitchenAccess: true,
+    parkingOption: "STREET_PARKING",
+    meetingDateFrom: "2025-10-25",
+    meetingDateTo: "2025-10-30",
+    timeSlots: [
+      { timeFrom: "09:00:00", timeTo: "12:00:00" },
+      { timeFrom: "14:00:00", timeTo: "18:00:00" },
+    ],
+    viewingAlwaysAvailable: false,
+    description: "업데이트된 공유 매물 설명입니다.",
+    sharePropertySubType: "MASTER_ROOM",
+    internalDetails: {
+      internalArea: 15,
+      totalArea: 30,
+      totalResidents: 4,
+      totalBathUser: 2,
+      totalFloors: 7,
+      propertyFloor: 4,
     },
-    hostDescription:
-      "호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명",
+    capacityShare: "TRIPLE",
   },
   {
-    rentalType: "렌트",
-    image: ["/svgs/common/room-img.svg", "/svgs/common/room-img.svg"],
-    address: "25 Smith St, Chatswood NSW 2067",
-    propertyType: "유닛",
-    propertyDetails: {
-      internalArea: "nn",
-      totalArea: "nn",
-      totalResidents: "nn",
-      sharedBathrooms: "nn",
-      buildingFloors: "nn",
-      floor: "nn",
+    jsonDiscriminator: "RENT",
+    memberId: 1,
+    kind: "RENT",
+    genderPreference: "ANY",
+    lgbtAvailable: false,
+    region: {
+      country: "Korea",
+      postCode: "06763",
+      state: "Seoul",
+      suburb: "Gangnam-gu",
+      streetName: "Teheran-ro",
+      streetNumber: "10",
+      unit: "101",
+      buildingName: "HaniHome Building",
+      longitude: 100.123456,
+      latitude: 100.123456,
     },
-    isBrokered: false,
-    maxOccupants: "3인 1실",
-    furniture: {
-      bedroom: ["침대 프레임", "책상", "침구류", "옷장", "수납장"],
-      kitchen: ["전자렌지", "냉동고", "가스렌지", "식기류", "조리도구"],
-      livingRoom: ["TV", "소파", "커피테이블"],
-      others: ["청소기", "엘레베이터", "고속인터넷망 Wifi", "에어컨"],
+    photoUrls: ["/svgs/common/room-img.svg"],
+    thumbnailUrl: null,
+    costDetails: {
+      weeklyCost: 150000,
+      costDescription: "관리비 별도",
+      deposit: 250000,
+      keyDeposit: 60000,
+      depositAdjustable: false,
+      billIncluded: false,
     },
-    highlights: [
-      "햇빛이 잘 들어요",
-      "주변 편의시설이 많아요",
-      "전망이 좋아요",
-      "주변보다 저렴해요",
-      "테라스가 있어요",
+    optionItemIds: [
+      1, 2, 3, 12, 13, 14, 25, 26, 33, 35, 38, 41, 42, 45, 47, 48, 49, 51, 53, 55, 94, 95,
     ],
-    guestGender: ["무관", "LGBTQ 가능"],
     livingConditions: {
-      noticePeriod: "nn", //노티스 주
-      minStayDuration: "nn", //최소거주기간 주
-      contractType: "월단위계약",
+      noticePeriodWeeks: 2,
+      minimumStayWeeks: 6,
+      contractTerms: "6개월 이상, 2주 전 통보",
+      contractExtendable: false,
     },
-    costs: {
-      weeklyCost: "nn", // nn 주/$
-      billsIncluded: false, //빌 미포함
-      includedItems: ["수도세", "전기세", "인터넷비", "가스비", "청소비"], //수도세, 전기세, ...
-      deposit: "nn", //디파짓 nn 주/$
+    moveInInfo: {
+      availableFrom: "2025-10-01T00:00:00",
+      availableTo: "2026-09-30T23:59:59",
+      isImmediate: false, //즉시 입주 가능, 즉시 입주 불가능
+      isNegotiable: false, //입주 일자 협의 가능, 입주 일자 협의 불가능
     },
-    moveInDates: ["2025-07-08", "즉시입주가능"],
-    additionalInfo: {
-      smokingAllowed: true,
-      petsAllowed: true,
-      visitorsAllowed: true,
-      parking: ["전용공간", "노상주차"],
-      kitchenAccess: true,
+    parkingOption: "NONE",
+    meetingDateFrom: "2025-09-25",
+    meetingDateTo: "2025-09-30",
+    timeSlots: [
+      { timeFrom: "09:00:00", timeTo: "12:00:00" },
+      { timeFrom: "14:00:00", timeTo: "18:00:00" },
+    ],
+    viewingAlwaysAvailable: true,
+    description: "역세권 오피스텔 업데이트된 설명입니다.",
+    rentPropertySubType: "UNIT",
+    internalDetails: {
+      internalArea: 40,
+      totalArea: 55,
+      numberOfRoom: 3,
+      numberOfBath: 2,
+      totalFloors: 10,
+      propertyFloor: 5,
     },
-    hostDescription:
-      "호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명호스트설명",
+    capacityRent: "TWO",
   },
 ];

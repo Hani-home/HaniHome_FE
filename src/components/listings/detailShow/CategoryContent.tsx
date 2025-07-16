@@ -4,82 +4,156 @@ import React from "react";
 
 import {
   formatAdditionalInfo,
+  formatAddress,
+  formatCapcityPeople,
   formatCosts,
   formatFurniture,
-  formatGuestGender,
+  formatGenderPreference,
   formatHighlights,
+  formatInternalDetails,
   formatIsBrokered,
+  formatKind,
   formatLivingConditions,
   formatMoveInDates,
-  formatPropertyDetails,
+  formatPropertySubType,
 } from "@/utils/formatDetails";
 
-import { ListingValueMap } from "@/types/listingDetail";
+import {
+  AdditionalInfo,
+  CapacityRent,
+  CapacityShare,
+  Furniture,
+  MoveInInfo,
+  PropertyDetail,
+  PropertyRegion,
+  PropertySuperType,
+  RentInternalDetails,
+  RentPropertySubType,
+  ShareInternalDetails,
+  SharePropertySubType,
+} from "@/types/listingDetail";
 
-interface CategoryContentProps<K extends keyof ListingValueMap> {
-  keyName: K;
-  value: ListingValueMap[K];
+interface CategoryContentProps {
+  keyName: string;
+  value: string | number | boolean | object | null | undefined;
+  listingData: PropertyDetail;
 }
 
-const CategoryContent = <K extends keyof ListingValueMap>({
+const CategoryContent = ({
   keyName,
   value,
-}: CategoryContentProps<K>) => {
+  listingData,
+}: CategoryContentProps) => {
   const baseClass = "text-body2-med w-[319px] text-right text-gray-600";
 
   switch (keyName) {
-    case "propertyDetails":
+    case "kind":
       return (
         <div className={baseClass}>
-          {formatPropertyDetails(value as ListingValueMap["propertyDetails"])}
+          {formatKind(value as PropertySuperType)}
+        </div>
+      );
+    case "region":
+      return (
+        <div className={baseClass}>
+          {formatAddress(value as PropertyRegion)}
+        </div>
+      );
+
+    case "sharePropertySubType":
+    case "rentPropertySubType":
+      return (
+        <div className={baseClass}>
+          {formatPropertySubType(
+            value as SharePropertySubType | RentPropertySubType,
+            listingData.kind,
+          )}
+        </div>
+      );
+
+    case "capacityPeople":
+      return (
+        <div className={baseClass}>
+          {formatCapcityPeople(
+            value as CapacityRent | CapacityShare,
+            listingData.kind,
+          )}
+        </div>
+      );
+
+    case "internalDetails":
+      return (
+        <div className={baseClass}>
+          {formatInternalDetails(
+            value as ShareInternalDetails | RentInternalDetails,
+            listingData.kind,
+          )}
+        </div>
+      );
+    case "highlights":
+      return (
+        <div className={baseClass}>
+          {formatHighlights(value as string[] | null) || "N/A"}
         </div>
       );
     case "furniture":
       return (
         <div className={baseClass}>
-          {formatFurniture(value as ListingValueMap["furniture"])}
+          {formatFurniture(value as Furniture | null) || "N/A"}
         </div>
       );
-    case "highlights":
+    case "isRealEstateIntervention":
       return (
-        <div className={baseClass}>{formatHighlights(value as string[])}</div>
+        <div className={baseClass}>
+          {formatIsBrokered(value as boolean | null) || "N/A"}
+        </div>
       );
-    case "isBrokered":
+    case "genderPreference":
       return (
-        <div className={baseClass}>{formatIsBrokered(value as boolean)}</div>
-      );
-    case "guestGender":
-      return (
-        <div className={baseClass}>{formatGuestGender(value as string[])}</div>
+        <div className={baseClass}>
+          {formatGenderPreference(
+            value as PropertyDetail["genderPreference"],
+            value as PropertyDetail["lgbtAvailable"],
+          )}
+        </div>
       );
     case "additionalInfo":
       return (
         <div className={baseClass}>
-          {formatAdditionalInfo(value as ListingValueMap["additionalInfo"])}
+          {formatAdditionalInfo(value as AdditionalInfo)}
         </div>
       );
-    case "moveInDates":
+    case "moveInInfo":
       return (
         <div className={baseClass}>
-          {formatMoveInDates(value as ListingValueMap["moveInDates"])}
+          {formatMoveInDates(value as MoveInInfo)}
         </div>
       );
-    case "costs":
+
+    case "costDetails": {
+      const { costDetails, includedItems } = value as {
+        costDetails: PropertyDetail["costDetails"];
+        includedItems: string[];
+      };
+
       return (
         <div className={baseClass}>
-          {formatCosts(value as ListingValueMap["costs"])}
+          {formatCosts(costDetails, includedItems)}
         </div>
       );
+    }
     case "livingConditions":
       return (
         <div className={baseClass}>
-          {formatLivingConditions(value as ListingValueMap["livingConditions"])}
+          {formatLivingConditions(value as PropertyDetail["livingConditions"])}
         </div>
       );
     default:
-      if (typeof value === "string") {
-        return <div className={baseClass}>{String(value)}</div>;
-      }
+      return typeof value === "string" ? (
+        <div className={baseClass}>{value}</div>
+      ) : (
+        <div className={baseClass}>N/A</div>
+      );
   }
 };
 
