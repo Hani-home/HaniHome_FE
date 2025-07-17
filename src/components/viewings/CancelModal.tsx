@@ -41,28 +41,30 @@ const CancelModal = ({ onClose, onConfirm, userType }: CancelModalProps) => {
   return (
     <ModalLayout
       onClose={onClose}
-      className="px-4 py-6"
-      closeButtonPosition="top-6 right-4"
+      className="p-5"
+      closeButtonPosition="top-5 right-5"
     >
       <div className="flex flex-col gap-9">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-heading3 text-gray-900">
-            취소 사유를 선택해주세요
-          </h1>
-          <span className="text-cap1-med text-gray-600">
-            예약 시간 1시간 전까지만 취소할 수 있어요
-          </span>
-        </div>
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-heading3 text-gray-900">
+              취소 사유를 선택해주세요
+            </h1>
+            <span className="text-cap1-med text-gray-600">
+              예약 시간 1시간 전까지만 취소할 수 있어요
+            </span>
+          </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {cancelReasons.map(reason => (
-            <SelectableChip
-              key={reason}
-              label={reason}
-              selected={selected === reason}
-              onClick={() => setSelected(reason)}
-            />
-          ))}
+          <div className="flex flex-wrap items-center gap-2">
+            {cancelReasons.map(reason => (
+              <SelectableChip
+                key={reason}
+                label={reason}
+                selected={selected === reason}
+                onClick={() => setSelected(reason)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* 기타 사유 입력 */}

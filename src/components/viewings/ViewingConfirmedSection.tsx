@@ -47,7 +47,7 @@ const ViewingConfirmedSection = ({
   );
 
   return (
-    <ContentWrapper className="flex flex-col gap-6" bottomOffset={62}>
+    <ContentWrapper className="mb-6 flex flex-col gap-6" bottomOffset={62}>
       {Object.entries(grouped)
         .sort(([a], [b]) => Number(a) - Number(b))
         .map(([dday, items]) => (

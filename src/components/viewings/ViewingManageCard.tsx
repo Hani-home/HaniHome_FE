@@ -57,6 +57,7 @@ const ViewingManageCard = ({
         {isLoading || !summary ? (
           <div className="text-cap1-med text-gray-500">
             <LoadingLottie />
+            {/* 스켈레톤으로 변경해야 함 */}
           </div>
         ) : (
           <ViewingPostCard
