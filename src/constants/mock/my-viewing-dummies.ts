@@ -1,86 +1,73 @@
+import dayjs from "dayjs";
+
 import { ViewingCardItem } from "@/types/viewing";
 
-// 임시 데이터
+const now = dayjs();
+
 export const mockViewings: ViewingCardItem[] = [
   {
     id: 1,
     memberId: 1,
-    propertyId: 1,
-    meetingDay: "2025-06-30T14:00:00.000Z",
+    propertyId: 9,
+    meetingDay: now.add(3, "day").hour(14).minute(0).second(0).format(), // 3일 후
     status: "REQUESTED",
     cancelReason: null,
-    photoUrls: ["/images/room1.png"],
-    memo: "시간 맞춰서 오세요!",
-    optionItemNames: ["주차 가능", "엘리베이터 있음"],
-
+    photoUrls: ["/svgs/common/room-img.svg"],
+    memo: null,
+    optionItemNames: [],
     userType: "guest",
-    profileImageUrl: "/svgs/common/profile-img.svg",
-    roomImageUrl: "/svgs/common/room-img.svg",
     nickname: "상대닉네임",
   },
   {
     id: 2,
-    memberId: 2,
-    propertyId: 2,
-    meetingDay: "2025-07-31T14:00:00.000Z",
+    memberId: 1,
+    propertyId: 9,
+    meetingDay: now.add(3, "day").hour(16).minute(30).second(0).format(), // 5일 후
     status: "REQUESTED",
     cancelReason: null,
-    photoUrls: ["/images/room1.png"],
-    memo: "시간 맞춰서 오세요!",
-    optionItemNames: ["주차 가능", "엘리베이터 있음"],
-
+    photoUrls: ["/svgs/common/room-img.svg"],
+    memo: null,
+    optionItemNames: [],
     userType: "guest",
-    profileImageUrl: "/svgs/common/profile-img.svg",
-    roomImageUrl: "/svgs/common/room-img.svg",
     nickname: "상대닉네임",
   },
   {
     id: 3,
-    memberId: 2,
-    propertyId: 3,
-    meetingDay: "2025-07-07T14:00:00.000Z",
+    memberId: 1,
+    propertyId: 9,
+    meetingDay: now.add(7, "day").hour(11).minute(0).second(0).format(), // 7일 후
     status: "REQUESTED",
     cancelReason: null,
-    photoUrls: ["/images/room1.png"],
-    memo: "시간 맞춰서 오세요!",
-    optionItemNames: ["주차 가능", "엘리베이터 있음"],
-
-    userType: "guest",
-    profileImageUrl: "/svgs/common/profile-img.svg",
-    roomImageUrl: "/svgs/common/room-img.svg",
+    photoUrls: ["/svgs/common/room-img.svg"],
+    memo: null,
+    optionItemNames: [],
+    userType: "host",
     nickname: "상대닉네임",
   },
   {
     id: 4,
-    memberId: 2,
-    propertyId: 4,
-    meetingDay: "2025-07-01T16:00:00.000Z",
-    status: "COMPLETED",
-    cancelReason: null,
-    photoUrls: ["/images/room2.png"],
+    memberId: 1,
+    propertyId: 9,
+    meetingDay: now.add(10, "day").hour(10).minute(0).second(0).format(), // 10일 후
+    status: "CANCELLED",
+    cancelReason: "string",
+    photoUrls: ["/svgs/common/room-img.svg"],
     memo: null,
-    optionItemNames: ["반려동물 가능"],
-
-    userType: "host",
-    profileImageUrl: "/svgs/common/profile-img.svg",
-    roomImageUrl: "/svgs/common/room-img.svg",
+    optionItemNames: ["인터넷비"],
+    userType: "guest",
     nickname: "상대닉네임",
   },
   {
     id: 5,
     memberId: 1,
-    propertyId: 4,
-    meetingDay: "2025-07-03T11:00:00.000Z",
+    propertyId: 5,
+    meetingDay: now.add(14, "day").hour(15).minute(0).second(0).format(), // 14일 후
     status: "CANCELLED",
-    cancelReason:
-      "개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.개인 사정으로 인해 취소합니다.",
-    photoUrls: ["/images/room3.png"],
+    cancelReason: "시간 변경으로 인한 취소 요청",
+    photoUrls: ["/svgs/common/room-img.svg"],
     memo: null,
-    optionItemNames: ["역세권", "풀옵션"],
-
+    optionItemNames: ["수도세", "전기세"],
     userType: "guest",
-    profileImageUrl: "/svgs/common/profile-img.svg",
-    roomImageUrl: "/svgs/common/room-img.svg",
     nickname: "상대닉네임",
   },
 ];

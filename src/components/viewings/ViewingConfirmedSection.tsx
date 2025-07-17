@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 
+import { groupBy } from "lodash";
+
 import { calculateDday } from "@/utils/dateFormatter";
 
 import AlertModal from "@/components/common/AlertModal";
 
 import { ViewingCardItem } from "@/types/viewing";
 
+import ContentWrapper from "../layout/ContentWrapper";
 import CancelModal from "./CancelModal";
 import DdayBadge from "./DdayBadge";
 import ViewingEmptyMessage from "./ViewingEmptyMessage";
@@ -35,44 +38,52 @@ const ViewingConfirmedSection = ({
     return <ViewingEmptyMessage message="예약된 뷰잉이 없어요" />;
   }
 
-  return (
-    <div className="flex flex-col gap-4">
-      {data
-        .filter(item => calculateDday(item.meetingDay) >= 0)
-        .sort(
-          (a, b) => calculateDday(a.meetingDay) - calculateDday(b.meetingDay),
-        )
-        .map(item => {
-          const dday = calculateDday(item.meetingDay);
-          const isHost = currentUserId === item.memberId;
-          const userType: "host" | "guest" = isHost ? "host" : "guest";
+  // D-Day 기준 그룹핑
+  const upcomingViewings = data.filter(
+    item => calculateDday(item.meetingDay) >= 0,
+  );
+  const grouped = groupBy(upcomingViewings, item =>
+    calculateDday(item.meetingDay),
+  );
 
-          return (
-            <div key={item.id}>
-              <DdayBadge dday={dday} />
-              <ViewingManageCard
-                id={item.id}
-                propertyId={item.propertyId}
-                status="REQUESTED"
-                profileImageUrl={item.profileImageUrl}
-                roomImageUrl={item.roomImageUrl}
-                nickname={item.nickname}
-                meetingDay={item.meetingDay}
-                onCancelClick={() => setOpenCancelId(item.id)}
-              />
-              {openCancelId === item.id && (
-                <CancelModal
-                  userType={userType}
-                  onClose={() => setOpenCancelId(null)}
-                  onConfirm={() => {
-                    setOpenCancelId(null);
-                    setNextModal("alert");
-                  }}
-                />
-              )}
-            </div>
-          );
-        })}
+  return (
+    <ContentWrapper className="flex flex-col gap-6" bottomOffset={62}>
+      {Object.entries(grouped)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([dday, items]) => (
+          <div key={dday} className="flex flex-col gap-4">
+            <DdayBadge dday={Number(dday)} />
+
+            {items.map(item => {
+              const isHost = currentUserId === item.memberId;
+              const userType: "host" | "guest" = isHost ? "host" : "guest";
+
+              return (
+                <div key={item.id} className="flex flex-col gap-4">
+                  <ViewingManageCard
+                    id={item.id}
+                    propertyId={item.propertyId}
+                    status="REQUESTED"
+                    roomImageUrl={item.photoUrls[0]}
+                    nickname={item.nickname}
+                    meetingDay={item.meetingDay}
+                    onCancelClick={() => setOpenCancelId(item.id)}
+                  />
+                  {openCancelId === item.id && (
+                    <CancelModal
+                      userType={userType}
+                      onClose={() => setOpenCancelId(null)}
+                      onConfirm={() => {
+                        setOpenCancelId(null);
+                        setNextModal("alert");
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
 
       {openCancelId === null && nextModal === "alert" && (
         <div className="fixed inset-0 z-50 bg-gray-800/60" />
@@ -88,10 +99,9 @@ const ViewingConfirmedSection = ({
           ]}
           actionLabel="취소하기"
           onClose={() => setShowAlertModal(false)}
-          // onActionClick={} 추후 뷰잉 취소하기 API 연결
         />
       )}
-    </div>
+    </ContentWrapper>
   );
 };
 

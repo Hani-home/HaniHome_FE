@@ -14,8 +14,7 @@ export interface ViewingItem {
 // 카드형 뷰잉 데이터 (UI 표시용)
 export interface ViewingCardItem extends ViewingItem {
   userType: "host" | "guest";
-  profileImageUrl: string;
-  roomImageUrl: string;
+  photoUrls: string[];
   nickname: string;
 }
 

@@ -24,11 +24,10 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
         {data.map(item => (
           <li key={item.id}>
             <ViewingManageCard
-              propertyId={item.propertyId}
               id={item.id}
+              propertyId={item.propertyId}
               status="CANCELLED"
-              profileImageUrl={item.profileImageUrl}
-              roomImageUrl={item.roomImageUrl}
+              roomImageUrl={item.photoUrls[0]}
               nickname={item.nickname}
               meetingDay={item.meetingDay}
               onArrowClick={() => setOpenId(item.id)}

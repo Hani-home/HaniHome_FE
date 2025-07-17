@@ -21,8 +21,7 @@ const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
               id={item.id}
               propertyId={item.propertyId}
               status="COMPLETED"
-              profileImageUrl={item.profileImageUrl}
-              roomImageUrl={item.roomImageUrl}
+              roomImageUrl={item.photoUrls[0]}
               nickname={item.nickname}
               meetingDay={item.meetingDay}
             />

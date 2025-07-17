@@ -34,12 +34,13 @@ const Viewing = () => {
   return (
     <ContentWrapper className="flex h-screen w-full flex-col" bottomOffset={62}>
       <TitleHeader title="뷰잉 관리" />
-      <SelectTab
-        tabs={viewingTabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
-
+      <div className="sticky top-12 z-10 bg-white">
+        <SelectTab
+          tabs={viewingTabs}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
+      </div>
       <main className="flex flex-1 flex-col">
         {!isLoggedIn ? (
           <GuestLoginGuide
