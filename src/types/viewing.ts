@@ -35,6 +35,6 @@ export type MyViewingDates = Record<string, string[]>;
 export type MyViewingDateProfile = {
   id: number;
   meetingDay: string;
-  myImageUrl: string;
+  propertyThumbnailUrl: string | null;
   counterpartImageUrl: string | null;
 };

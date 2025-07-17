@@ -21,6 +21,8 @@ const ViewingSection = () => {
     enabled: isLoggedIn === true,
   });
 
+  const today = dayjs().startOf("day");
+
   const getDisplayDate = (date: dayjs.Dayjs) => {
     const today = dayjs().startOf("day");
     const target = date.startOf("day");
@@ -34,6 +36,16 @@ const ViewingSection = () => {
     return date.format("YYYY.MM.DD");
   };
 
+  const filteredData = data?.filter(viewing => {
+    const viewingDate = dayjs
+      .utc(viewing.meetingDay)
+      .tz(dayjs.tz.guess())
+      .startOf("day");
+    const diff = viewingDate.diff(today, "day");
+
+    return diff >= 0 && diff <= 2;
+  });
+
   return (
     <div className="flex flex-col gap-3 border-t border-gray-200 bg-white py-5">
       <span className="text-heading3 px-4 text-gray-900">
@@ -42,8 +54,8 @@ const ViewingSection = () => {
 
       {isLoggedIn ? (
         <div className="scrollbar-hide flex w-full max-w-[375px] gap-1 overflow-x-auto px-4">
-          {data && data.length > 0 ? (
-            data.map(viewing => {
+          {filteredData && filteredData.length > 0 ? (
+            filteredData.map(viewing => {
               const day = dayjs.utc(viewing.meetingDay).tz(dayjs.tz.guess());
 
               return (
@@ -51,9 +63,7 @@ const ViewingSection = () => {
                   <ViewingBox
                     date={getDisplayDate(day)}
                     time={day.format("A h:mm")}
-                    profileImg={
-                      viewing.counterpartImageUrl ?? viewing.myImageUrl
-                    }
+                    profileImg={viewing.propertyThumbnailUrl || ""}
                     roomImg={"/svgs/common/room-img.svg"}
                   />
                 </div>

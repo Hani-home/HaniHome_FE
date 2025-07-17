@@ -148,7 +148,8 @@ const ListingList = () => {
           tradeStatus={p.tradeStatus}
           internalArea={p.internalArea}
           totalFloors={p.totalFloors}
-          propertySubType={p.propertySubType}
+          nearestStation={p.nearestStation}
+          kind={p.kind}
           billIncluded={p.billIncluded}
           suburb={p.suburb}
           createdAt={p.createdAt}

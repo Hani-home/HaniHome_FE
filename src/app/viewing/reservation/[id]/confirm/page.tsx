@@ -39,7 +39,8 @@ const ViewingConfirmPage = () => {
     internalArea,
     totalFloors,
     suburb,
-    propertySubType,
+    kind,
+    nearestStation,
     billIncluded,
   } = summary;
 
@@ -67,6 +68,9 @@ const ViewingConfirmPage = () => {
       preferredTimes: [bookingDate.toISOString()],
     });
   };
+
+  const displayType = kind === "SHARE" ? "쉐어" : "렌트";
+  const distanceInKm = (nearestStation.distanceFromStation / 1000).toFixed(1);
 
   return (
     <div className="pb-31">
@@ -127,21 +131,22 @@ const ViewingConfirmPage = () => {
                 {internalArea !== undefined && (
                   <>
                     {internalArea}㎡
-                    {(totalFloors !== undefined || propertySubType) && <Dot />}
+                    {(totalFloors !== undefined || kind) && <Dot />}
                   </>
                 )}
 
                 {totalFloors !== undefined && (
                   <>
-                    전체 {totalFloors}층{propertySubType && <Dot />}
+                    전체 {totalFloors}층{kind && <Dot />}
                   </>
                 )}
 
-                {propertySubType}
+                {displayType}
               </p>
 
               <p className="text-cap1-med flex items-center gap-1 text-gray-600">
-                {billIncluded ? "빌 포함" : "빌 미포함"} <Dot /> 역까지 500km
+                {billIncluded ? "빌 포함" : "빌 미포함"} <Dot /> 역까지{" "}
+                {distanceInKm}km
               </p>
             </div>
           </div>
@@ -157,8 +162,9 @@ const ViewingConfirmPage = () => {
             time: selectedSchedule.time,
           });
           reset(id);
+
           await queryClient.invalidateQueries({
-            queryKey: ["myViewingList", "DATE_PROFILE"],
+            queryKey: ["myViewingList"],
           });
           router.push(`/viewing/reservation/${id}/complete`);
         }}
