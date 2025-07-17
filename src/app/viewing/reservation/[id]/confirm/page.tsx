@@ -111,7 +111,7 @@ const ViewingConfirmPage = () => {
         </p>
       </div>
 
-      <div className="flex cursor-pointer items-center justify-center gap-3 px-4 py-3">
+      <div className="flex items-center justify-center gap-3 px-4 py-3">
         <Image
           src={thumbnailUrl ?? "/svgs/common/room-img.svg"}
           width={108}
