@@ -1,4 +1,8 @@
+// 뷰잉 상태
 export type ViewingStatus = "REQUESTED" | "CANCELLED" | "COMPLETED";
+
+// 뷰잉 조회 뷰 타입 (API 요청 시 view 파라미터)
+export type ViewingViewType = "DEFAULT" | "DATE_PROFILE" | "DATE_WITH_PROPERTY";
 
 // 기본 뷰잉 아이템
 export interface ViewingItem {
@@ -18,9 +22,6 @@ export interface ViewingCardItem extends ViewingItem {
   userType: "host" | "guest";
   nickname: string;
 }
-
-// 뷰잉 조회 뷰 타입 (API 요청 시 view 파라미터)
-export type ViewingViewType = "DEFAULT" | "DATE_PROFILE" | "DATE_WITH_PROPERTY";
 
 // availableAPI 가능한 시간 데이터
 export interface ViewingTime {

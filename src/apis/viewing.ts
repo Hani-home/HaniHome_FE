@@ -53,3 +53,14 @@ export const createViewing = async (body: {
   const res = await axiosInstance.post("/api/v1/viewings", body);
   return res.data;
 };
+
+export const cancelViewing = async (
+  viewingId: number,
+  payload: { optionItemId: number; reason: string },
+) => {
+  return axiosInstance.post(`/api/v1/viewings/${viewingId}/cancel`, {
+    viewingId,
+    allOptionItemIds: [payload.optionItemId],
+    reason: payload.reason,
+  });
+};

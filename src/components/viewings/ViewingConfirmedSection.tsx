@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { groupBy } from "lodash";
 
+import { useCancelViewing } from "@/hooks/viewing/useViewing";
+
 import { calculateDday } from "@/utils/dateFormatter";
 
 import AlertModal from "@/components/common/AlertModal";
@@ -23,9 +25,17 @@ const ViewingConfirmedSection = ({
   data,
   memberId,
 }: ViewingConfirmedSectionProps) => {
-  const [openCancelId, setOpenCancelId] = useState<number | null>(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [nextModal, setNextModal] = useState<"alert" | null>(null);
+
+  const [openCancelId, setOpenCancelId] = useState<number | null>(null);
+  const [cancelPayload, setCancelPayload] = useState<{
+    viewingId: number;
+    optionItemId: number;
+    reason: string;
+  } | null>(null);
+
+  const { mutateAsync } = useCancelViewing();
 
   useEffect(() => {
     if (openCancelId === null && nextModal === "alert") {
@@ -73,9 +83,14 @@ const ViewingConfirmedSection = ({
                     <CancelModal
                       userType={userType}
                       onClose={() => setOpenCancelId(null)}
-                      onConfirm={() => {
+                      onConfirm={payload => {
+                        setCancelPayload({
+                          viewingId: item.id,
+                          optionItemId: payload.optionItemId,
+                          reason: payload.reason,
+                        });
                         setOpenCancelId(null);
-                        setNextModal("alert");
+                        setShowAlertModal(true);
                       }}
                     />
                   )}
@@ -98,6 +113,18 @@ const ViewingConfirmedSection = ({
             "예약 취소를 진행하시겠습니까?",
           ]}
           actionLabel="취소하기"
+          onActionClick={async () => {
+            if (!cancelPayload) return;
+
+            await mutateAsync({
+              viewingId: cancelPayload.viewingId,
+              optionItemId: cancelPayload.optionItemId,
+              reason: cancelPayload.reason,
+            });
+
+            setShowAlertModal(false);
+            setCancelPayload(null);
+          }}
           onClose={() => setShowAlertModal(false)}
         />
       )}
