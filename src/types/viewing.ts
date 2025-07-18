@@ -1,10 +1,12 @@
+export type ViewingStatus = "REQUESTED" | "CANCELLED" | "COMPLETED";
+
 // 기본 뷰잉 아이템
 export interface ViewingItem {
   id: number;
   memberId: number;
   propertyId: number;
   meetingDay: string;
-  status: "REQUESTED" | "CANCELLED" | "COMPLETED";
+  status: ViewingStatus;
   cancelReason: string | null;
   photoUrls: string[];
   memo: string | null;
@@ -14,8 +16,6 @@ export interface ViewingItem {
 // 카드형 뷰잉 데이터 (UI 표시용)
 export interface ViewingCardItem extends ViewingItem {
   userType: "host" | "guest";
-  photoUrls: string[];
-  nickname: string;
 }
 
 // 뷰잉 조회 뷰 타입 (API 요청 시 view 파라미터)

@@ -28,7 +28,6 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
               propertyId={item.propertyId}
               status="CANCELLED"
               roomImageUrl={item.photoUrls[0]}
-              nickname={item.nickname}
               meetingDay={item.meetingDay}
               onArrowClick={() => setOpenId(item.id)}
             />

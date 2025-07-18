@@ -16,12 +16,12 @@ import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingConfirmedSectionProps {
   data: ViewingCardItem[];
-  currentUserId: number;
+  memberId: number;
 }
 
 const ViewingConfirmedSection = ({
   data,
-  currentUserId,
+  memberId,
 }: ViewingConfirmedSectionProps) => {
   const [openCancelId, setOpenCancelId] = useState<number | null>(null);
   const [showAlertModal, setShowAlertModal] = useState(false);
@@ -55,7 +55,7 @@ const ViewingConfirmedSection = ({
             <DdayBadge dday={Number(dday)} />
 
             {items.map(item => {
-              const isHost = currentUserId === item.memberId;
+              const isHost = memberId === item.memberId;
               const userType: "host" | "guest" = isHost ? "host" : "guest";
 
               return (
@@ -65,7 +65,6 @@ const ViewingConfirmedSection = ({
                     propertyId={item.propertyId}
                     status="REQUESTED"
                     roomImageUrl={item.photoUrls[0]}
-                    nickname={item.nickname}
                     meetingDay={item.meetingDay}
                     onCancelClick={() => setOpenCancelId(item.id)}
                   />

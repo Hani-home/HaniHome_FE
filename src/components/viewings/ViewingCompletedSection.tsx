@@ -22,7 +22,6 @@ const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
               propertyId={item.propertyId}
               status="COMPLETED"
               roomImageUrl={item.photoUrls[0]}
-              nickname={item.nickname}
               meetingDay={item.meetingDay}
             />
           </li>
