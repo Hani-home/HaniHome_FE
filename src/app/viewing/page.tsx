@@ -33,9 +33,10 @@ const Viewing = () => {
 
   useEffect(() => {
     if (data.length === 0) return;
-    const memberIds = Array.from(new Set(data.map(v => v.memberId)));
 
-    Promise.all(memberIds.map(id => getUserInfo(id))).then(resList => {
+    const ids = Array.from(new Set(data.flatMap(v => [v.hostId, v.guestId])));
+
+    Promise.all(ids.map(id => getUserInfo(id))).then(resList => {
       const map = resList.reduce(
         (acc, cur) => {
           acc[cur.id] = cur.nickname ?? "알 수 없음";
@@ -48,11 +49,16 @@ const Viewing = () => {
   }, [data]);
 
   const filtered = data.filter(v => v.status === activeTab);
-  const withUserType: ViewingCardItem[] = filtered.map(v => ({
-    ...v,
-    userType: Number(memberId) === v.memberId ? "guest" : "host",
-    nickname: nicknameMap[v.memberId] || "",
-  }));
+  const withUserType: ViewingCardItem[] = filtered.map(v => {
+    const isGuest = Number(memberId) === v.guestId;
+    return {
+      ...v,
+      userType: isGuest ? "guest" : "host",
+      nickname: isGuest
+        ? nicknameMap[v.hostId] || "호스트 닉네임 없음"
+        : nicknameMap[v.guestId] || "게스트 닉네임 없음",
+    };
+  });
 
   return (
     <ContentWrapper className="flex h-screen w-full flex-col" bottomOffset={62}>

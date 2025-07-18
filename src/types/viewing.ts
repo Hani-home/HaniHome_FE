@@ -7,7 +7,8 @@ export type ViewingViewType = "DEFAULT" | "DATE_PROFILE" | "DATE_WITH_PROPERTY";
 // 기본 뷰잉 아이템
 export interface ViewingItem {
   id: number;
-  memberId: number;
+  guestId: number;
+  hostId: number;
   propertyId: number;
   meetingDay: string;
   status: ViewingStatus;
