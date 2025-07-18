@@ -70,4 +70,17 @@ export const mockViewings: ViewingCardItem[] = [
     userType: "guest",
     nickname: "상대닉네임",
   },
+  {
+    id: 6,
+    memberId: 1,
+    propertyId: 9,
+    meetingDay: now.add(14, "day").hour(15).minute(0).second(0).format(), // 14일 후
+    status: "COMPLETED",
+    cancelReason: "string",
+    photoUrls: ["/svgs/common/room-img.svg"],
+    memo: null,
+    optionItemNames: ["인터넷비"],
+    userType: "guest",
+    nickname: "상대닉네임",
+  },
 ];

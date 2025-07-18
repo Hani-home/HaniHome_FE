@@ -20,7 +20,7 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
 
   return (
     <>
-      <ul className="flex flex-col gap-4">
+      <ul className="mt-4 flex flex-col gap-4">
         {data.map(item => (
           <li key={item.id}>
             <ViewingManageCard
