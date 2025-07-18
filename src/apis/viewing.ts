@@ -58,9 +58,19 @@ export const cancelViewing = async (
   viewingId: number,
   payload: { optionItemId: number; reason: string },
 ) => {
-  return axiosInstance.post(`/api/v1/viewings/${viewingId}/cancel`, {
+  return axiosInstance.put(`/api/v1/viewings/${viewingId}/cancel`, {
     viewingId,
     allOptionItemIds: [payload.optionItemId],
     reason: payload.reason,
   });
+};
+
+export const getViewingCancelReason = async (viewingId: number) => {
+  const res = await axiosInstance.get(`/api/v1/viewings/${viewingId}/cancel`);
+
+  return res.data.data as {
+    viewingId: number;
+    cancelReasonOptionItemIds: number[];
+    reason: string;
+  };
 };

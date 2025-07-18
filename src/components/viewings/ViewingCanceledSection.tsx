@@ -39,8 +39,9 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
       {selectedItem && (
         <CancelReasonModal
           isOpen={openId !== null}
-          reason={selectedItem.cancelReason ?? ""}
           onClose={() => setOpenId(null)}
+          userType={selectedItem.userType}
+          viewingId={selectedItem.id}
         />
       )}
     </>

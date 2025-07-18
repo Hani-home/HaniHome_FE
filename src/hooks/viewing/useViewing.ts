@@ -5,6 +5,7 @@ import {
   getMyViewingDates,
   getMyViewingList,
   getViewingAvailableDates,
+  getViewingCancelReason,
 } from "@/apis/viewing";
 
 import { ViewingStatus, ViewingViewType } from "@/types/viewing";
@@ -57,5 +58,14 @@ export const useCancelViewing = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myViewingList"] });
     },
+  });
+};
+
+export const useCancelReason = (viewingId: number, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["cancelReason", viewingId],
+    queryFn: () => getViewingCancelReason(viewingId),
+    enabled,
+    staleTime: 0,
   });
 };
