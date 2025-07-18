@@ -20,16 +20,16 @@ export const SHARE_ONLY_ROOM_TYPES = ["마스터 룸", "거실 쉐어", "세컨�
 export const HOUSE_TYPES = ["쉐어", "렌트"] as const;
 
 export const SHARE_TYPE_MAP: Record<SharePropertySubType, string> = {
-  SECOND_ROOM: "세컨드룸",
-  MASTER_ROOM: "마스터룸",
+  SECOND_ROOM: "세컨드 룸",
+  MASTER_ROOM: "마스터 룸",
   LIVING_SHARE: "거실 쉐어",
 };
 
 export const RENT_TYPE_MAP: Record<RentPropertySubType, string> = {
-  HOUSE: "주택",
+  HOUSE: "하우스",
   APARTMENT: "아파트",
   UNIT: "유닛",
-  STUDIO: "원룸",
   GRANNY_FLAT: "그라니플랫",
-
+  STUDIO: "스튜디오",
+  TOWN_HOUSE: "타운하우스",
 };

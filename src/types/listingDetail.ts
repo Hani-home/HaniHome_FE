@@ -14,6 +14,7 @@ export type RentPropertySubType =
   | "APARTMENT"
   | "UNIT"
   | "STUDIO"
+  | "TOWN_HOUSE"
   | "GRANNY_FLAT";
 
 export type CapacityShare = "SINGLE" | "DOUBLE" | "TRIPLE" | "OTHER";
