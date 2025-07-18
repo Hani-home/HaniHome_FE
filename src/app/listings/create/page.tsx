@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useListingStore } from "@/stores/useListingStore";
 
 import useFunnel from "@/hooks/common/useFunnel";
 
@@ -17,11 +17,10 @@ const steps = [
   "CreateConfirm",
   "CreateSuccess",
 ];
+
 const ListingCreatePage = () => {
   const { step, onNextStep, onPrevStep } = useFunnel({ steps });
-  const [listingType, setListingType] = useState<"SHARE" | "RENT" | null>(null);
-  const [addressData, setAddressData] =
-    useState<AddressDataType>(initialAddressData);
+  const { setListingType } = useListingStore();
 
   return (
     <Funnel step={step}>
@@ -35,34 +34,27 @@ const ListingCreatePage = () => {
       </Funnel.Step>
 
       <Funnel.Step name="AddressPhoto">
-        <AddressPhoto
-          listingType={listingType}
-          addressData={addressData}
-          setAddressData={setAddressData}
-          onNext={onNextStep}
-          onPrev={onPrevStep}
-        />
+        <AddressPhoto onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
 
-      {/* <Funnel.Step name="ListingDetail">
+      {/* 나머지 단계는 주석 처리된 상태로 유지 */}
+      {/* 
+      <Funnel.Step name="ListingsDetails">
         <ListingDetail onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-
-      <Funnel.Step name="MovingCondition">
+      <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-
       <Funnel.Step name="ContractTerms">
         <ContractTerms onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-
       <Funnel.Step name="CreateConfirm">
         <CreateConfirm onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-
       <Funnel.Step name="CreateSuccess">
         <CreateSuccess />
-      </Funnel.Step> */}
+      </Funnel.Step>
+      */}
     </Funnel>
   );
 };

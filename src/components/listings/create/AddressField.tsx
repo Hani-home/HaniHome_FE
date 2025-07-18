@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useListingStore } from "@/stores/useListingStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+
+import { PropertyRegion } from "@/types/listingDetail";
 
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 
@@ -9,14 +13,42 @@ interface AddressFieldProps {
 }
 
 const AddressField = ({ onNext }: AddressFieldProps) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const { addressData, setAddressData } = useListingStore();
+  const [isFocused] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [unit, setUnit] = useState(addressData.unit);
+  const [buildingName, setBuildingName] = useState(addressData.buildingName);
+
   const handleSearchClick = () => {
     setIsSearchClicked(true);
   };
+
   const handleInputClick = () => {
-    setIsFocused(true);
+    // 실제 AddressFinder API 사용 시 여기서 선택된 결과를 업데이트
+    const fakeAddress: PropertyRegion = {
+      country: "Australia",
+      postCode: "2000",
+      state: "NSW",
+      suburb: "Sydney",
+      streetName: "George St",
+      streetNumber: "123",
+      unit: "",
+      buildingName: "",
+      longitude: 151.2093,
+      latitude: -33.8688,
+    };
+    setIsSearchClicked(true);
+    setAddressData(fakeAddress);
   };
+
+  useEffect(() => {
+    setAddressData({
+      ...addressData,
+      unit,
+      buildingName,
+    });
+  }, [unit, buildingName, setAddressData]);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="text-heading3 px-4 py-4 text-gray-900">
@@ -25,13 +57,15 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
       <div className="px-4">
         <div className="flex flex-col gap-2">
           <div
-            className={`flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3 ${isFocused ? "border-gray-600" : "border-gray-400"}`}
+            className={`flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3 ${
+              isFocused ? "border-gray-600" : "border-gray-400"
+            }`}
             onClick={handleInputClick}
           >
             <input
               className="text-body1-med text-gray-500 outline-none"
               placeholder="도로명, 건물명, suburb 검색"
-            ></input>
+            />
             <SearchIcon
               className="cursor-pointer text-gray-500"
               onClick={handleSearchClick}
@@ -78,10 +112,8 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
       {isSearchClicked && (
         <>
           <div className="pb-[70px]">
-            {/* 검색결과지도화면*/}
             <div className="flex flex-col gap-2">
               <div className="px-4 py-4">상세주소를 입력해주세요 (선택)</div>
-              {/* 상세주소입력필드 */}
               <div className="flex flex-col gap-6 px-4">
                 <div className="flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">Unit No.</div>
@@ -89,6 +121,8 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                     <input
                       placeholder="입력해주세요"
                       className="text-body1-med text-gray-500 outline-none"
+                      value={unit}
+                      onChange={e => setUnit(e.target.value)}
                     />
                   </div>
                 </div>
@@ -100,6 +134,8 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                     <input
                       placeholder="입력해주세요"
                       className="text-body1-med text-gray-500 outline-none"
+                      value={buildingName}
+                      onChange={e => setBuildingName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -112,4 +148,5 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
     </div>
   );
 };
+
 export default AddressField;

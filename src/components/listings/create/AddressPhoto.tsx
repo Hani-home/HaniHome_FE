@@ -1,48 +1,29 @@
-// import { useState } from "react";
+import { useState } from "react";
+import BackHeader from "@/components/layout/header/BackHeader";
+import AddressField from "./AddressField";
+import FunnelStepMenu from "./FunnelStepMenu";
+import PhotoField from "./PhotoField";
 
-// import BackHeader from "@/components/layout/header/BackHeader";
+interface AddressPhotoProps {
+  onNext: () => void;
+  onPrev: () => void;
+}
 
-// import AddressField from "./AddressField";
-// import FunnelStepMenu from "./FunnelStepMenu";
+const AddressPhoto = ({ onNext, onPrev }: AddressPhotoProps) => {
+  const [subStep, setSubStep] = useState<"address" | "photo">("address");
 
-// interface AddressPhotoProps {
-//   listingType: "SHARE" | "RENT" | null;
-//   addressData: AddressDataType;
-//   setAddressData: (data: AddressDataType) => void;
-//   onNext: () => void;
-//   onPrev: () => void;
-// }
+  return (
+    <>
+      <BackHeader rightIcon="close" />
+      <FunnelStepMenu />
+      {subStep === "address" && (
+        <AddressField onNext={() => setSubStep("photo")} />
+      )}
+      {subStep === "photo" && (
+        <PhotoField onNext={onNext} onPrev={onPrev} />
+      )}
+    </>
+  );
+};
 
-// const AddressPhoto = ({
-//   listingType,
-//   addressData,
-//   setAddressData,
-//   onNext,
-//   onPrev,
-// }: AddressPhotoProps) => {
-//   const [subStep, setSubStep] = useState<"address" | "photo">("address");
-//   const handleAddressChange = newAddress => {
-//     setAddressData(newAddress);
-//   };
-//   return (
-//     <>
-//       <BackHeader rightIcon="close" />
-//       <FunnelStepMenu />
-//       {subStep === "address" && (
-//         <AddressField
-//           addressData={addressData}
-//           onAddressChange={handleAddressChange}
-//           onNext={() => setSubStep("photo")}
-//         />
-//       )}
-//       {/* {subStep === "photo" && (
-//         <PhotoField
-//           photoData={photoData}
-//           setPhotoData={setPhotoData}
-//           onNext={onNext}
-//         />
-//       )} */}
-//     </>
-//   );
-// };
-// export default AddressPhoto;
+export default AddressPhoto;
