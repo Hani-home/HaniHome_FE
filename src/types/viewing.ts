@@ -16,6 +16,7 @@ export interface ViewingItem {
 // 카드형 뷰잉 데이터 (UI 표시용)
 export interface ViewingCardItem extends ViewingItem {
   userType: "host" | "guest";
+  nickname: string;
 }
 
 // 뷰잉 조회 뷰 타입 (API 요청 시 view 파라미터)

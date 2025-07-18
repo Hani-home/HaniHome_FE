@@ -11,6 +11,7 @@ interface ViewingManageCardProps {
   id: number;
   propertyId: number;
   roomImageUrl: string;
+  nickname: string;
   meetingDay: string;
   onCancelClick?: () => void;
   onArrowClick?: () => void;
@@ -21,6 +22,7 @@ const ViewingManageCard = ({
   id,
   propertyId,
   roomImageUrl,
+  nickname,
   meetingDay,
   onCancelClick,
   onArrowClick,
@@ -46,6 +48,7 @@ const ViewingManageCard = ({
               <span>{date}</span>
               <span>{time}</span>
             </div>
+            <span className="text-lab1-sb text-gray-800">{nickname}</span>
           </div>
           <Divider className="my-1" />
 

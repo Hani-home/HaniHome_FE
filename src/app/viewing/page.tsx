@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
+
+import { getUserInfo } from "@/apis/member";
 
 import { useMyViewingList } from "@/hooks/viewing/useViewing";
 
@@ -27,10 +29,29 @@ const Viewing = () => {
     view: "DEFAULT",
   });
 
+  const [nicknameMap, setNicknameMap] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    if (data.length === 0) return;
+    const memberIds = Array.from(new Set(data.map(v => v.memberId)));
+
+    Promise.all(memberIds.map(id => getUserInfo(id))).then(resList => {
+      const map = resList.reduce(
+        (acc, cur) => {
+          acc[cur.id] = cur.nickname ?? "알 수 없음";
+          return acc;
+        },
+        {} as Record<number, string>,
+      );
+      setNicknameMap(map);
+    });
+  }, [data]);
+
   const filtered = data.filter(v => v.status === activeTab);
   const withUserType: ViewingCardItem[] = filtered.map(v => ({
     ...v,
     userType: Number(memberId) === v.memberId ? "guest" : "host",
+    nickname: nicknameMap[v.memberId] || "",
   }));
 
   return (
@@ -45,7 +66,7 @@ const Viewing = () => {
       </div>
 
       <main className="flex flex-1 flex-col">
-        {isLoading ? (
+        {isLoading || Object.keys(nicknameMap).length === 0 ? (
           <div className="flex flex-1 items-center justify-center text-gray-500">
             <LoadingLottie />
           </div>

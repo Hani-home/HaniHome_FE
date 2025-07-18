@@ -65,6 +65,7 @@ const ViewingConfirmedSection = ({
                     propertyId={item.propertyId}
                     status="REQUESTED"
                     roomImageUrl={item.photoUrls[0]}
+                    nickname={item.nickname}
                     meetingDay={item.meetingDay}
                     onCancelClick={() => setOpenCancelId(item.id)}
                   />
