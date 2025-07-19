@@ -12,7 +12,7 @@ export const getMyInfo = async () => {
 // 멤버 정보 조회
 export const getUserInfo = async (memberId: number): Promise<Member> => {
   const res = await axiosInstance.get(`/api/v1/members/${memberId}`);
-  return res.data;
+  return res.data.data;
 };
 
 // 사용자 정보 수정
@@ -25,7 +25,6 @@ export const updateUser = async (
 };
 
 // 회원 탈퇴
-export const deleteUser = async (memberId: string) => {
-  const res = await axiosInstance.delete(`/api/v1/members/${memberId}`);
-  return res.data;
+export const deleteUser = async () => {
+  await axiosInstance.delete(`/api/v1/members/me`);
 };
