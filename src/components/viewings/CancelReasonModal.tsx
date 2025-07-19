@@ -20,7 +20,7 @@ const CancelReasonModal = ({
   const { data: cancelDetail, isLoading } = useCancelReason(viewingId, isOpen);
 
   if (!isOpen) return null;
-  if (isLoading || !cancelDetail || !options) return <div>Loading...</div>;
+  if (isLoading || !cancelDetail || !options) return <></>;
 
   const label = cancelDetail.cancelReasonOptionItemIds
     .map(id => {

@@ -6,6 +6,10 @@ import {
   getMyViewingList,
   getViewingAvailableDates,
   getViewingCancelReason,
+  getViewingChecklists,
+  getViewingDetail,
+  putViewingChecklists,
+  putViewingPropertyNotes,
 } from "@/apis/viewing";
 
 import { ViewingStatus, ViewingViewType } from "@/types/viewing";
@@ -41,6 +45,14 @@ export const useMyViewingDates = (status: ViewingStatus) => {
   });
 };
 
+export const useViewingDetail = (viewingId: number) => {
+  return useQuery({
+    queryKey: ["viewingDetail", viewingId],
+    queryFn: () => getViewingDetail(viewingId),
+    enabled: !!viewingId,
+  });
+};
+
 export const useCancelViewing = () => {
   const queryClient = useQueryClient();
 
@@ -67,5 +79,24 @@ export const useCancelReason = (viewingId: number, enabled: boolean = true) => {
     queryFn: () => getViewingCancelReason(viewingId),
     enabled,
     staleTime: 0,
+  });
+};
+
+export const useViewingChecklists = (viewingId: number) => {
+  return useQuery({
+    queryKey: ["viewingChecklists", viewingId],
+    queryFn: () => getViewingChecklists(viewingId),
+  });
+};
+
+export const usePutViewingChecklists = () => {
+  return useMutation({
+    mutationFn: putViewingChecklists,
+  });
+};
+
+export const usePutViewingPropertyNotes = () => {
+  return useMutation({
+    mutationFn: putViewingPropertyNotes,
   });
 };
