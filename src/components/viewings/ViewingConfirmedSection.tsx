@@ -65,7 +65,7 @@ const ViewingConfirmedSection = ({
             <DdayBadge dday={Number(dday)} />
 
             {items.map(item => {
-              const isHost = memberId === item.memberId;
+              const isHost = memberId === item.hostId;
               const userType: "host" | "guest" = isHost ? "host" : "guest";
 
               return (
