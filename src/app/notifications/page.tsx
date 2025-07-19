@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 
+import { useMyNotifications } from "@/hooks/notification/useNotification";
+
 import AlertModal from "@/components/common/AlertModal";
+import LoadingLottie from "@/components/common/LoadingLottie";
 import ContentWrapper from "@/components/layout/ContentWrapper";
 import BackHeader from "@/components/layout/header/BackHeader";
 import NotificationCard from "@/components/notification/NotificationCard";
 
-import { mockNotifications } from "@/constants/notification-dummies";
-
 const NotificationPage = () => {
-  const hasNotifications = mockNotifications.length > 0;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { data: notifications, isLoading } = useMyNotifications();
+
+  const hasNotifications = notifications && notifications.length > 0;
 
   return (
     <ContentWrapper className="bg-gray-0 flex min-h-screen flex-col gap-2">
@@ -21,10 +25,14 @@ const NotificationPage = () => {
         onRightClick={() => setShowDeleteModal(true)}
       />
       <main className="flex flex-1 flex-col px-4">
-        {hasNotifications ? (
+        {isLoading ? (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-xs">
+            <LoadingLottie />
+          </div>
+        ) : hasNotifications ? (
           <>
             <div className="flex flex-col gap-2">
-              {mockNotifications.map(item => (
+              {notifications.map(item => (
                 <NotificationCard key={item.id} {...item} />
               ))}
             </div>
