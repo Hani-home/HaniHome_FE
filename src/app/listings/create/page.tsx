@@ -6,12 +6,13 @@ import useFunnel from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
 import AddressPhoto from "@/components/listings/create/AddressPhoto";
+import ListingDetails from "@/components/listings/create/ListingDetails";
 import ListingType from "@/components/listings/create/ListingType";
 
 const steps = [
   "ListingType",
   "AddressPhoto",
-  "ListingsDetails",
+  "ListingDetails",
   "MovingConditions",
   "ContractTerms",
   "CreateConfirm",
@@ -36,12 +37,11 @@ const ListingCreatePage = () => {
       <Funnel.Step name="AddressPhoto">
         <AddressPhoto onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      
-      {/* 
-      <Funnel.Step name="ListingsDetails">
-        <ListingDetail onNext={onNextStep} onPrev={onPrevStep} />
+
+      <Funnel.Step name="ListingDetails">
+        <ListingDetails onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      <Funnel.Step name="MovingConditions">
+      {/* <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
       <Funnel.Step name="ContractTerms">
@@ -52,8 +52,7 @@ const ListingCreatePage = () => {
       </Funnel.Step>
       <Funnel.Step name="CreateSuccess">
         <CreateSuccess />
-      </Funnel.Step>
-      */}
+      </Funnel.Step> */}
     </Funnel>
   );
 };
