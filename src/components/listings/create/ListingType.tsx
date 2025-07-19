@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { useListingStore } from "@/stores/useListingStore";
 
 import BackHeader from "@/components/layout/header/BackHeader";
 
-import LentIcon from "@/public/svgs/listings/lent-icon.svg";
+import RentIcon from "@/public/svgs/listings/rent-icon.svg";
 import ShareIcon from "@/public/svgs/listings/share-icon.svg";
 
 interface ListingTypeProps {
   onSelectType: (type: "SHARE" | "RENT") => void;
 }
 const ListingType = ({ onSelectType }: ListingTypeProps) => {
-  const [selectedType, setSelectedType] = useState<"SHARE" | "RENT" | null>(
-    null,
-  );
 
+  const { listingType, setListingType } = useListingStore();
   const handleClick = (type: "SHARE" | "RENT") => {
-    setSelectedType(type);
+    setListingType(type);
     onSelectType(type);
   };
 
@@ -30,7 +28,11 @@ const ListingType = ({ onSelectType }: ListingTypeProps) => {
           {/*쉐어 */}
           <div
             onClick={() => handleClick("SHARE")}
-            className={`group hover:bg-mint-light group hover:text-mint hover:border-mint flex h-[140px] w-[140px] cursor-pointer flex-col gap-4 rounded-[4px] border ${selectedType === "SHARE" ? "bg-mint-light border-mint text-mint" : "border-gray-400 text-gray-800"} px-9 py-5`}
+            className={`group hover:bg-mint-light hover:text-mint hover:border-mint flex h-[140px] w-[140px] cursor-pointer flex-col gap-4 rounded-[4px] border ${
+              listingType === "SHARE"
+                ? "bg-mint-light border-mint text-mint"
+                : "border-gray-400 text-gray-800"
+            } px-9 py-5`}
           >
             <ShareIcon />
             <div className="text-body1-sb group-hover:text-mint flex items-center justify-center">
@@ -40,9 +42,9 @@ const ListingType = ({ onSelectType }: ListingTypeProps) => {
           {/*렌트 */}
           <div
             onClick={() => handleClick("RENT")}
-            className={`group hover:bg-mint-light group hover:text-mint hover:border-mint flex h-[140px] w-[140px] cursor-pointer flex-col gap-4 rounded-[4px] border ${selectedType === "SHARE" ? "bg-mint-light border-mint text-mint" : "border-gray-400 text-gray-800"} px-9 py-5`}
+            className={`group hover:bg-mint-light hover:text-mint hover:border-mint flex h-[140px] w-[140px] cursor-pointer flex-col gap-4 rounded-[4px] border ${listingType === "RENT" ? "bg-mint-light border-mint text-mint" : "border-gray-400 text-gray-800"} px-9 py-5`}
           >
-            <LentIcon />
+            <RentIcon />
             <div className="group-hover:text-mint text-body1-sb flex items-center justify-center">
               렌트
             </div>

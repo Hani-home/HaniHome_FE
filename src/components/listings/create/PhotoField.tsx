@@ -20,7 +20,7 @@ interface PhotoFieldProps {
 const MAX_IMAGE_COUNT = 10;
 
 const PhotoField = ({ onNext }: PhotoFieldProps) => {
-  const { photoData, setPhotoData } = useListingStore();
+  const { setPhotoData } = useListingStore();
   const [isOpen, setIsOpen] = useState(false);
   const [, setUploadedFiles] = useState<File[]>([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -93,11 +93,11 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
             className="bg-mint-light text-mint text-lab1-sb flex h-9 w-full max-w-[343px] cursor-pointer items-center justify-center rounded-[4px] border"
             onClick={handleClickUpload}
           >
-            + 사진 선택
+            + 매물 사진 올리기
           </div>
         </div>
       </div>
-      <Divider className="my-2" />
+      <Divider className="my-1" />
       <input
         type="file"
         accept="image/png, image/jpeg"
@@ -105,15 +105,11 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
         ref={fileInputRef}
         onChange={handleFileChange}
       />
-      <div className="px-4 py-3">
+      <div className="px-4">
         {previewUrls.length > 0 && (
-          <ImageSlider images={previewUrls} onRemove={handleRemoveImage} />
+          <ImageSlider images={previewUrls} onRemove={handleRemoveImage} className="py-6"/>
         )}
-        {photoData.length < 3 && (
-          <div className="text-body2-med text-red-500">
-            최소 3장의 사진을 업로드해야 합니다.
-          </div>
-        )}
+
         {showErrorModal && (
           <div className="text-body2-med text-red-500">
             이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.

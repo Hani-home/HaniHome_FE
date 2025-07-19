@@ -1,13 +1,23 @@
 import Image from "next/image";
 
+import clsx from "clsx";
+
 interface ImageSliderProps {
   images: string[];
   onRemove?: (index: number) => void;
+  className?: string;
 }
-const ImageSlider = ({ images, onRemove }: ImageSliderProps) => {
+
+const ImageSlider = ({
+  images,
+  onRemove,
+  className = "",
+}: ImageSliderProps) => {
   return (
-    <div className="scrollbar-hide w-full overflow-x-auto py-3">
-      <div className="flex w-max cursor-pointer gap-4">
+    <div
+      className={clsx("scrollbar-hide w-full overflow-x-auto py-3", className)}
+    >
+      <div className="flex w-max gap-4">
         {images.map((src, index) => (
           <div
             key={index}
@@ -17,19 +27,19 @@ const ImageSlider = ({ images, onRemove }: ImageSliderProps) => {
               src={src}
               alt={`image${index}`}
               fill
-              className="object-cover"
+              className="rounded-lg border border-gray-300 object-cover"
             />
             {onRemove && (
               <button
                 type="button"
                 onClick={() => onRemove(index)}
-                className="absolute top-4 right-5 z-10"
+                className="absolute top-4 right-5 z-10 cursor-pointer"
               >
                 <Image
                   src="/svgs/common/close-icon.svg"
                   alt="삭제"
-                  width={16}
-                  height={16}
+                  width={24}
+                  height={24}
                 />
               </button>
             )}
@@ -39,4 +49,5 @@ const ImageSlider = ({ images, onRemove }: ImageSliderProps) => {
     </div>
   );
 };
+
 export default ImageSlider;

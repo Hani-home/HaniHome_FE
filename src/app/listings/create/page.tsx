@@ -36,8 +36,7 @@ const ListingCreatePage = () => {
       <Funnel.Step name="AddressPhoto">
         <AddressPhoto onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-
-      {/* 나머지 단계는 주석 처리된 상태로 유지 */}
+      
       {/* 
       <Funnel.Step name="ListingsDetails">
         <ListingDetail onNext={onNextStep} onPrev={onPrevStep} />

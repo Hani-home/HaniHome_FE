@@ -3,7 +3,7 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 import TitleSection from "@/components/listings/detailShow/TitleSection";
 
-const NewListingConfrim = () => {
+const NewListingConfirm = () => {
   return (
     <>
       <BackHeader />
@@ -20,4 +20,4 @@ const NewListingConfrim = () => {
     </>
   );
 };
-export default NewListingConfrim;
+export default NewListingConfirm;

@@ -14,10 +14,12 @@ interface AddressFieldProps {
 
 const AddressField = ({ onNext }: AddressFieldProps) => {
   const { addressData, setAddressData } = useListingStore();
-  const [isFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [unit, setUnit] = useState(addressData.unit);
   const [buildingName, setBuildingName] = useState(addressData.buildingName);
+  const [isUnitFocused, setIsUnitFocused] = useState(false);
+  const [isBuildingFocused, setIsBuildingFocused] = useState(false);
 
   const handleSearchClick = () => {
     setIsSearchClicked(true);
@@ -49,6 +51,11 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
     });
   }, [unit, buildingName, setAddressData]);
 
+  const shouldHighlightMain = isFocused && !addressData.streetName;
+  const shouldHighlightUnit = isUnitFocused && unit.trim() === "";
+  const shouldHighlightBuilding =
+    isBuildingFocused && buildingName.trim() === "";
+
   return (
     <div className="flex flex-col gap-2">
       <div className="text-heading3 px-4 py-4 text-gray-900">
@@ -58,16 +65,25 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
         <div className="flex flex-col gap-2">
           <div
             className={`flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3 ${
-              isFocused ? "border-gray-600" : "border-gray-400"
+              addressData.streetName ? "border-gray-600" : "border-gray-400"
             }`}
             onClick={handleInputClick}
           >
             <input
-              className="text-body1-med text-gray-500 outline-none"
+              className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
+                addressData.streetName
+                  ? "text-gray-900"
+                  : shouldHighlightMain
+                    ? "text-gray-900"
+                    : "text-gray-500"
+              }`}
               placeholder="도로명, 건물명, suburb 검색"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
             />
+
             <SearchIcon
-              className="cursor-pointer text-gray-500"
+              className={`${shouldHighlightMain ? "text-gray-600" : "text-gray-500"} cursor-pointer text-gray-500`}
               onClick={handleSearchClick}
             />
           </div>
@@ -81,7 +97,7 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
 
       {!isSearchClicked && (
         <>
-          <div className="flex gap-2 px-4 py-3">
+          <div className="flex gap-2 px-4 py-3 items-center">
             <div className="text-body2-med text-gray-700">
               이렇게 검색해보세요!
             </div>
@@ -113,16 +129,28 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
         <>
           <div className="pb-[70px]">
             <div className="flex flex-col gap-2">
-              <div className="px-4 py-4">상세주소를 입력해주세요 (선택)</div>
+              <div className="text-heading3 text-gray-700 p-4">상세주소를 입력해주세요 (선택)</div>
               <div className="flex flex-col gap-6 px-4">
                 <div className="flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">Unit No.</div>
-                  <div className="flex h-11 w-[343px] items-center rounded-[4px] border border-gray-400 px-4 py-3">
+                  <div
+                    className={`flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3 ${
+                      unit ? "border-gray-600" : "border-gray-400"
+                    }`}
+                  >
                     <input
                       placeholder="입력해주세요"
-                      className="text-body1-med text-gray-500 outline-none"
+                      className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
+                        unit
+                          ? "text-gray-900"
+                          : shouldHighlightUnit
+                            ? "text-gray-900"
+                            : "text-gray-500"
+                      }`}
                       value={unit}
                       onChange={e => setUnit(e.target.value)}
+                      onFocus={() => setIsUnitFocused(true)}
+                      onBlur={() => setIsUnitFocused(false)}
                     />
                   </div>
                 </div>
@@ -130,12 +158,24 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                   <div className="text-body2-med text-gray-700">
                     건물 / 아파트 이름
                   </div>
-                  <div className="flex h-11 w-[343px] items-center rounded-[4px] border border-gray-400 px-4 py-3">
+                  <div
+                    className={`flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3 ${
+                      buildingName ? "border-gray-600" : "border-gray-400"
+                    }`}
+                  >
                     <input
                       placeholder="입력해주세요"
-                      className="text-body1-med text-gray-500 outline-none"
+                      className={`text-body1-med min-w-0 grow outline-none placeholder:text-gray-500 ${
+                        buildingName
+                          ? "text-gray-900"
+                          : shouldHighlightBuilding
+                            ? "text-gray-900"
+                            : "text-gray-500"
+                      }`}
                       value={buildingName}
                       onChange={e => setBuildingName(e.target.value)}
+                      onFocus={() => setIsBuildingFocused(true)}
+                      onBlur={() => setIsBuildingFocused(false)}
                     />
                   </div>
                 </div>
