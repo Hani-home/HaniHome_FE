@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   connectNotificationStream,
+  deleteNotification,
   getMyNotifications,
   patchNotificationRead,
 } from "@/apis/notification";
@@ -24,6 +25,19 @@ export const usePatchNotificationRead = () => {
   return useMutation({
     mutationFn: (notificationId: number) =>
       patchNotificationRead(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myNotifications"] });
+    },
+  });
+};
+
+export const useDeleteAllNotifications = (notificationIds: number[]) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await Promise.all(notificationIds.map(id => deleteNotification(id)));
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myNotifications"] });
     },

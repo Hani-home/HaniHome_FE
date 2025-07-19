@@ -25,6 +25,10 @@ export const patchNotificationRead = async (notificationId: number) => {
   return res.data.data;
 };
 
+export const deleteNotification = async (notificationId: number) => {
+  await axiosInstance.delete(`/api/v1/notifications/${notificationId}`);
+};
+
 export const connectNotificationStream = () => {
   const CustomEventSource =
     EventSource as unknown as EventSourceWithCredentials;

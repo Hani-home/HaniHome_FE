@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import { useMyNotifications } from "@/hooks/notification/useNotification";
+import {
+  useDeleteAllNotifications,
+  useMyNotifications,
+} from "@/hooks/notification/useNotification";
 
 import AlertModal from "@/components/common/AlertModal";
 import LoadingLottie from "@/components/common/LoadingLottie";
@@ -13,7 +16,15 @@ import NotificationCard from "@/components/notification/NotificationCard";
 const NotificationPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const { data: notifications, isLoading } = useMyNotifications();
+  const { data: notifications = [], isLoading } = useMyNotifications();
+  const notificationIds = notifications.map(item => item.id);
+
+  const { mutate: deleteAll } = useDeleteAllNotifications(notificationIds);
+
+  const handleDeleteAll = () => {
+    deleteAll();
+    setShowDeleteModal(false);
+  };
 
   const hasNotifications = notifications && notifications.length > 0;
 
@@ -52,7 +63,7 @@ const NotificationPage = () => {
             "이후 동일한 알림을 재전송하지 않습니다",
           ]}
           actionLabel="삭제"
-          // onActionClick={알림삭제처리}
+          onActionClick={handleDeleteAll}
           onClose={() => setShowDeleteModal(false)}
         />
       )}
