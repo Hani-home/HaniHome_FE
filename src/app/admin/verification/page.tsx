@@ -38,7 +38,6 @@ const mockData: VerificationDetail[] = [
 
 
 
-
 const AdminVerificationPage = () => {
     const [requests, setRequests] = useState<Verification[]>([]);
     const [selectedVerification, setSelectedVerification] = useState<VerificationDetail | null>(null);
