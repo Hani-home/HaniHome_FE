@@ -6,12 +6,13 @@ import useFunnel from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
 import AddressPhoto from "@/components/listings/create/AddressPhoto";
+import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/ListingType";
 
 const steps = [
   "ListingType",
   "AddressPhoto",
-  "ListingsDetails",
+  "ListingDetails",
   "MovingConditions",
   "ContractTerms",
   "CreateConfirm",
@@ -37,11 +38,10 @@ const ListingCreateClient = () => {
         <AddressPhoto onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
 
-      {/* 
-      <Funnel.Step name="ListingsDetails">
-        <ListingDetail onNext={onNextStep} onPrev={onPrevStep} />
+      <Funnel.Step name="ListingDetails">
+        <ListingDetails onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      <Funnel.Step name="MovingConditions">
+      {/* <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
       <Funnel.Step name="ContractTerms">
