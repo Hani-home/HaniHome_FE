@@ -29,7 +29,7 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
       <div className="relative w-[600px] rounded-lg bg-white p-8 shadow-xl">
         {/* 닫기 버튼 */}
         <button
