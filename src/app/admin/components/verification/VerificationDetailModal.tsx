@@ -16,6 +16,7 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
 
   const handleApprove = () => {
     console.log("승인됨", data.id);
+    alert("승인됨");
   };
 
   const handleReject = () => {
@@ -24,6 +25,7 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
 
   const handleRejectSubmit = () => {
     console.log("거부됨", data.id, rejectionReason);
+    alert("거부됨")
   };
 
   return (

@@ -63,7 +63,7 @@ const AdminVerificationPage = () => {
           <tbody>
             {requests.map((item) => (
               <tr key={item.id}
-                  className="border-b border-gray-100 hover:bg-gray-50"
+                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
                   onClick={()=>setSelectedVerification(item as VerificationDetail)}>
                 <td className="py-2">{item.memberId}</td>
                 <td className="py-2">{item.type}</td>
