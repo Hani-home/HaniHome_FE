@@ -16,7 +16,7 @@ export const QUESTION_MAP = {
         label: "매물 정보를 입력해주세요",
         options: [
           "Internal Area",
-          "Total Area",
+          "Total Area (선택)",
           "총 거주인",
           "욕실 쉐어자 수",
           "건물 전체 층 (선택)",
@@ -78,7 +78,7 @@ export const QUESTION_MAP = {
         label: "매물 정보를 입력해주세요",
         options: [
           "Internal Area",
-          "Total Area",
+          "Total Area (선택)",
           "방 개수",
           "욕실 개수",
           "건물 전체 층 (선택)",

@@ -4,6 +4,8 @@ import { useListingStore } from "@/stores/useListingStore";
 
 import { QUESTION_MAP } from "@/constants/question-map";
 
+import InternalDetailsContent from "./InternalDetailsContent";
+
 interface ListingDetailDropdownContentProps {
   id: string;
   onSelect: (value: string) => void;
@@ -41,6 +43,9 @@ const ListingDetailDropdownContent = ({
           ))}
         </ul>
       );
+    }
+    case "internalDetails": {
+      return <InternalDetailsContent />;
     }
   }
 };
