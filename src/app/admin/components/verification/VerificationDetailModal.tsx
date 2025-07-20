@@ -25,7 +25,7 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
 
   const handleRejectSubmit = () => {
     console.log("거부됨", data.id, rejectionReason);
-    alert("거부됨")
+    alert("거부됨");
   };
 
   return (
