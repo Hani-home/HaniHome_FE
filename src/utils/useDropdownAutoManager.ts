@@ -48,7 +48,11 @@ export function useDropdownAutoManager({
   };
 
   const autoAdvance = (currentIndex: number) => {
-    if (!finalShouldAutoClose(currentIndex)) return;
+    if (
+      !finalShouldAutoClose(currentIndex) ||
+      manualOpenedIndices.has(currentIndex)
+    )
+      return;
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -56,15 +60,13 @@ export function useDropdownAutoManager({
 
     timeoutRef.current = setTimeout(() => {
       setOpenIndices(prev => {
-        const filtered = prev.filter(
-          i => manualOpenedIndices.has(i) || i !== currentIndex,
-        );
-
+        const filtered = prev.filter(i => i !== currentIndex); // 수동 여부 상관없이 닫음
+  
         const nextIndex = currentIndex + 1;
         if (nextIndex < totalCount && !filtered.includes(nextIndex)) {
           filtered.push(nextIndex);
         }
-
+  
         return filtered;
       });
     }, autoCloseDelay);

@@ -18,7 +18,7 @@ const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
   const propertyContent = propertyInfo.find(item => item.kind === listingType);
   console.log("photoData", photoData);
   return (
-    <div className="max-w-[375px]">
+    <div className="max-w-[375px] pb-[70px]">
       <BackHeader rightIcon="close" />
       <TitleSection
         title="입력한 정보를 확인해주세요"

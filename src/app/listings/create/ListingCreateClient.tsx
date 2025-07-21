@@ -7,6 +7,7 @@ import useFunnel from "@/hooks/common/useFunnel";
 import Funnel from "@/components/common/Funnel/Funnel";
 import AddressPhoto from "@/components/listings/create/AddressPhoto";
 import CreateConfirm from "@/components/listings/create/CreateConfirm";
+import CreateSuccess from "@/components/listings/create/CreateSuccess";
 import ListingDescription from "@/components/listings/create/ListingDescription";
 import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/ListingType";
@@ -56,9 +57,9 @@ const ListingCreateClient = () => {
       <Funnel.Step name="CreateConfirm">
         <CreateConfirm onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      {/* <Funnel.Step name="CreateSuccess">
+      <Funnel.Step name="CreateSuccess">
         <CreateSuccess />
-      </Funnel.Step> */}
+      </Funnel.Step>
     </Funnel>
   );
 };
