@@ -43,7 +43,7 @@ export const QUESTION_MAP = {
         id: "furniture",
         label: "기본 제공 가전, 가구를 선택해주세요",
         options: {
-          침실: ["침대 프레임", "책상", "침구류", "옷장", "수납장", "의자"],
+          침실: ["침대 프레임", "침구류", "의자", "책상", "옷장", "수납장"],
           주방: ["전자렌지", "냉장고", "가스렌지", "식기류", "조리도구"],
           거실: ["TV", "소파", "커피테이블"],
           기타: ["Wifi", "청소기", "에어콘", "엘레베이터"],
@@ -51,7 +51,7 @@ export const QUESTION_MAP = {
       },
     ],
     MovingConditions: [],
-    ContractTerms:[],
+    ContractTerms: [],
   },
 
   RENT: {
@@ -110,7 +110,7 @@ export const QUESTION_MAP = {
         id: "furniture",
         label: "기본 제공 가전, 가구를 선택해주세요",
         options: {
-          침실: ["침대 프레임", "책상", "침구류", "옷장", "수납장", "의자"],
+          침실: ["침대 프레임", "침구류", "의자", "책상", "옷장", "수납장"],
           주방: ["전자렌지", "냉장고", "가스렌지", "식기류", "조리도구"],
           거실: ["TV", "소파", "커피테이블"],
           기타: ["Wifi", "청소기", "에어콘", "엘레베이터"],
@@ -118,6 +118,6 @@ export const QUESTION_MAP = {
       },
     ],
     MovingConditions: [],
-    ContractTerms:[],
+    ContractTerms: [],
   },
 };
