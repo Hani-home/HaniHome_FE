@@ -6,6 +6,8 @@ import useFunnel from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
 import AddressPhoto from "@/components/listings/create/AddressPhoto";
+import CreateConfirm from "@/components/listings/create/CreateConfirm";
+import ListingDescription from "@/components/listings/create/ListingDescription";
 import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/ListingType";
 
@@ -13,8 +15,9 @@ const steps = [
   "ListingType",
   "AddressPhoto",
   "ListingDetails",
-  "MovingConditions",
-  "ContractTerms",
+  // "MovingConditions",
+  // "ContractTerms",
+  "ListingDescription",
   "CreateConfirm",
   "CreateSuccess",
 ];
@@ -43,17 +46,19 @@ const ListingCreateClient = () => {
       </Funnel.Step>
       {/* <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
-      </Funnel.Step>
-      <Funnel.Step name="ContractTerms">
+      </Funnel.Step> */}
+      {/* <Funnel.Step name="ContractTerms">
         <ContractTerms onNext={onNextStep} onPrev={onPrevStep} />
+      </Funnel.Step> */}
+      <Funnel.Step name="ListingDescription">
+        <ListingDescription onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
       <Funnel.Step name="CreateConfirm">
         <CreateConfirm onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      <Funnel.Step name="CreateSuccess">
+      {/* <Funnel.Step name="CreateSuccess">
         <CreateSuccess />
-      </Funnel.Step>
-      */}
+      </Funnel.Step> */}
     </Funnel>
   );
 };
