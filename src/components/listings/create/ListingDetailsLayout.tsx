@@ -9,8 +9,6 @@ import { QUESTION_MAP } from "@/constants/question-map";
 
 import DropdownSelector from "./DropdownSelector";
 import FunnelStepMenu from "./FunnelStepMenu";
-import HighLightsContent from "./HighLightsContent";
-import InternalDetailsContent from "./InternalDetailsContent";
 import ListingDetailDropdownContent from "./ListingDetailsDropdownContent";
 
 interface ListingDetailsProps {
@@ -83,58 +81,71 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
       if (!highlights || highlights.length === 0) return "";
       return highlights[0] + (highlights.length > 1 ? "···" : "");
     }
+    if (questionId === "furniture") {
+      const selected = selectedAnswers.furniture as string[] | undefined;
+      if (!selected || selected.length === 0 || !listingType) return "";
 
+      const furnitureOptions = QUESTION_MAP[listingType].ListingDetails.find(
+        q => q.id === "furniture",
+      )?.options;
+
+      if (
+        !furnitureOptions ||
+        typeof furnitureOptions !== "object" ||
+        Array.isArray(furnitureOptions)
+      ) {
+        return "";
+      }
+
+      const categories = Object.entries(furnitureOptions)
+        .filter(([, items]) => items.some(item => selected.includes(item)))
+        .map(([category]) => category);
+
+      return categories.join(", ");
+    }
     return (selectedAnswers[questionId] as string) || "";
   };
-
-  const section = "ListingDetails";
 
   if (!listingType) {
     return <div>매물 타입이 선택되지 않았습니다.</div>;
   }
 
+  const section = "ListingDetails";
   const questions = QUESTION_MAP[listingType][section];
 
   return (
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
       <FunnelStepMenu />
-      {questions.map(question => (
-        <div key={question.id}>
-          <DropdownSelector
-            label={question.label}
-            answer={getAnswerText(question.id)}
-          >
-            {question.id === "internalDetails" ? (
-              <InternalDetailsContent
-                value={
-                  (selectedAnswers.internalDetails as Record<string, string>) ||
-                  {}
-                }
-                onChange={value => handleSelectAnswer("internalDetails", value)}
+      {questions.map(question => {
+        // question.id 별 value 전달 분기 처리
+        let contentValue;
+        if (question.id === "internalDetails") {
+          contentValue = selectedAnswers.internalDetails ?? {};
+        } else if (question.id === "highlights") {
+          contentValue = (selectedAnswers.highlights as string[]) ?? [];
+        } else if (question.id === "furniture") {
+          contentValue = (selectedAnswers.furniture as string[]) ?? [];
+        } else {
+          // 일반 문자열 value
+          contentValue = (selectedAnswers[question.id] as string) ?? "";
+        }
+
+        return (
+          <div key={question.id}>
+            <DropdownSelector
+              label={question.label}
+              answer={getAnswerText(question.id)}
+            >
+              <ListingDetailDropdownContent
+                id={question.id}
+                value={contentValue}
+                onSelect={val => handleSelectAnswer(question.id, val)}
               />
-            ) : question.id === "highlights" ? (
-              <HighLightsContent
-                value={(selectedAnswers.highlights as string[]) || []}
-                onChange={value => handleSelectAnswer("highlights", value)}
-              />
-            ) : (
-              <div className="py-3">
-                <ListingDetailDropdownContent
-                  id={question.id}
-                  value={
-                    (selectedAnswers.internalDetails as Record<
-                      string,
-                      string
-                    >) || {}
-                  }
-                  onSelect={val => handleSelectAnswer(question.id, val)}
-                />
-              </div>
-            )}
-          </DropdownSelector>
-        </div>
-      ))}
+            </DropdownSelector>
+          </div>
+        );
+      })}
       <BottomActionBar
         buttons={[
           {

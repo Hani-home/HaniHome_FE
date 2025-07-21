@@ -35,7 +35,7 @@ const DropdownSelector = ({
           />
         </div>
       </div>
-      {isOpen && <div className="px-4">{children}</div>}
+      {isOpen && <div>{children}</div>}
     </>
   );
 };
