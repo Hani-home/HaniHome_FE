@@ -43,7 +43,7 @@ const InternalDetailsContent = ({
   };
 
   return (
-    <div className="max-w-[375px]">
+    <div className="max-w-[375px] py-3">
       <div className="flex flex-col gap-4 pb-3">
         <div className="flex justify-between">
           <div className="flex items-center gap-1">
@@ -83,7 +83,7 @@ const InternalDetailsContent = ({
                   onChange={e => handleInputChange(option, e.target.value)}
                 />
                 <span
-                  className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                  className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${
                     value[option] ? "text-gray-900" : "text-gray-500"
                   }`}
                 >
@@ -132,11 +132,13 @@ const InternalDetailsContent = ({
                         }
                       />
                       <span
-                        className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                        className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${
                           value[option] ? "text-gray-900" : "text-gray-500"
                         }`}
                       >
-                        명
+                        {["총 거주인", "욕실 쉐어자 수"].includes(option)
+                          ? "명"
+                          : "개"}
                       </span>
                     </div>
                   ) : ["건물 전체 층 (선택)", "해당 층 (선택)"].includes(
@@ -157,7 +159,7 @@ const InternalDetailsContent = ({
                         }
                       />
                       <span
-                        className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                        className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${
                           value[option] ? "text-gray-900" : "text-gray-500"
                         }`}
                       >

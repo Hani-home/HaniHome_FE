@@ -9,6 +9,7 @@ import { QUESTION_MAP } from "@/constants/question-map";
 
 import DropdownSelector from "./DropdownSelector";
 import FunnelStepMenu from "./FunnelStepMenu";
+import HighLightsContent from "./HighLightsContent";
 import InternalDetailsContent from "./InternalDetailsContent";
 import ListingDetailDropdownContent from "./ListingDetailsDropdownContent";
 
@@ -16,21 +17,25 @@ interface ListingDetailsProps {
   onNext: () => void;
   onPrev: () => void;
 }
+
+interface SelectedAnswers {
+  [key: string]: string | Record<string, string> | string[];
+}
+
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const { listingType } = useListingStore();
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, string | Record<string, string>>
-  >({});
+  const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
 
   const handleSelectAnswer = (
     questionId: string,
-    value: string | Record<string, string>,
+    value: string | Record<string, string> | string[],
   ) => {
     setSelectedAnswers(prev => ({
       ...prev,
       [questionId]: value,
     }));
   };
+
   const formatInternalDetailsAnswerNoValue = (
     internalDetails?: Record<string, string>,
   ) => {
@@ -66,7 +71,24 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     return uniqueParts.join(", ");
   };
 
+  const getAnswerText = (questionId: string): string => {
+    if (questionId === "internalDetails") {
+      return formatInternalDetailsAnswerNoValue(
+        selectedAnswers.internalDetails as Record<string, string>,
+      );
+    }
+
+    if (questionId === "highlights") {
+      const highlights = selectedAnswers.highlights as string[] | undefined;
+      if (!highlights || highlights.length === 0) return "";
+      return highlights[0] + (highlights.length > 1 ? "···" : "");
+    }
+
+    return (selectedAnswers[questionId] as string) || "";
+  };
+
   const section = "ListingDetails";
+
   if (!listingType) {
     return <div>매물 타입이 선택되지 않았습니다.</div>;
   }
@@ -78,17 +100,10 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
       <BackHeader rightIcon="close" />
       <FunnelStepMenu />
       {questions.map(question => (
-        <>
+        <div key={question.id}>
           <DropdownSelector
-            key={question.id}
             label={question.label}
-            answer={
-              question.id === "internalDetails"
-                ? formatInternalDetailsAnswerNoValue(
-                    selectedAnswers.internalDetails as Record<string, string>,
-                  )
-                : (selectedAnswers[question.id] as string)
-            }
+            answer={getAnswerText(question.id)}
           >
             {question.id === "internalDetails" ? (
               <InternalDetailsContent
@@ -98,18 +113,27 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
                 }
                 onChange={value => handleSelectAnswer("internalDetails", value)}
               />
-            ) : (
-              <ListingDetailDropdownContent
-                id={question.id}
-                value={
-                  (selectedAnswers.internalDetails as Record<string, string>) ||
-                  {}
-                }
-                onSelect={val => handleSelectAnswer(question.id, val)}
+            ) : question.id === "highlights" ? (
+              <HighLightsContent
+                value={(selectedAnswers.highlights as string[]) || []}
+                onChange={value => handleSelectAnswer("highlights", value)}
               />
+            ) : (
+              <div className="py-3">
+                <ListingDetailDropdownContent
+                  id={question.id}
+                  value={
+                    (selectedAnswers.internalDetails as Record<
+                      string,
+                      string
+                    >) || {}
+                  }
+                  onSelect={val => handleSelectAnswer(question.id, val)}
+                />
+              </div>
             )}
           </DropdownSelector>
-        </>
+        </div>
       ))}
       <BottomActionBar
         buttons={[
