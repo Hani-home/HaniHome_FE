@@ -9,6 +9,7 @@ import { QUESTION_MAP } from "@/constants/question-map";
 
 import DropdownSelector from "./DropdownSelector";
 import FunnelStepMenu from "./FunnelStepMenu";
+import InternalDetailsContent from "./InternalDetailsContent";
 import ListingDetailDropdownContent from "./ListingDetailsDropdownContent";
 
 interface ListingDetailsProps {
@@ -18,21 +19,60 @@ interface ListingDetailsProps {
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const { listingType } = useListingStore();
   const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, string>
+    Record<string, string | Record<string, string>>
   >({});
 
-  const handleSelectAnswer = (questionId: string, value: string) => {
+  const handleSelectAnswer = (
+    questionId: string,
+    value: string | Record<string, string>,
+  ) => {
     setSelectedAnswers(prev => ({
       ...prev,
       [questionId]: value,
     }));
+  };
+  const formatInternalDetailsAnswerNoValue = (
+    internalDetails?: Record<string, string>,
+  ) => {
+    if (!internalDetails) return "";
+
+    const areaLabels = ["Internal Area", "Total Area (선택)"];
+    const areaTexts = areaLabels
+      .filter(key => internalDetails[key])
+      .map(() => "면적");
+
+    const resident = internalDetails["총 거주인"] ? "거주인" : "";
+    const shareBathroom = internalDetails["욕실 쉐어자 수"] ? "욕실 쉐어" : "";
+
+    const rooms = internalDetails["방 개수"] ? "방 개수" : "";
+    const bathrooms = internalDetails["욕실 개수"] ? "욕실 개수" : "";
+
+    const floorLabels = ["건물 전체 층 (선택)", "해당 층 (선택)"];
+    const floorTexts = floorLabels
+      .filter(key => internalDetails[key])
+      .map(() => "층수");
+
+    const parts = [
+      areaTexts.length > 0 ? "면적" : null,
+      resident || null,
+      shareBathroom || null,
+      rooms || null,
+      bathrooms || null,
+      floorTexts.length > 0 ? "층수" : null,
+    ].filter(Boolean);
+
+    const uniqueParts = Array.from(new Set(parts));
+
+    return uniqueParts.join(", ");
   };
 
   const section = "ListingDetails";
   if (!listingType) {
     return <div>매물 타입이 선택되지 않았습니다.</div>;
   }
+
   const questions = QUESTION_MAP[listingType][section];
+
   return (
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
@@ -42,16 +82,32 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
           <DropdownSelector
             key={question.id}
             label={question.label}
-            answer={selectedAnswers[question.id]}
+            answer={
+              question.id === "internalDetails"
+                ? formatInternalDetailsAnswerNoValue(
+                    selectedAnswers.internalDetails as Record<string, string>,
+                  )
+                : (selectedAnswers[question.id] as string)
+            }
           >
-            <div>
+            {question.id === "internalDetails" ? (
+              <InternalDetailsContent
+                value={
+                  (selectedAnswers.internalDetails as Record<string, string>) ||
+                  {}
+                }
+                onChange={value => handleSelectAnswer("internalDetails", value)}
+              />
+            ) : (
               <ListingDetailDropdownContent
                 id={question.id}
-                onSelect={(value: string) =>
-                  handleSelectAnswer(question.id, value)
+                value={
+                  (selectedAnswers.internalDetails as Record<string, string>) ||
+                  {}
                 }
+                onSelect={val => handleSelectAnswer(question.id, val)}
               />
-            </div>
+            )}
           </DropdownSelector>
         </>
       ))}

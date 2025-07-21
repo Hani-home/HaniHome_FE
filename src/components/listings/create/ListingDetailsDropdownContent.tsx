@@ -8,12 +8,14 @@ import InternalDetailsContent from "./InternalDetailsContent";
 
 interface ListingDetailDropdownContentProps {
   id: string;
-  onSelect: (value: string) => void;
+  onSelect: (value: string | Record<string, string>) => void;
+  value?: Record<string, string>;
 }
 
 const ListingDetailDropdownContent = ({
   id,
   onSelect,
+  value,
 }: ListingDetailDropdownContentProps) => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const { listingType } = useListingStore();
@@ -45,7 +47,12 @@ const ListingDetailDropdownContent = ({
       );
     }
     case "internalDetails": {
-      return <InternalDetailsContent />;
+      return (
+        <InternalDetailsContent
+          value={value || {}}
+          onChange={onSelect as (value: Record<string, string>) => void}
+        />
+      );
     }
   }
 };

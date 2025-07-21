@@ -1,44 +1,46 @@
-"use client";
-
 import { useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { QUESTION_MAP } from "@/constants/question-map";
+import CheckIcon from "@/components/common/CheckIcon";
 
-import EmptyCheck from "@/public/svgs/common/empty-check.svg";
-// import FilledCheck from "@/public/svgs/common/filled-check.svg";
 import ChangeIcon from "@/public/svgs/listings/change-icon.svg";
 import QuestionIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
-const InternalDetailsContent = () => {
+interface InternalDetailsContentProps {
+  value: Record<string, string>;
+  onChange: (value: Record<string, string>) => void;
+}
+
+const InternalDetailsContent = ({
+  value,
+  onChange,
+}: InternalDetailsContentProps) => {
   const { listingType } = useListingStore();
   const [isSquareMeter, setIsSquareMeter] = useState(false); // false = 평, true = ㎡
-
-  if (!listingType) return null;
-
-  const internalDetails = QUESTION_MAP[listingType].ListingDetails.find(
-    q => q.id === "internalDetails",
-  );
-
-  const options = Array.isArray(internalDetails?.options)
-    ? (internalDetails?.options as string[])
-    : [];
-
-  const areaOptions = options.filter(
-    opt => opt === "Internal Area" || opt === "Total Area (선택)",
-  );
-  const otherOptions = options.filter(
-    opt => opt !== "Internal Area" && opt !== "Total Area (선택)",
-  );
-
-  const groupedOtherOptions: string[][] = [];
-  for (let i = 0; i < otherOptions.length; i += 2) {
-    groupedOtherOptions.push(otherOptions.slice(i, i + 2));
-  }
+  const [withOwnerChecked, setWithOwnerChecked] = useState(false);
+  const [hasYardChecked, setHasYardChecked] = useState(false);
+  const [hasVerandaChecked, setHasVerandaChecked] = useState(false);
 
   const inputUnitText = isSquareMeter ? "평" : "㎡";
   const buttonUnitText = isSquareMeter ? "㎡" : "평";
+
+  const areaLabels = ["Internal Area", "Total Area (선택)"];
+  const otherLabels = [
+    ...(listingType === "RENT"
+      ? ["방 개수", "욕실 개수"]
+      : ["총 거주인", "욕실 쉐어자 수"]),
+    "건물 전체 층 (선택)",
+    "해당 층 (선택)",
+  ];
+
+  // input 값 변경 시 호출되는 함수
+  const handleInputChange = (key: string, val: string) => {
+    onChange({
+      ...value,
+      [key]: val,
+    });
+  };
 
   return (
     <div className="max-w-[375px]">
@@ -60,73 +62,146 @@ const InternalDetailsContent = () => {
           </button>
         </div>
 
-        {/* Internal Area, Total Area 인풋 */}
+        {/* 면적 입력 */}
         <div className="flex justify-between">
-          {areaOptions.map(option => (
+          {areaLabels.map(option => (
             <div
               key={option}
               className="flex h-[73px] flex-col justify-between"
             >
               <div className="text-body2-med text-gray-600">{option}</div>
-              <input
-                type="text"
-                className="text-body1-med h-11 w-[167px] rounded-[4px] border border-gray-400 px-4 py-3 text-gray-500"
-                placeholder={`입력해주세요          ${buttonUnitText}`}
-              />
+              <div className="relative w-[167px]">
+                <input
+                  type="text"
+                  className={`text-body1-med h-11 w-full rounded-[4px] border px-4 py-3 pr-12 focus:outline-none ${
+                    value[option]
+                      ? "border-gray-600 text-gray-900"
+                      : "border-gray-400 text-gray-500"
+                  }`}
+                  placeholder="입력해주세요"
+                  value={value[option] || ""}
+                  onChange={e => handleInputChange(option, e.target.value)}
+                />
+                <span
+                  className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                    value[option] ? "text-gray-900" : "text-gray-500"
+                  }`}
+                >
+                  {buttonUnitText}
+                </span>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 나머지 옵션들 */}
+      {/* 나머지 옵션 */}
       <div className="flex flex-col">
-        {groupedOtherOptions.map((pair, rowIdx) => (
-          <div key={rowIdx} className="flex justify-between py-4">
-            {pair.map((option, idx) => (
-              <div key={idx} className="flex flex-col">
-                <div className="text-body1-sb mb-3 text-gray-800">{option}</div>
+        {otherLabels
+          .reduce<string[][]>((acc, curr, idx) => {
+            if (idx % 2 === 0) acc.push([curr]);
+            else acc[acc.length - 1].push(curr);
+            return acc;
+          }, [])
+          .map((pair, rowIdx) => (
+            <div key={rowIdx} className="flex justify-between py-5">
+              {pair.map(option => (
+                <div key={option} className="flex flex-col">
+                  <div className="text-body1-sb mb-3 text-gray-800">
+                    {option}
+                  </div>
 
-                {[
-                  "총 거주인",
-                  "욕실 쉐어자 수",
-                  "방 개수",
-                  "욕실 개수",
-                ].includes(option) ? (
-                  <>
-                    <input
-                      type="text"
-                      className="text-body1-med h-11 w-[167px] rounded border border-gray-400 px-4 py-3 text-gray-500"
-                      placeholder="입력해주세요          명"
-                    />
-                    {listingType === "SHARE" && option === "총 거주인" && (
-                      <div className="mt-2 flex items-center">
-                        <EmptyCheck />
-                        <div className="text-cap1-med text-gray-700">
-                          집주인과 함께 거주
-                        </div>
+                  {[
+                    "총 거주인",
+                    "욕실 쉐어자 수",
+                    "방 개수",
+                    "욕실 개수",
+                  ].includes(option) ? (
+                    <div className="relative w-[167px]">
+                      <input
+                        type="text"
+                        className={`text-body1-med h-11 w-full rounded-[4px] border px-4 py-3 pr-12 focus:outline-none ${
+                          value[option]
+                            ? "border-gray-600 text-gray-900"
+                            : "border-gray-400 text-gray-500"
+                        }`}
+                        placeholder="입력해주세요"
+                        value={value[option] || ""}
+                        onChange={e =>
+                          handleInputChange(option, e.target.value)
+                        }
+                      />
+                      <span
+                        className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                          value[option] ? "text-gray-900" : "text-gray-500"
+                        }`}
+                      >
+                        명
+                      </span>
+                    </div>
+                  ) : ["건물 전체 층 (선택)", "해당 층 (선택)"].includes(
+                      option,
+                    ) ? (
+                    <div className="relative w-[167px]">
+                      <input
+                        type="text"
+                        className={`text-body1-med h-11 w-full rounded-[4px] border px-4 py-3 pr-12 focus:outline-none ${
+                          value[option]
+                            ? "border-gray-600 text-gray-900"
+                            : "border-gray-400 text-gray-500"
+                        }`}
+                        placeholder="입력해주세요"
+                        value={value[option] || ""}
+                        onChange={e =>
+                          handleInputChange(option, e.target.value)
+                        }
+                      />
+                      <span
+                        className={`pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-body1-med ${
+                          value[option] ? "text-gray-900" : "text-gray-500"
+                        }`}
+                      >
+                        층
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {option === "총 거주인" && (
+                    <div
+                      className="mt-2 flex cursor-pointer items-center gap-1 select-none"
+                      onClick={() => {
+                        setWithOwnerChecked(prev => !prev);
+                      }}
+                    >
+                      <CheckIcon checked={withOwnerChecked} />
+                      <div className="text-cap1-med text-gray-700">
+                        집주인과 함께 거주
                       </div>
-                    )}
-                  </>
-                ) : ["건물 전체 층 (선택)", "해당 층 (선택)"].includes(
-                    option,
-                  ) ? (
-                  <input
-                    type="text"
-                    className="text-body1-med h-11 w-[167px] rounded border border-gray-400 px-4 py-3 text-gray-500"
-                    placeholder="입력해주세요          층"
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    className="text-body1-med h-11 w-[167px] rounded border border-gray-400 px-4 py-3 text-gray-500"
-                    placeholder="입력해주세요          층"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
       </div>
+      {listingType === "RENT" && (
+        <div className="flex flex-col gap-3 pt-3">
+          <div
+            className="flex cursor-pointer items-center gap-1 select-none"
+            onClick={() => setHasYardChecked(prev => !prev)}
+          >
+            <CheckIcon checked={hasYardChecked} />
+            <div className="text-cap1-med text-gray-700">마당 포함</div>
+          </div>
+          <div
+            className="flex cursor-pointer items-center gap-1 select-none"
+            onClick={() => setHasVerandaChecked(prev => !prev)}
+          >
+            <CheckIcon checked={hasVerandaChecked} />
+            <div className="text-cap1-med text-gray-700">베란다 포함</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
