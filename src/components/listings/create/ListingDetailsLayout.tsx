@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
+
+import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
@@ -22,7 +24,57 @@ interface SelectedAnswers {
 
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const { listingType } = useListingStore();
+
+  const section = "ListingDetails"
+  const questions = listingType ? QUESTION_MAP[listingType][section] : [];
+
   const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
+
+  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
+    totalCount: questions.length,
+    shouldAutoClose: index => {
+      const id = questions[index].id;
+      const answer = selectedAnswers[id];
+
+      if (id === "highlights" && Array.isArray(answer)) {
+        return answer.length >= 5;
+      }
+
+      if (
+        id === "internalDetails" &&
+        typeof answer === "object" &&
+        !Array.isArray(answer) &&
+        answer !== null
+      ) {
+        const requiredKeys = [
+          ...(listingType === "RENT"
+            ? ["방 개수", "욕실 개수"]
+            : ["총 거주인", "욕실 쉐어자 수"]),
+          "Internal Area",
+        ];
+        return requiredKeys.every(key => {
+          const val = answer[key];
+          return typeof val === "string" && val.trim().length > 0;
+        });
+      }
+
+      return !!answer;
+    },
+  });
+
+  useEffect(() => {
+    openIndices.forEach(idx => {
+      if (autoAdvance && idx !== -1) {
+        if (questions[idx] && selectedAnswers[questions[idx].id]) {
+          autoAdvance(idx);
+        }
+      }
+    });
+  }, [selectedAnswers, openIndices, questions, autoAdvance]);
+
+  if (!listingType) {
+    return <div>매물 타입이 선택되지 않았습니다.</div>;
+  }
 
   const handleSelectAnswer = (
     questionId: string,
@@ -106,18 +158,23 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     return (selectedAnswers[questionId] as string) || "";
   };
 
-  if (!listingType) {
-    return <div>매물 타입이 선택되지 않았습니다.</div>;
-  }
+  const allAnswered = questions.every(q => {
+    const answer = selectedAnswers[q.id];
 
-  const section = "ListingDetails";
-  const questions = QUESTION_MAP[listingType][section];
+    if (Array.isArray(answer)) {
+      return answer.length > 0;
+    }
+    if (answer && typeof answer === "object") {
+      return Object.keys(answer).length > 0;
+    }
+    return Boolean(answer);
+  });
 
   return (
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
       <FunnelStepMenu />
-      {questions.map(question => {
+      {questions.map((question, idx) => {
         // question.id 별 value 전달 분기 처리
         let contentValue;
         if (question.id === "internalDetails") {
@@ -136,11 +193,15 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
             <DropdownSelector
               label={question.label}
               answer={getAnswerText(question.id)}
+              isOpen={openIndices.includes(idx)}
+              onClick={() => toggleIndex(idx)}
             >
               <ListingDetailDropdownContent
                 id={question.id}
                 value={contentValue}
-                onSelect={val => handleSelectAnswer(question.id, val)}
+                onSelect={val => {
+                  handleSelectAnswer(question.id, val);
+                }}
               />
             </DropdownSelector>
           </div>
@@ -160,6 +221,7 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
             label: "다음",
             onClick: onNext,
             variant: "filled",
+            disabled: !allAnswered,
           },
         ]}
       />
