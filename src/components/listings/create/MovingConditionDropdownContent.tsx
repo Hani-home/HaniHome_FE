@@ -7,6 +7,7 @@ import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 import AvailableOptionsContent from "./AvailableOptionsContent";
 import DropdownOptionsList from "./DropdownOptionsList";
 import LivingConditionsContent from "./LivingConditionsContent";
+import MoveInfoContent from "./MoveInfoContent";
 
 interface MovingConditionDropdownContentProps {
   id: string;
@@ -79,7 +80,7 @@ const MovingConditionDropdownContent = ({
     }
 
     case "moveInInfo":
-      return <></>;
+      return <MoveInfoContent />;
 
     default: {
       const options = question.options as string[];

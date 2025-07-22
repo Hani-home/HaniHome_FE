@@ -45,9 +45,9 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     setSelectedAnswers(prev => ({ ...prev, [id]: value }));
   };
 
-  // const allAnswered = COMMON_MOVING_CONDITIONS.every(
-  //   item => !!selectedAnswers[item.id],
-  // );
+  const allAnswered = COMMON_MOVING_CONDITIONS.every(
+    item => !!selectedAnswers[item.id],
+  );
 
   const AVAILABLE_KEYS_ORDER = [
     "흡연자",
@@ -133,6 +133,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
             label: "다음",
             onClick: onNext,
             variant: "filled",
+            disabled: !allAnswered,
           },
         ]}
       />
