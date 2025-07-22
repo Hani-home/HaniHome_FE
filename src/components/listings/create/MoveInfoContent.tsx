@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import AvailableDatePicker from "@/components/home/filter/AvailableDatePicker";
 
-const MoveInfoContent = () => {
+interface MoveInfoContentProps {
+  onSelect: (
+    value: Record<"availableFrom" | "availableTo", string | null> & {
+      immediate: boolean;
+      negotiable: boolean;
+    },
+  ) => void;
+}
+
+const MoveInfoContent = ({ onSelect }: MoveInfoContentProps) => {
   const [availableFrom, setAvailableFrom] = useState<string | null>(null);
   const [availableTo, setAvailableTo] = useState<string | null>(null);
   const [immediate, setImmediate] = useState(false);
@@ -16,6 +25,15 @@ const MoveInfoContent = () => {
   const toggleImmediate = () => setImmediate(prev => !prev);
   const toggleNegotiable = () => setNegotiable(prev => !prev);
 
+  useEffect(() => {
+    onSelect({
+      availableFrom,
+      availableTo,
+      immediate,
+      negotiable,
+    });
+  }, [availableFrom, availableTo, immediate, negotiable]);
+  
   return (
     <AvailableDatePicker
       availableFrom={availableFrom}

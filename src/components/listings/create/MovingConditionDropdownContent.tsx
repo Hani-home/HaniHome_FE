@@ -4,6 +4,8 @@ import CheckIcon from "@/components/common/CheckIcon";
 
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 
+import { AnswerValue } from "@/types/createPropertyAnswer";
+
 import AvailableOptionsContent from "./AvailableOptionsContent";
 import DropdownOptionsList from "./DropdownOptionsList";
 import LivingConditionsContent from "./LivingConditionsContent";
@@ -11,10 +13,8 @@ import MoveInfoContent from "./MoveInfoContent";
 
 interface MovingConditionDropdownContentProps {
   id: string;
-  value: string | string[] | Record<string, string | string[]>;
-  onSelect: (
-    value: string | string[] | Record<string, string | string[]>,
-  ) => void;
+  value: AnswerValue;
+  onSelect: (value: AnswerValue) => void;
 }
 
 const MovingConditionDropdownContent = ({
@@ -80,7 +80,7 @@ const MovingConditionDropdownContent = ({
     }
 
     case "moveInInfo":
-      return <MoveInfoContent />;
+      return <MoveInfoContent onSelect={value => onSelect(value)} />;
 
     default: {
       const options = question.options as string[];

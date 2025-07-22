@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
+
+import { AnswerValue } from "@/types/createPropertyAnswer";
 
 import DropdownSelector from "./DropdownSelector";
 import MovingConditionDropdownContent from "./MovingConditionDropdownContent";
@@ -19,7 +22,7 @@ interface MovingConditionProps {
 
 const MovingCondition = ({ onNext }: MovingConditionProps) => {
   const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, string | string[] | Record<string, string | string[]>>
+    Record<string, AnswerValue>
   >({});
 
   const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
@@ -38,10 +41,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     });
   }, [selectedAnswers, openIndices, autoAdvance]);
 
-  const handleSelect = (
-    id: string,
-    value: string | string[] | Record<string, string | string[]>,
-  ) => {
+  const handleSelect = (id: string, value: AnswerValue) => {
     setSelectedAnswers(prev => ({ ...prev, [id]: value }));
   };
 
@@ -92,6 +92,42 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       if (notice) parts.push(`노티스 ${notice}주`);
       if (minPeriod) parts.push(`최소 거주 기간 ${minPeriod}주`);
       if (contractDesc) parts.push("계약 형태");
+
+      return parts.join(", ");
+    }
+    if (itemId === "moveInInfo") {
+      const info = answer as {
+        availableFrom?: string | null;
+        availableTo?: string | null;
+        immediate?: boolean;
+        negotiable?: boolean;
+      };
+
+      const parts: string[] = [];
+
+      const from = info.availableFrom
+        ? formatMeetingDay(info.availableFrom).date
+        : null;
+      const to = info.availableTo
+        ? formatMeetingDay(info.availableTo).date
+        : null;
+
+      if (from && to) {
+        parts.push(`${from} ~ ${to}`);
+      } else if (from) {
+        parts.push(`${from} 이후`);
+      } else if (to) {
+        parts.push(`~ ${to}`);
+      } else {
+        parts.push("날짜 미정");
+      }
+
+      if (info.immediate) {
+        parts.push("즉시 입주");
+      }
+      if (info.negotiable) {
+        parts.push("협의 가능");
+      }
 
       return parts.join(", ");
     }
