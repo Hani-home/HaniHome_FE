@@ -1,4 +1,97 @@
-const MovingConditionDropdonwContent = () => {
-  return <>입주조건 드롭다운 내부영역</>;
+import { useState } from "react";
+
+import CheckIcon from "@/components/common/CheckIcon";
+
+import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
+
+import AvailableOptionsContent from "./AvailableOptionsContent";
+import DropdownOptionsList from "./DropdownOptionsList";
+import LivingConditionsContent from "./LivingConditionsContent";
+
+interface MovingConditionDropdownContentProps {
+  id: string;
+  value: string | string[] | Record<string, string | string[]>;
+  onSelect: (
+    value: string | string[] | Record<string, string | string[]>,
+  ) => void;
+}
+
+const MovingConditionDropdownContent = ({
+  id,
+  value,
+  onSelect,
+}: MovingConditionDropdownContentProps) => {
+  const [isChecked, setIsChecked] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string | string[]>
+  >((value as Record<string, string | string[]>) || {});
+
+  const question = COMMON_MOVING_CONDITIONS.find(q => q.id === id);
+  if (!question) return null;
+
+  switch (id) {
+    case "genderPreference": {
+      const options = question.options as string[];
+      return (
+        <>
+          <DropdownOptionsList
+            options={options}
+            value={value as string}
+            onSelect={onSelect}
+          />
+          <div
+            onClick={() => setIsChecked(prev => !prev)}
+            className="flex gap-1 px-4 pb-3"
+          >
+            <CheckIcon checked={isChecked} />
+            <div className="text-cap1-med text-gray-700">LGBTQIA +</div>
+          </div>
+        </>
+      );
+    }
+
+    case "availableOptions": {
+      const options = question.options as Record<string, string[]>;
+      return (
+        <>
+          <AvailableOptionsContent
+            options={options}
+            defaultValue={selectedOptions}
+            multiSelectKeys={["주차"]}
+            onSelect={updated => {
+              setSelectedOptions(updated);
+              onSelect(updated);
+            }}
+          />
+        </>
+      );
+    }
+
+    case "livingConditions": {
+      const options = question.options as string[];
+      return (
+        <LivingConditionsContent
+          options={options}
+          value={value as Record<string, string>}
+          onSelect={onSelect}
+        />
+      );
+    }
+
+    case "moveInInfo":
+      return <></>;
+
+    default: {
+      const options = question.options as string[];
+      return (
+        <DropdownOptionsList
+          options={options}
+          value={value as string}
+          onSelect={onSelect}
+        />
+      );
+    }
+  }
 };
-export default MovingConditionDropdonwContent;
+
+export default MovingConditionDropdownContent;

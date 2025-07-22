@@ -11,12 +11,12 @@ import CreateSuccess from "@/components/listings/create/CreateSuccess";
 import ListingDescription from "@/components/listings/create/ListingDescription";
 import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/ListingType";
-
+import MovingCondition from "@/components/listings/create/MovingConditionLayout";
 const steps = [
   "ListingType",
-  "AddressPhoto",
-  "ListingDetails",
-  // "MovingConditions",
+  // "AddressPhoto",
+  // "ListingDetails",
+  "MovingConditions",
   // "ContractTerms",
   "ListingDescription",
   "CreateConfirm",
@@ -45,9 +45,9 @@ const ListingCreateClient = () => {
       <Funnel.Step name="ListingDetails">
         <ListingDetails onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
-      {/* <Funnel.Step name="MovingConditions">
+      <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
-      </Funnel.Step> */}
+      </Funnel.Step>
       {/* <Funnel.Step name="ContractTerms">
         <ContractTerms onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step> */}

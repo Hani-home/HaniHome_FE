@@ -1,3 +1,79 @@
+// 공통 MovingConditions
+
+export const COMMON_MOVING_CONDITIONS = [
+  {
+    id: "genderPreference",
+    label: "원하는 게스트 성별이 있으신가요?",
+    options: ["무관", "남자만", "여자만", "커플 가능"],
+  },
+  {
+    id: "livingConditions",
+    label: "거주 조건을 입력해주세요",
+    options: ["노티스", "최소 거주 기간", "계약 형태 설명"],
+  },
+  {
+    id: "moveInInfo",
+    label: "입주 가능일을 선택해주세요",
+    options: ["availableFrom", "availableTo", "isImmediate", "isNegotiable"],
+  },
+  {
+    id: "availableOptions",
+    label: "다음 항목이 가능한지 알려주세요",
+    options: {
+      흡연자: ["가능", "불가능"],
+      반려동물: ["가능", "불가능"],
+      "외부인 방문": ["가능", "불가능"],
+      주차: ["전용공간", "노상 주차", "불가능"],
+      "주방 사용": ["가능", "불가능"],
+    },
+  },
+]
+
+// 공통 ContractTerms
+
+export const COMMON_CONTRACT_TERMS = [
+  {
+    id: "costDetails",
+    label: "거래 비용을 입력해주세요",
+    options: {
+      includedItems: {
+        label: "빌에 포함된 항목",
+        value: [
+          "수도세",
+          "전기세",
+          "인터넷비",
+          "가스비",
+          "청소비",
+          "주차비",
+          "직접입력",
+        ],
+      },
+      billDescription: {
+        label: "빌 설명",
+        value: "",
+      },
+      deposit: {
+        label: "디파짓",
+        value: "",
+      },
+      keyDeposit: {
+        label: "Key 디파짓 (선택)",
+        value: "",
+      },
+    },
+  },
+  {
+    id: "meetingTime",
+    label: "뷰잉 가능 기간을 설정해주세요",
+    options: ["meetingDateTo", "meetingDateFrom"],
+  },
+  {
+    id: "timeSlots",
+    label: "뷰잉 가능 시간대를 설정해주세요",
+    options: ["아침", "점심", "저녁"],
+  },
+] 
+
 export const QUESTION_MAP = {
   SHARE: {
     ListingDetails: [
@@ -50,81 +126,8 @@ export const QUESTION_MAP = {
         },
       },
     ],
-    MovingConditions: [
-      {
-        id: "genderPreference",
-        label: "원하는 게스트 성별이 있으신가요?",
-        options: ["무관", "남자만", "여자만", "커플 가능"],
-      },
-      {
-        id: "livingConditions",
-        label: "거주 조건을 입력해주세요",
-        options: ["노티스", "최소 거주 기간", "계약 형태 설명"],
-      },
-      {
-        id: "moveInInfo",
-        label: "입주 가능일을 선택해주세요",
-        options: [
-          "availableFrom",
-          "availableTo",
-          "isImmediate",
-          "isNegotiable",
-        ],
-      },
-      {
-        id: "availableOptions",
-        label: "다음 항목이 가능한지 알려주세요",
-        options: {
-          흡연자: ["가능", "불가능"],
-          반려동물: ["가능", "불가능"],
-          "외부인 방문": ["가능", "불가능"],
-          주차: ["전용공간", "노상 주차", "불가능"],
-          "주방 사용": ["가능", "불가능"],
-        },
-      },
-    ],
-    ContractTerms: [
-      {
-        id: "costDetails",
-        label: "거래 비용을 입력해주세요",
-        options: {
-          includedItems: {
-            label: "빌에 포함된 항목",
-            value: [
-              "수도세",
-              "전기세",
-              "인터넷비",
-              "가스비",
-              "청소비",
-              "주차비",
-              "직접입력",
-            ],
-          },
-          billDescription: {
-            label: "빌 설명",
-            value: "",
-          },
-          deposit: {
-            label: "디파짓",
-            value: "",
-          },
-          keyDeposit: {
-            label: "Key 디파짓 (선택)",
-            value: "",
-          },
-        },
-      },
-      {
-        id: "meetingTime",
-        label: "뷰잉 가능 기간을 설정해주세요",
-        options: ["meetingDateTo", "meetingDateFrom"],
-      },
-      {
-        id: "timeSlots",
-        label: "뷰잉 가능 시간대를 설정해주세요",
-        options: ["아침", "점심", "저녁"],
-      },
-    ],
+    MovingConditions: COMMON_MOVING_CONDITIONS,
+    ContractTerms: COMMON_CONTRACT_TERMS,
   },
 
   RENT: {
@@ -190,80 +193,7 @@ export const QUESTION_MAP = {
         },
       },
     ],
-    MovingConditions: [
-      {
-        id: "genderPreference",
-        label: "원하는 게스트 성별이 있으신가요?",
-        options: ["무관", "남자만", "여자만", "커플 가능"],
-      },
-      {
-        id: "livingConditions",
-        label: "거주 조건을 입력해주세요",
-        options: ["노티스", "최소 거주 기간", "계약 형태 설명"],
-      },
-      {
-        id: "moveInInfo",
-        label: "입주 가능일을 선택해주세요",
-        options: [
-          "availableFrom",
-          "availableTo",
-          "isImmediate",
-          "isNegotiable",
-        ],
-      },
-      {
-        id: "availableOptions",
-        label: "다음 항목이 가능한지 알려주세요",
-        options: {
-          흡연자: ["가능", "불가능"],
-          반려동물: ["가능", "불가능"],
-          "외부인 방문": ["가능", "불가능"],
-          주차: ["전용공간", "노상 주차", "불가능"],
-          "주방 사용": ["가능", "불가능"],
-        },
-      },
-    ],
-    ContractTerms: [
-      {
-        id: "costDetails",
-        label: "거래 비용을 입력해주세요",
-        options: {
-          includedItems: {
-            label: "빌에 포함된 항목",
-            value: [
-              "수도세",
-              "전기세",
-              "인터넷비",
-              "가스비",
-              "청소비",
-              "주차비",
-              "직접입력",
-            ],
-          },
-          billDescription: {
-            label: "빌 설명",
-            value: "",
-          },
-          deposit: {
-            label: "디파짓",
-            value: "",
-          },
-          keyDeposit: {
-            label: "Key 디파짓 (선택)",
-            value: "",
-          },
-        },
-      },
-      {
-        id: "meetingTime",
-        label: "뷰잉 가능 기간을 설정해주세요",
-        options: ["meetingDateTo", "meetingDateFrom"],
-      },
-      {
-        id: "timeSlots",
-        label: "뷰잉 가능 시간대를 설정해주세요",
-        options: ["아침", "점심", "저녁"],
-      },
-    ],
+    MovingConditions: COMMON_MOVING_CONDITIONS,
+    ContractTerms: COMMON_CONTRACT_TERMS,
   },
 };
