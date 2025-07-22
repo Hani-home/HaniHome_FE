@@ -80,7 +80,7 @@ const Calendar = ({
         </button>
 
         <span onClick={toggleShowWheel} className="cursor-pointer">
-          {tempDate ? format(tempDate, "yyyy. MM. dd.") : ""}
+          {tempDate ? format(tempDate, "yyyy. MM.") : ""}
         </span>
 
         <button onClick={() => moveMonthBy(1)}>
