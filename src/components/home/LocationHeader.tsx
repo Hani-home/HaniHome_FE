@@ -14,15 +14,24 @@ import Arrow from "@/public/svgs/common/left-arrow.svg";
 
 import SuburbSearchModal from "./SuburbSearchModal";
 
-const LocationHeader = () => {
+export interface LocationHeaderProps {
+  interestRegions: string;
+  isLoading?: boolean;
+}
+
+const LocationHeader = ({
+  interestRegions,
+  isLoading,
+}: LocationHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { isLoggedIn } = useAuthStore();
   const { openModal } = useLoginModalStore();
 
-  const { interestRegion, setField } = useSignupStore();
+  const { setField } = useSignupStore();
 
-  const displayRegion = extractSuburb(interestRegion);
+  const suburb = extractSuburb(interestRegions);
+  const displayedSuburb = suburb ?? (isLoading ? "" : "Chatswood");
 
   const handleOpenModal = () => {
     if (!isLoggedIn) {
@@ -38,7 +47,7 @@ const LocationHeader = () => {
         className="mb-1 flex w-full cursor-pointer items-center justify-between px-4 py-2"
         onClick={handleOpenModal}
       >
-        <p className="text-heading2 text-gray-900">{displayRegion}</p>
+        <p className="text-heading2 text-gray-900">{displayedSuburb}</p>
         <Arrow className="h-6 w-6 rotate-180 text-gray-600" />
       </div>
       {isModalOpen && (

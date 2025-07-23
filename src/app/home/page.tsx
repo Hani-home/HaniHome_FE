@@ -17,7 +17,7 @@ import MainHeader from "@/components/layout/header/MainHeader";
 
 const Home = () => {
   const { isLoggedIn, memberId, setMemberId } = useAuthStore();
-  const { data: myInfo } = useMyInfo();
+  const { data: myInfo, isLoading } = useMyInfo();
 
   useEffect(() => {
     if (isLoggedIn && myInfo && !memberId) {
@@ -36,7 +36,10 @@ const Home = () => {
         <ViewingSection />
       </div>
       <div className="flex flex-col bg-white py-5">
-        <LocationHeader />
+        <LocationHeader
+          interestRegions={myInfo?.interestRegions ?? ""}
+          isLoading={isLoading}
+        />
         <FilterBar />
         <ListingList />
       </div>
