@@ -103,25 +103,25 @@ const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
     return isLoggedIn ? (searchData?.list ?? []) : (listData ?? []);
   }, [isLoggedIn, searchData, listData]);
 
-  const likedMap = useMemo(() => {
-    const map: Record<number, boolean> = {};
-    wishList.forEach(item => {
-      map[item.id] = true;
-    });
-    return map;
-  }, [wishList]);
-
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
 
   useMemo(() => {
     if (!properties.length) return;
-
     const init: Record<number, number> = {};
     properties.forEach(p => {
       init[p.id] = p.wishCount ?? 0;
     });
     setLikeCounts(init);
   }, [properties]);
+
+  const likedMap = useMemo(() => {
+    if (isLoggedIn) return {};
+    const map: Record<number, boolean> = {};
+    wishList.forEach(item => {
+      map[item.id] = true;
+    });
+    return map;
+  }, [wishList, isLoggedIn]);
 
   const mutation = useMutation({
     mutationFn: async (id: number) => {
@@ -178,7 +178,11 @@ const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
           suburb={p.suburb}
           createdAt={p.createdAt}
           wishCount={likeCounts[p.id] ?? p.wishCount ?? 0}
-          isLiked={likedMap[p.id] ?? false}
+          isLiked={
+            isLoggedIn
+              ? (p.metaInfo?.wished ?? false)
+              : (likedMap[p.id] ?? false)
+          }
           onToggleLike={() => handleToggleLike(p.id)}
           onClick={() => handleCardClick(p.id)}
         />

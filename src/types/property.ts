@@ -148,6 +148,10 @@ export interface SummaryProperty {
   tradeStatus: string;
   wishCount: number;
   nearestStation: NearestStation;
+  metaInfo: {
+    owner: boolean;
+    wished: boolean;
+  };
 }
 
 export interface NearestStation {
