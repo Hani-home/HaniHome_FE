@@ -13,6 +13,7 @@ import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 import { AnswerValue } from "@/types/createPropertyAnswer";
 
 import DropdownSelector from "./DropdownSelector";
+import FunnelStepMenu from "./FunnelStepMenu";
 import MovingConditionDropdownContent from "./MovingConditionDropdownContent";
 
 interface MovingConditionProps {
@@ -140,6 +141,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
   return (
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
+      <FunnelStepMenu />
       {COMMON_MOVING_CONDITIONS.map((item, index) => (
         <DropdownSelector
           key={item.id}

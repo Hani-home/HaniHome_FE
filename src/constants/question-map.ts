@@ -1,5 +1,3 @@
-// 공통 MovingConditions
-
 export const COMMON_MOVING_CONDITIONS = [
   {
     id: "genderPreference",
@@ -27,7 +25,7 @@ export const COMMON_MOVING_CONDITIONS = [
       "주방 사용": ["가능", "불가능"],
     },
   },
-]
+];
 
 // 공통 ContractTerms
 
@@ -36,6 +34,10 @@ export const COMMON_CONTRACT_TERMS = [
     id: "costDetails",
     label: "거래 비용을 입력해주세요",
     options: {
+      weeklyCost: {
+        label: "빌",
+        value: "",
+      },
       includedItems: {
         label: "빌에 포함된 항목",
         value: [
@@ -65,14 +67,17 @@ export const COMMON_CONTRACT_TERMS = [
   {
     id: "meetingTime",
     label: "뷰잉 가능 기간을 설정해주세요",
-    options: ["meetingDateTo", "meetingDateFrom"],
+    options: {
+      meetingDateFrom: { label: "시작일", value: null },
+      meetingDateTo: { label: "종료일", value: null },
+    },
   },
   {
     id: "timeSlots",
     label: "뷰잉 가능 시간대를 설정해주세요",
-    options: ["아침", "점심", "저녁"],
+    options: ["startTime", "endTime"]
   },
-] 
+];
 
 export const QUESTION_MAP = {
   SHARE: {
