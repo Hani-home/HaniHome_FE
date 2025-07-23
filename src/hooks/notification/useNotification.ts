@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -59,4 +60,17 @@ export const useNotificationStream = (
       eventSource.close();
     };
   }, [onMessage]);
+};
+
+export const useUnreadNotificationCount = () => {
+  const { isLoggedIn } = useAuthStore();
+
+  return useQuery<number>({
+    queryKey: ["unreadNotificationCount"],
+    queryFn: async () => {
+      const data = await getMyNotifications(false);
+      return data.length;
+    },
+    enabled: isLoggedIn,
+  });
 };
