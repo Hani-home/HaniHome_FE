@@ -100,7 +100,9 @@ const CostDetailField = ({ options, onChange }: CostDetailFieldProps) => {
       <div className="flex gap-2">
         {/*디파짓 */}
         <div className="flex flex-col gap-2">
-          <div>{options.deposit.label}</div>
+          <div className="text-body1-sb text-gray-800">
+            {options.deposit.label}
+          </div>
           <div className="relative w-[167px]">
             <input
               type="text"
@@ -118,7 +120,9 @@ const CostDetailField = ({ options, onChange }: CostDetailFieldProps) => {
         </div>
         {/**key디파짓 */}
         <div className="flex flex-col gap-2">
-          <div>{options.deposit.label}</div>
+          <div className="text-body1-sb text-gray-800">
+            {options.keyDeposit.label}
+          </div>
           <div className="relative w-[167px]">
             <input
               type="text"
