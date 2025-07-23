@@ -4,11 +4,12 @@ import { useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useLoginModalStore } from "@/stores/useLoginModalStore";
-import { useSignupStore } from "@/stores/useSignupStore";
 
 import { extractSuburb } from "@/utils/extractSuburb";
 
 import LoginAlertModal from "@/components/common/LoginAlertModal";
+
+import { FALLBACK_SUBURB } from "@/constants/default-region";
 
 import Arrow from "@/public/svgs/common/left-arrow.svg";
 
@@ -17,21 +18,25 @@ import SuburbSearchModal from "./SuburbSearchModal";
 export interface LocationHeaderProps {
   interestRegions: string;
   isLoading?: boolean;
+  suburbFromFilter?: string;
+  onSuburbChange?: (suburb: string) => void;
 }
 
 const LocationHeader = ({
   interestRegions,
   isLoading,
+  suburbFromFilter,
+  onSuburbChange,
 }: LocationHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { isLoggedIn } = useAuthStore();
   const { openModal } = useLoginModalStore();
 
-  const { setField } = useSignupStore();
+  const extracted = extractSuburb(interestRegions);
+  const fallback = isLoading ? "" : FALLBACK_SUBURB;
 
-  const suburb = extractSuburb(interestRegions);
-  const displayedSuburb = suburb ?? (isLoading ? "" : "Chatswood");
+  const displayedSuburb = suburbFromFilter?.trim() || extracted || fallback;
 
   const handleOpenModal = () => {
     if (!isLoggedIn) {
@@ -53,9 +58,10 @@ const LocationHeader = ({
       {isModalOpen && (
         <SuburbSearchModal
           onClose={() => setIsModalOpen(false)}
-          onSelectRegion={interestRegion =>
-            setField("interestRegion", interestRegion)
-          }
+          onSelectRegion={interestRegion => {
+            const trimmed = extractSuburb(interestRegion)?.trim().toLowerCase();
+            onSuburbChange?.(trimmed || FALLBACK_SUBURB);
+          }}
         />
       )}
       <LoginAlertModal />

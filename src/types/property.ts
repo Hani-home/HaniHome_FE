@@ -127,6 +127,7 @@ export interface FilteredPropertyParams {
   metroStopLatitude?: number;
   metroStopLongitude?: number;
   radiusKm?: number;
+  suburb: string;
 }
 
 // 매물 조회 뷰 타입

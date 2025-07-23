@@ -21,6 +21,8 @@ import { useWishList } from "@/hooks/wishlist/useWishList";
 
 import { buildQueryParams } from "@/utils/buildQueryParams";
 
+import { FALLBACK_SUBURB } from "@/constants/default-region";
+
 import { SummaryProperty } from "@/types/property";
 
 import ListingCard from "./ListingCard";
@@ -29,7 +31,7 @@ dayjs.extend(utc);
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 
-const ListingList = () => {
+const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -47,22 +49,44 @@ const ListingList = () => {
     maxWeeklyCost,
     radiusKm,
     selectedMetroStop,
+    suburb,
   } = useFilterStore();
 
-  const params = buildQueryParams({
-    selectedTypes,
-    selectedRoomTypes,
-    billIncluded,
-    availableFrom,
-    availableTo,
-    immediate,
-    negotiable,
-    minWeeklyCost,
-    maxWeeklyCost,
-    radiusKm,
-    metroStopLatitude: selectedMetroStop?.latitude ?? null,
-    metroStopLongitude: selectedMetroStop?.longitude ?? null,
-  });
+  const finalSuburb = suburb || fallbackSuburb || FALLBACK_SUBURB;
+
+  const params = useMemo(
+    () =>
+      buildQueryParams({
+        selectedTypes,
+        selectedRoomTypes,
+        billIncluded,
+        availableFrom,
+        availableTo,
+        immediate,
+        negotiable,
+        minWeeklyCost,
+        maxWeeklyCost,
+        radiusKm,
+        suburb: finalSuburb,
+        metroStopLatitude: selectedMetroStop?.latitude ?? null,
+        metroStopLongitude: selectedMetroStop?.longitude ?? null,
+      }),
+    [
+      selectedTypes,
+      selectedRoomTypes,
+      billIncluded,
+      availableFrom,
+      availableTo,
+      immediate,
+      negotiable,
+      minWeeklyCost,
+      maxWeeklyCost,
+      radiusKm,
+      finalSuburb,
+      selectedMetroStop?.latitude,
+      selectedMetroStop?.longitude,
+    ],
+  );
 
   const { data: listData } = usePropertyList<"SUMMARY">({
     view: "SUMMARY",
@@ -70,9 +94,9 @@ const ListingList = () => {
   });
 
   const { data: searchData } = usePropertySearch(params, {
-    enabled: isAuthInitialized && isLoggedIn,
+    enabled:
+      isAuthInitialized && isLoggedIn && !!(finalSuburb && finalSuburb.trim()),
   });
-
   const { data: wishList = [] } = useWishList();
 
   const properties: SummaryProperty[] = useMemo(() => {
