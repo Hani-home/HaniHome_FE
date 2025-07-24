@@ -102,8 +102,8 @@ export const propertyInfo: PropertyDetail[] = [
     moveInInfo: {
       availableFrom: "2025-10-01T00:00:00",
       availableTo: "2026-09-30T23:59:59",
-      isImmediate: false, //즉시 입주 가능, 즉시 입주 불가능
-      isNegotiable: false, //입주 일자 협의 가능, 입주 일자 협의 불가능
+      isImmediate: true, //즉시 입주 가능 여부
+      isNegotiable: false, //입주 일자 협의 가능 여부
     },
     parkingOption: "NONE",
     meetingDateFrom: "2025-09-25",

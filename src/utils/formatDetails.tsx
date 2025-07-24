@@ -267,27 +267,29 @@ export const formatMoveInDates = (
   moveInInfo: MoveInInfo | undefined | null,
 ) => {
   if (!moveInInfo) return <div>N/A</div>;
+  const moveInText =
+    moveInInfo.isImmediate && moveInInfo.isNegotiable
+      ? "즉시 입주 가능, 협의 가능"
+      : moveInInfo.isImmediate
+        ? "즉시 입주 가능"
+        : moveInInfo.isNegotiable
+          ? "협의 가능"
+          : "";
+
   return (
-    <div className="flex flex-col divide-y divide-gray-100">
+    <div className="flex flex-col">
       <div className="flex items-center justify-end py-2">
-        <div className="flex basis-1/2 items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-2">
           <span>입주 가능일</span>
           <span className="text-mint">
+            {formatDateToMonthDay(moveInInfo.availableTo)} ~{" "}
             {formatDateToMonthDay(moveInInfo.availableFrom)}
           </span>
         </div>
-        <div className="mx-6 h-3 w-px bg-gray-200" />
-        <div className="flex basis-1/2 items-center justify-end gap-2">
-          {moveInInfo.isImmediate ? "즉시 입주 가능" : "즉시 입주 불가"}
-        </div>
-      </div>{" "}
-      <div className="flex items-center justify-end py-2">
-        <div className="flex basis-1/2 items-center justify-end gap-2">
-          {moveInInfo.isNegotiable
-            ? "입주 일자 협의 가능"
-            : "입주 일자 협의 불가"}
-        </div>
       </div>
+      {(moveInInfo.isImmediate || moveInInfo.isNegotiable) && (
+        <div className="flex items-center justify-end py-2">{moveInText}</div>
+      )}
     </div>
   );
 };
