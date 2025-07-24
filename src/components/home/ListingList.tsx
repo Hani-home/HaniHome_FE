@@ -16,7 +16,6 @@ import utc from "dayjs/plugin/utc";
 import { addWish, removeWish } from "@/apis/wishlist";
 
 import { usePropertySearch } from "@/hooks/filter/useFilter";
-import { usePropertyList } from "@/hooks/property/useProperty";
 import { useWishList } from "@/hooks/wishlist/useWishList";
 
 import { buildQueryParams } from "@/utils/buildQueryParams";
@@ -88,20 +87,14 @@ const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
     ],
   );
 
-  const { data: listData } = usePropertyList<"SUMMARY">({
-    view: "SUMMARY",
-    enabled: isAuthInitialized && !isLoggedIn,
-  });
-
   const { data: searchData } = usePropertySearch(params, {
-    enabled:
-      isAuthInitialized && isLoggedIn && !!(finalSuburb && finalSuburb.trim()),
+    enabled: isAuthInitialized && !!(finalSuburb && finalSuburb.trim()),
   });
-  const { data: wishList = [] } = useWishList();
 
+  const { data: wishList = [] } = useWishList();
   const properties: SummaryProperty[] = useMemo(() => {
-    return isLoggedIn ? (searchData?.list ?? []) : (listData ?? []);
-  }, [isLoggedIn, searchData, listData]);
+    return searchData?.list ?? [];
+  }, [searchData?.list]);
 
   const [likeCounts, setLikeCounts] = useState<Record<number, number>>({});
 
