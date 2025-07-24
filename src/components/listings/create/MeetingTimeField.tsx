@@ -96,7 +96,10 @@ const MeetingTimeField = ({
         onCloseWheel={() => setTimeout(() => setIsWheelOpen(false), 0)}
         disabled={isClicked}
       />
-      <div className="flex justify-between px-4 py-3" onClick={handleStatus}>
+      <div
+        className="flex items-center justify-between px-4 py-3"
+        onClick={handleStatus}
+      >
         <div
           className={`text-body1-med ${isClicked ? "text-mint" : "text-gray-500"}`}
         >
