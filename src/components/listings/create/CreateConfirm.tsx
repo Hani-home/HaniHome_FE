@@ -2,12 +2,11 @@ import { useListingStore } from "@/stores/useListingStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
+import DropDownSection from "@/components/listings/detailShow/DropDownSection";
+import ImageSlider from "@/components/listings/detailShow/ImageSlider";
+import TitleSection from "@/components/listings/detailShow/TitleSection";
 
 import { propertyInfo } from "@/constants/mock/listing-detail-dummies";
-
-import DropDownSection from "../detailShow/DropDownSection";
-import ImageSlider from "../detailShow/ImageSlider";
-import TitleSection from "../detailShow/TitleSection";
 
 interface CreateConfirmProps {
   onNext: () => void;

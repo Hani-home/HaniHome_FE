@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
+import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CompleteModal from "@/components/common/CompleteModal";
 import DropdownField from "@/components/common/DropdownField";
@@ -15,7 +16,6 @@ import VerfiyKindAlertModal from "@/components/signup/profile/VerifyKindAlertMod
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
 import FilledCheck from "@/public/svgs/common/filled-check.svg";
-import AlertMessage from "@/components/common/AlertMessage";
 
 const VERIFICATION_OPTIONS = [
   { label: "여권", value: "passport" },
@@ -36,7 +36,7 @@ const VerificationPage = () => {
   const [uploadedVerificationType, setUploadedVerificationType] = useState<
     string | null
   >(null);
-  const [showNoVerificatoinAlert, setShowNoVerificationAlert] = useState(false)
+  const [showNoVerificatoinAlert, setShowNoVerificationAlert] = useState(false);
   //Todo: API 조회 인증된 수단과 동일한 경우의 모달 추가
   useEffect(() => {
     if (showAssignModal) {
@@ -48,8 +48,8 @@ const VerificationPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+    const files = Array.from(e.target.files ?? []);
+    if (!files) return;
 
     if (!verif) {
       //업로드 버튼 disable처리하기
@@ -186,9 +186,14 @@ const VerificationPage = () => {
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
       <div className="bottom-19">
-         {showNoVerificatoinAlert && (<AlertMessage message="인증 수단을 선택해주세요" onDone={()=> setShowNoVerificationAlert(false)}/>)}
+        {showNoVerificatoinAlert && (
+          <AlertMessage
+            message="인증 수단을 선택해주세요"
+            onDone={() => setShowNoVerificationAlert(false)}
+          />
+        )}
       </div>
-     
+
       {showVerifKindModal && (
         <VerfiyKindAlertModal onClose={() => setShowVerifKindModal(false)} />
       )}
