@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
-import AlertMessage from "@/components/common/AlertMessage";
+import AlertModal from "@/components/common/AlertModal";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import CompleteModal from "@/components/common/CompleteModal";
 import DropdownField from "@/components/common/DropdownField";
@@ -69,6 +69,9 @@ const VerificationPage = () => {
       setUploadedFiles,
       setField: (key, files) => {
         setUploadedMap(prev => ({ ...prev, [key]: files }));
+        if (files.length > 0) {
+          setUploadedVerificationType(verif);
+        }
       },
       fieldName: verif,
       setShowErrorModal,
@@ -77,7 +80,6 @@ const VerificationPage = () => {
         setMaxImageModal(true);
       },
     });
-    setUploadedVerificationType(verif);
     e.target.value = "";
   };
 
@@ -96,7 +98,12 @@ const VerificationPage = () => {
     const existingField = Object.keys(uploadedMap)[0];
 
     // 이미지가 이미 있고, 다른 수단 선택하려는 경우 막기
-    if (uploadedFiles.length > 0 && existingField && existingField !== val) {
+    if (
+      uploadedFiles.length > 0 &&
+      existingField &&
+      existingField !== val &&
+      uploadedMap[existingField]?.length > 0
+    ) {
       setShowVerifKindModal(true);
       return;
     }
@@ -185,11 +192,13 @@ const VerificationPage = () => {
       {showErrorModal && (
         <ImageAlertModal onClose={() => setShowErrorModal(false)} />
       )}
+
       <div className="bottom-19">
         {showNoVerificatoinAlert && (
-          <AlertMessage
-            message="인증 수단을 선택해주세요"
-            onDone={() => setShowNoVerificationAlert(false)}
+          <AlertModal
+            title="인증수단을 선택해주세요"
+            description="이미지를 업로드하기 전 인증수단을 선택해주세요"
+            onClose={() => setShowNoVerificationAlert(false)}
           />
         )}
       </div>
