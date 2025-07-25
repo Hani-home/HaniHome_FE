@@ -2,7 +2,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import Divider from "../common/Divider";
+import Divider from "@/components/common/Divider";
 
 interface BottomSheetProps {
   onClose: () => void;

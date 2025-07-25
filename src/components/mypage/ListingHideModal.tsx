@@ -1,6 +1,6 @@
-import AlertIcon from "@/public/svgs/signup/alert-icon.svg";
+import ModalLayout from "@/components/common/ModalLayout";
 
-import ModalLayout from "../common/ModalLayout";
+import AlertIcon from "@/public/svgs/signup/alert-icon.svg";
 
 interface ListingHideModalProps {
   onClose: () => void;
