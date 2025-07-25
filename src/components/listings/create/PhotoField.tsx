@@ -6,10 +6,10 @@ import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
+import ImageSlider from "@/components/listings/detailShow/ImageSlider";
 
 import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
-import ImageSlider from "../detailShow/ImageSlider";
 import BottomSheet from "./BottomSheet";
 
 interface PhotoFieldProps {
