@@ -110,7 +110,7 @@ const RoomList = ({
                 <EmptyHeart className={`${heartColor} h-6 w-6`} />
               )}
             </div>
-            <div className="text-cap1-med text-right text-gray-400">
+            <div className="text-cap1-med text-center text-gray-400">
               {wishCount}
             </div>
           </div>

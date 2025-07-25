@@ -35,7 +35,7 @@ const Wishlist = () => {
 
   const [sortOrder, setSortOrder] = useState<WishListSortType>("latest");
   const { data: listings = [], isLoading } = useWishedProperties(sortOrder);
-  const { mutate: toggleWish } = useToggleWish(["wishList", sortOrder]);
+  const { mutate: toggleWish } = useToggleWish([["wishList", sortOrder]]);
 
   const filteredListings = useMemo(() => {
     const available = listings.filter(item => item.tradeStatus === "BEFORE");

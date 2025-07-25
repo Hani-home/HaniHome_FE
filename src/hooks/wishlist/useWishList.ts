@@ -1,5 +1,10 @@
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryKey,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import {
   addWish,
@@ -24,12 +29,11 @@ export const useWishedProperties = (sort: WishListSortType = "latest") => {
   return useQuery({
     queryKey: ["wishList", sort],
     queryFn: () => getWishedProperties(sort),
+    staleTime: 0,
   });
 };
 
-export const useToggleWish = (
-  refetchKey: (string | number)[] = ["wishList"],
-) => {
+export const useToggleWish = (refetchKeys: QueryKey[] = [["wishList"]]) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -41,7 +45,9 @@ export const useToggleWish = (
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: refetchKey });
+      refetchKeys.forEach(key => {
+        queryClient.invalidateQueries({ queryKey: key });
+      });
     },
   });
 };
