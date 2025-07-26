@@ -190,7 +190,7 @@ const ListingDetailPage = () => {
         {/* 위치 영역 */}
         <div className="mt-6 mb-15">
           <div className="flex flex-col gap-3 px-4 py-8">
-            <span className="text-body1-sb text-gray-900">위치</span>
+            <span className="text-heading3 text-gray-900">위치</span>
             <AddressMap
               region={data.region}
               isReservationConfirmed={
