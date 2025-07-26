@@ -14,6 +14,7 @@ import AddressMap from "@/components/listings/AddressMap";
 import BottomSheet from "@/components/listings/BottomSheet";
 import DetailTabs from "@/components/listings/DetailTabs";
 import DropDownMenu from "@/components/listings/DropDownMenu";
+import ListingHideModal from "@/components/mypage/ListingHideModal";
 
 import CertificatedIcon from "@/public/svgs/common/certificated-icon.svg";
 import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";
@@ -31,7 +32,8 @@ const ListingDetailPage = () => {
   const router = useRouter();
 
   const [liked, setLiked] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
+  const [isClicked, setIsClicked] = useState(false); //바텀시트
+  const [isModalOpen, setIsModalOpen] = useState(false); //숨기기모달
 
   const { data, isLoading, isError } = usePropertyDetailList(listingId);
 
@@ -146,7 +148,7 @@ const ListingDetailPage = () => {
 
           <div className="text-cap1-med flex flex-col items-end gap-3 text-gray-700">
             {data.costDetails.billIncluded ? (
-              <div className="text-cap1-med flex gap-1 text-gray-700">
+              <div className="text-cap1-med flex items-center gap-1 text-gray-700">
                 <span>빌</span>
                 <span className="text-mint">주세에 포함</span>
               </div>
@@ -154,7 +156,7 @@ const ListingDetailPage = () => {
               <div className="text-cap1-med flex gap-2 text-gray-700">
                 <span>빌 미포함</span>
                 <div className="h-3 border-l border-gray-500" />
-                <div className="flex gap-1">
+                <div className="flex items-center gap-1">
                   <span>총 빌 가격</span>
                   <span className="text-mint">
                     {data.costDetails.weeklyCost.toLocaleString()}$
@@ -208,7 +210,15 @@ const ListingDetailPage = () => {
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}
         />
       )}
-      {isClicked && <BottomSheet onClose={() => setIsClicked(false)} />}
+      {isClicked && (
+        <BottomSheet
+          onClose={() => setIsClicked(false)}
+          onHideClick={() => setIsModalOpen(true)}
+        />
+      )}
+      {isModalOpen && (
+        <ListingHideModal onClose={() => setIsModalOpen(false)} />
+      )}
     </>
   );
 };

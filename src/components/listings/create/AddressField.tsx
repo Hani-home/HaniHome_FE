@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
+import clsx from "clsx";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";
@@ -32,7 +33,6 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
   };
 
   const handleInputClick = () => {
-    // 실제 AddressFinder API 사용 시 여기서 선택된 결과를 업데이트
     const fakeAddress: PropertyRegion = {
       country: "Australia",
       postCode: "2000",
@@ -63,6 +63,12 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
   const shouldHighlightBuilding =
     isBuildingFocused && buildingName.trim() === "";
 
+  const getTextColor = (value: string, highlight: boolean) =>
+    value || highlight ? "text-gray-900" : "text-gray-500";
+
+  const getBorderColor = (value: string) =>
+    value.trim() ? "border-gray-600" : "border-gray-400";
+
   return (
     <div className="flex flex-col gap-2">
       <div className="text-heading3 px-4 py-4 text-gray-900">
@@ -71,26 +77,29 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
       <div className="px-4">
         <div className="flex flex-col gap-2">
           <div
-            className={`flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3 ${
-              addressData.streetName ? "border-gray-600" : "border-gray-400"
-            }`}
+            className={clsx(
+              "flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3",
+              getBorderColor(addressData.streetName),
+            )}
+            onClick={handleInputClick}
           >
             <input
-              className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
-                addressData.streetName
-                  ? "text-gray-900"
-                  : shouldHighlightMain
-                    ? "text-gray-900"
-                    : "text-gray-500"
-              }`}
+              className={clsx(
+                "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
+                getTextColor(addressData.streetName, shouldHighlightMain),
+              )}
               placeholder="도로명, 건물명, suburb 검색"
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               onClick={handleInputClick}
             />
-
             <SearchIcon
-              className={`${shouldHighlightMain ? "text-gray-600" : "text-gray-500"} cursor-pointer text-gray-500`}
+              className={clsx(
+                "ml-2 cursor-pointer",
+                shouldHighlightMain || addressData.streetName
+                  ? "text-gray-600"
+                  : "text-gray-400",
+              )}
               onClick={handleSearchClick}
             />
           </div>
@@ -118,24 +127,16 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
               영문 입력을 권장드립니다
             </div>
           </div>
-          <div className="flex flex-col gap-[2px] px-4 py-2">
-            <div className="text-cap1-med text-gray-600">번지수 + 도로명</div>
-            <div className="text-cap1-med text-gray-300">
-              ex&#41; 25 Smith St
+          {[
+            ["번지수 + 도로명", "25 Smith St"],
+            ["도로명 + Suburb", "25 George St, Parramatta"],
+            ["건물명", "World Tower"],
+          ].map(([label, example]) => (
+            <div key={label} className="flex flex-col gap-[2px] px-4 py-2">
+              <div className="text-cap1-med text-gray-600">{label}</div>
+              <div className="text-cap1-med text-gray-300">ex) {example}</div>
             </div>
-          </div>
-          <div className="flex flex-col gap-[2px] px-4 py-2">
-            <div className="text-cap1-med text-gray-600">도로명 + Suburb</div>
-            <div className="text-cap1-med text-gray-300">
-              ex&#41; 25 George St, Parramatta
-            </div>
-          </div>
-          <div className="flex flex-col gap-[2px] px-4 py-2">
-            <div className="text-cap1-med text-gray-600">건물명</div>
-            <div className="text-cap1-med text-gray-300">
-              ex&#41; World Tower
-            </div>
-          </div>
+          ))}
         </>
       )}
 
@@ -147,22 +148,21 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                 상세주소를 입력해주세요 (선택)
               </div>
               <div className="flex flex-col gap-6 px-4">
+                {/* Unit No. */}
                 <div className="flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">Unit No.</div>
                   <div
-                    className={`flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3 ${
-                      unit ? "border-gray-600" : "border-gray-400"
-                    }`}
+                    className={clsx(
+                      "flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3",
+                      getBorderColor(unit),
+                    )}
                   >
                     <input
                       placeholder="입력해주세요"
-                      className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
-                        unit
-                          ? "text-gray-900"
-                          : shouldHighlightUnit
-                            ? "text-gray-900"
-                            : "text-gray-500"
-                      }`}
+                      className={clsx(
+                        "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
+                        getTextColor(unit, shouldHighlightUnit),
+                      )}
                       value={unit}
                       onChange={e => setUnit(e.target.value)}
                       onFocus={() => setIsUnitFocused(true)}
@@ -170,24 +170,23 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                     />
                   </div>
                 </div>
+                {/* Building name */}
                 <div className="flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">
                     건물 / 아파트 이름
                   </div>
                   <div
-                    className={`flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3 ${
-                      buildingName ? "border-gray-600" : "border-gray-400"
-                    }`}
+                    className={clsx(
+                      "flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3",
+                      getBorderColor(buildingName),
+                    )}
                   >
                     <input
                       placeholder="입력해주세요"
-                      className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
-                        buildingName
-                          ? "text-gray-900"
-                          : shouldHighlightBuilding
-                            ? "text-gray-900"
-                            : "text-gray-500"
-                      }`}
+                      className={clsx(
+                        "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
+                        getTextColor(buildingName, shouldHighlightBuilding),
+                      )}
                       value={buildingName}
                       onChange={e => setBuildingName(e.target.value)}
                       onFocus={() => setIsBuildingFocused(true)}

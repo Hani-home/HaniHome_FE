@@ -80,8 +80,8 @@ const TimeSlotField = () => {
     const { minTime, maxTime } = PERIOD_LIMITS[period];
     const minLimit = timeToMinutes(minTime);
     const maxLimit = timeToMinutes(maxTime === "00:00" ? "24:00" : maxTime);
-   const valMin = timeToMinutes(val);
-   
+    const valMin = timeToMinutes(val);
+
     if (valMin < minLimit || valMin > maxLimit) {
       setAlertMsg(`${period} 시간대(${minTime}~ ${maxTime})사이여야 합니다.`);
       return;
@@ -89,7 +89,7 @@ const TimeSlotField = () => {
 
     const otherVal =
       slots[idx][type === "start" ? "timeTo" : "timeFrom"] || "00:00";
- 
+
     const otherMin = timeToMinutes(otherVal);
 
     // 시작 종료 시간 관계 확인
@@ -100,8 +100,6 @@ const TimeSlotField = () => {
       setAlertMsg("시작 시간은 종료 시간보다 이전이어야 합니다.");
       return;
     }
-
-
 
     setTempTime(val);
   };
@@ -174,7 +172,7 @@ const TimeSlotField = () => {
           <div key={period} className="px-4 py-3">
             <div className="flex items-center justify-between px-4 py-3">
               <div
-                className={`text-body1-sb mb-2 ${
+                className={`text-body1-sb ${
                   activeSpinner?.period === period
                     ? "text-gray-800"
                     : "text-gray-400"
@@ -182,7 +180,7 @@ const TimeSlotField = () => {
               >
                 {period}
               </div>
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 {(["start", "end"] as const).map(type => {
                   const timeValue =
                     slot[type === "start" ? "timeFrom" : "timeTo"] || "00:00";

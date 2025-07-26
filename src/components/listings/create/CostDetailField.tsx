@@ -48,13 +48,15 @@ const CostDetailField = () => {
             주/$
           </span>
         </div>
-        <div
+
+        <button
           onClick={handleBillIncluded}
           className="flex cursor-pointer gap-1 select-none"
         >
           <CheckIcon checked={costDetails.billIncluded} />
+
           <div className="text-cap1-med text-gray-700">빌 포함</div>
-        </div>
+        </button>
       </div>
 
       <Divider className="my-[2px]" />
@@ -115,12 +117,16 @@ const CostDetailField = () => {
               $
             </span>
           </div>
-          <div onClick={handleDepositAdjustable} className="flex gap-1">
+
+          <button
+            onClick={handleDepositAdjustable}
+            className="flex cursor-pointer items-center gap-1"
+          >
             <CheckIcon checked={costDetails.depositAdjustable} />
             <div className="text-cap1-med text-gray-700">디파짓 조정 가능</div>
-          </div>
+          </button>
         </div>
-        {/**key디파짓 */}
+        {/* key디파짓 */}
         <div className="flex flex-col gap-2">
           <div className="text-body1-sb text-gray-800">Key 디파짓 (선택)</div>
           <div className="relative w-[167px]">

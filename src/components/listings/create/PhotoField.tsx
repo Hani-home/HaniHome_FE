@@ -6,10 +6,10 @@ import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
+import ImageSlider from "@/components/listings/detailShow/ImageSlider";
 
 import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
-import ImageSlider from "../detailShow/ImageSlider";
 import BottomSheet from "./BottomSheet";
 
 interface PhotoFieldProps {
@@ -86,7 +86,7 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
               className="flex cursor-pointer justify-between gap-2 rounded-[4px] border border-gray-300 px-2 py-[6px]"
               onClick={() => setIsOpen(true)}
             >
-              <QuestionMarkIcon />
+              <QuestionMarkIcon className="text-gray-600" />
               <div className="text-cap1-med flex justify-center text-gray-600">
                 매물 사진 <br />
                 업로드 가이드
