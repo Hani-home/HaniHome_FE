@@ -48,14 +48,21 @@ const ContractInfo = ({ data }: { data: Property }) => {
           <div className="flex items-center justify-between">
             <Label>디파짓</Label>
             <div className="text-body1-med text-gray-700">
-              $/주 {data.costDetails.deposit}
+              {data.costDetails.deposit}$/주
             </div>
           </div>
-          <span className="text-cap1-med text-gray-500">
-            {data.costDetails.depositAdjustable
-              ? "디파짓 조정 가능"
-              : "디파짓 조정 불가능"}
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-cap1-med text-gray-500">
+              {data.costDetails.depositAdjustable
+                ? "디파짓 조정 가능"
+                : "디파짓 조정 불가능"}
+            </span>
+            {data.costDetails.keyDeposit && (
+              <span className="text-cap1-med text-gray-500">
+                키 디파짓 {data.costDetails.keyDeposit}$
+              </span>
+            )}
+          </div>
         </div>
       </Section>
 

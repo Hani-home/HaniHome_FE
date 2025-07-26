@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 import { formatToDateRange } from "@/utils/dateFormatter";
 
 import InfoCard from "@/components/listings/shared/InfoCard";
@@ -15,6 +17,11 @@ import { Property } from "@/types/property";
 import ExtraConditions from "./ExtraConditions";
 
 const MoveInCondition = ({ data }: { data: Property }) => {
+  const moveInTexts = [
+    data.moveInInfo.immediate && "즉시 입주 가능",
+    data.moveInInfo.negotiable && "입주일자 협의 가능",
+  ].filter(Boolean);
+
   return (
     <div className="bg-gray-0 flex flex-col py-3">
       <Section>
@@ -80,10 +87,29 @@ const MoveInCondition = ({ data }: { data: Property }) => {
       <Section>
         <div className="flex flex-col gap-2 px-4 py-3">
           <Label>입주 가능일</Label>
-          <div className="text-body2-med flex text-gray-700">
-            {formatToDateRange(
-              data.moveInInfo.availableFrom,
-              data.moveInInfo.availableTo,
+          <div
+            className={clsx(
+              "flex flex-col",
+              (data.moveInInfo.immediate || data.moveInInfo.negotiable) &&
+                "gap-1",
+            )}
+          >
+            <div className="text-body2-med flex text-gray-700">
+              {formatToDateRange(
+                data.moveInInfo.availableFrom,
+                data.moveInInfo.availableTo,
+              )}
+            </div>
+            {moveInTexts.length > 0 && (
+              <div
+                className={`text-cap1-med text-gray-500 ${
+                  moveInTexts.length > 1 ? "flex gap-2" : ""
+                }`}
+              >
+                {moveInTexts.map((text, idx) => (
+                  <span key={idx}>{text}</span>
+                ))}
+              </div>
             )}
           </div>
         </div>

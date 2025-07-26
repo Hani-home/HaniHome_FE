@@ -10,6 +10,7 @@ import HomeIcon from "@/public/svgs/common/home-icon.svg";
 import PersonIcon from "@/public/svgs/common/mypage-icon.svg";
 import BathroomIcon from "@/public/svgs/listings/bathroom-icon.svg";
 import HomeFilledIcon from "@/public/svgs/listings/home-filled-icon.svg";
+import FilledPersonIcon from "@/public/svgs/listings/person-filled-icon.svg";
 
 import FurnitureSection from "./shared/FurnitureSection";
 import HostDescriptionSection from "./shared/HostDescriptionSection";
@@ -49,7 +50,15 @@ const ShareDetail = ({
                   욕실 {data.internalDetails.totalBathUser}인 쉐어
                 </span>
               </div>,
-            ]}
+              data.optionItems.some(item => item.optionItemId === 101) && (
+                <div className="flex items-center gap-[6px]" key="ownerLive">
+                  <FilledPersonIcon />
+                  <span className="text-body2-med text-gray-700">
+                    집주인 함께 거주
+                  </span>
+                </div>
+              ),
+            ].filter(Boolean)}
           />
           <InfoCard
             className="gap-3"
