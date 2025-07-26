@@ -11,7 +11,7 @@ type Period = (typeof PERIODS)[number];
 const PERIOD_LIMITS: Record<Period, { minTime: string; maxTime: string }> = {
   아침: { minTime: "06:00", maxTime: "11:30" },
   점심: { minTime: "12:00", maxTime: "18:00" },
-  저녁: { minTime: "18:30", maxTime: "00:00" },
+  저녁: { minTime: "18:30", maxTime: "24:00" },
 };
 
 const TimeSlotField = () => {

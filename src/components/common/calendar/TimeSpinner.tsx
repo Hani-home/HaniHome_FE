@@ -66,12 +66,12 @@ const TimeSpinner = ({
 
   const handleHourChange = (val: number) => {
     setHour(val);
-    setTouched(true); // ✅ 휠 조작 감지
+    setTouched(true); 
   };
 
   const handleMinuteChange = (val: number) => {
     setMinute(val);
-    setTouched(true); // ✅ 휠 조작 감지
+    setTouched(true); 
   };
 
   // 초기 스크롤 위치 설정 (initialHour, initialMinute 기준)
@@ -87,7 +87,7 @@ const TimeSpinner = ({
   // 휠 조작 시 onChange 호출 (처음 열릴 때는 호출 안 함)
   useEffect(() => {
     if (!touched) return;
-    const h = hour === 24 ? 0 : hour;
+    const h = hour;
     onChange(
       `${String(h).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
     );

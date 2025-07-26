@@ -23,7 +23,6 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
   const meetingDateFrom = useListingStore(state => state.meetingDateFrom);
   const meetingDateTo = useListingStore(state => state.meetingDateTo);
 
-
   const { openIndices, toggleIndex } = useDropdownAutoManager({
     totalCount: COMMON_CONTRACT_TERMS.length,
     shouldAutoClose: () => false,
@@ -61,13 +60,17 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       }
 
       case "timeSlots": {
-        const periods = timeSlots.map(slot => {
+        const parts = [];
+        for (const slot of timeSlots) {
+          if (slot.timeFrom === "00:00" && slot.timeTo === "00:00") continue;
+
           const hour = parseInt(slot.timeFrom.split(":")[0]);
-          if (hour < 12) return "아침";
-          if (hour < 18) return "점심";
-          return "저녁";
-        });
-        return [...new Set(periods)].join(", ");
+          if (hour < 12) parts.push("아침");
+          else if (hour < 18) parts.push("점심");
+          else parts.push("저녁");
+        }
+
+        return [...new Set(parts)].join(", ");
       }
 
       default:
@@ -87,11 +90,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           isOpen={openIndices.includes(index)}
           onClick={() => toggleIndex(index)}
         >
-          {item.options && (
-            <ContractTermsContent
-              option={item.options}
-            />
-          )}
+          {item.options && <ContractTermsContent option={item.options} />}
         </DropdownSelector>
       ))}
       <BottomActionBar
