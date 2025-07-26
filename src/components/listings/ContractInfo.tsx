@@ -57,7 +57,7 @@ const ContractInfo = ({ data }: { data: Property }) => {
                 ? "디파짓 조정 가능"
                 : "디파짓 조정 불가능"}
             </span>
-            {data.costDetails.keyDeposit && (
+            {Number(data.costDetails.keyDeposit) > 0 && (
               <span className="text-cap1-med text-gray-500">
                 키 디파짓 {data.costDetails.keyDeposit}$
               </span>
