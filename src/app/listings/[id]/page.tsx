@@ -14,6 +14,7 @@ import AddressMap from "@/components/listings/AddressMap";
 import BottomSheet from "@/components/listings/BottomSheet";
 import DetailTabs from "@/components/listings/DetailTabs";
 import DropDownMenu from "@/components/listings/DropDownMenu";
+import ImageSlider from "@/components/listings/ImageSlider";
 import ListingHideModal from "@/components/mypage/ListingHideModal";
 
 import CertificatedIcon from "@/public/svgs/common/certificated-icon.svg";
@@ -34,10 +35,10 @@ const ListingDetailPage = () => {
   const [isClicked, setIsClicked] = useState(false); //바텀시트
   const [isModalOpen, setIsModalOpen] = useState(false); //숨기기모달
 
-  const { data, isLoading, isError } = usePropertyDetailList(listingId);
+  const { data, isLoading, isError, refetch } =
+    usePropertyDetailList(listingId);
 
   const { mutate: toggleWish } = useToggleWish();
-  const [liked, setLiked] = useState(data?.metaInfo?.wished);
 
   if (isLoading) return <></>; //추후 스켈레톤 UI
   if (isError || !data) return <></>;
@@ -59,34 +60,25 @@ const ListingDetailPage = () => {
 
         {/* 매물 이미지 */}
         <div className="relative flex">
-          <Image
-            src={
-              data.thumbnailUrl
-                ? data.thumbnailUrl
-                : "/svgs/common/room-img.svg"
-            }
-            width={375}
-            height={375}
-            alt="매물 이미지"
-            className="h-[375px] w-[375px] border border-gray-200 object-cover"
-            priority
-          />
+          {data.photoUrls && data.photoUrls.length > 0 && (
+            <ImageSlider photoUrls={data.photoUrls} />
+          )}
           <button
             type="button"
             onClick={() => {
               toggleWish(
-                { id: data.id, isLiked: liked ?? false },
+                { id: data.id, isLiked: data.metaInfo?.wished ?? false },
                 {
                   onSuccess: () => {
-                    setLiked(prev => !prev);
+                    refetch();
                   },
                 },
               );
             }}
-            className="absolute right-6 bottom-5 flex cursor-pointer rounded-full bg-white p-2.5"
-            aria-label={liked ? "즐겨찾기 취소" : "즐겨찾기"}
+            className="absolute right-6 bottom-5 z-[10] flex cursor-pointer rounded-full bg-white p-2.5"
+            aria-label={data.metaInfo?.wished ? "즐겨찾기 취소" : "즐겨찾기"}
           >
-            {liked ? (
+            {data.metaInfo?.wished ? (
               <HeartFilledIcon className="text-mint h-6 w-6" />
             ) : (
               <HeartOutlineIcon className="text-mint h-6 w-6" />
