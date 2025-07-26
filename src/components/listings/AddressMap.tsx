@@ -1,9 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { getCoordsFromRegion } from "@/apis/googlePlaces";
-
 import { formatAddress } from "@/utils/formatAddress";
 
 import GoogleMap from "@/components/common/GoogleMap";
@@ -16,20 +12,6 @@ interface AddressMapProps {
 }
 
 const AddressMap = ({ region, isReservationConfirmed }: AddressMapProps) => {
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
-
-  useEffect(() => {
-    getCoordsFromRegion(region).then(res => {
-      if (res) setCoords(res);
-    });
-  }, [region]);
-
-  if (!coords) {
-    return null;
-  }
-
   return (
     <div className="flex flex-col gap-3">
       {/* 지도 */}
