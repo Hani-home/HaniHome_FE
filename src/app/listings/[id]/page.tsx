@@ -163,7 +163,7 @@ const ListingDetailPage = () => {
                 <span className="text-mint">주세에 포함</span>
               </div>
             ) : (
-              <div className="text-cap1-med flex gap-2 text-gray-700">
+              <div className="text-cap1-med flex items-center gap-2 text-gray-700">
                 <span>빌 미포함</span>
                 <div className="h-3 border-l border-gray-500" />
                 <div className="flex items-center gap-1">

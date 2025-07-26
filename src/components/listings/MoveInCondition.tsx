@@ -21,14 +21,17 @@ const MoveInCondition = ({ data }: { data: Property }) => {
         <div className="flex items-center justify-between px-4 py-3">
           <Label>거주 가능 조건</Label>
           <div className="text-body2-med flex flex-col items-end gap-1 text-gray-700">
-            <span>
-              {
-                GENDER_PREFERENCE_LABEL_MAP[
-                  data.genderPreference as keyof typeof GENDER_PREFERENCE_LABEL_MAP
-                ]
-              }
-              {data.lgbtAvailable && " / LGBTQIA+"}
-            </span>
+            <div className="flex items-center gap-1">
+              <span>{data.lgbtAvailable && " LGBTQ 무관"}</span>
+              <span className="text-gray-500">{data.lgbtAvailable && "|"}</span>
+              <span>
+                {
+                  GENDER_PREFERENCE_LABEL_MAP[
+                    data.genderPreference as keyof typeof GENDER_PREFERENCE_LABEL_MAP
+                  ]
+                }
+              </span>
+            </div>
             {data.kind === "SHARE" && (
               <span>
                 {
