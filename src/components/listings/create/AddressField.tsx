@@ -1,8 +1,11 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import GoogleMap from "@/components/common/GoogleMap";
 
 import { PropertyRegion } from "@/types/listingDetail";
 
@@ -20,6 +23,9 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
   const [buildingName, setBuildingName] = useState(addressData.buildingName);
   const [isUnitFocused, setIsUnitFocused] = useState(false);
   const [isBuildingFocused, setIsBuildingFocused] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<PropertyRegion | null>(
+    null,
+  );
 
   const handleSearchClick = () => {
     setIsSearchClicked(true);
@@ -40,6 +46,7 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
       latitude: -33.8688,
     };
     setIsSearchClicked(true);
+    setSelectedAddress(fakeAddress);
     setAddressData(fakeAddress);
   };
 
@@ -67,7 +74,6 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
             className={`flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3 ${
               addressData.streetName ? "border-gray-600" : "border-gray-400"
             }`}
-            onClick={handleInputClick}
           >
             <input
               className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
@@ -80,6 +86,7 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
               placeholder="도로명, 건물명, suburb 검색"
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
+              onClick={handleInputClick}
             />
 
             <SearchIcon
@@ -93,11 +100,17 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
             </div>
           )}
         </div>
+        {isSearchClicked && selectedAddress && (
+          <GoogleMap
+            lat={selectedAddress.latitude}
+            lng={selectedAddress.longitude}
+          />
+        )}
       </div>
 
       {!isSearchClicked && (
         <>
-          <div className="flex gap-2 px-4 py-3 items-center">
+          <div className="flex items-center gap-2 px-4 py-3">
             <div className="text-body2-med text-gray-700">
               이렇게 검색해보세요!
             </div>
@@ -125,11 +138,14 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
           </div>
         </>
       )}
+
       {isSearchClicked && (
         <>
           <div className="pb-[70px]">
             <div className="flex flex-col gap-2">
-              <div className="text-heading3 text-gray-700 p-4">상세주소를 입력해주세요 (선택)</div>
+              <div className="text-heading3 p-4 text-gray-700">
+                상세주소를 입력해주세요 (선택)
+              </div>
               <div className="flex flex-col gap-6 px-4">
                 <div className="flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">Unit No.</div>
@@ -165,7 +181,7 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                   >
                     <input
                       placeholder="입력해주세요"
-                      className={`text-body1-med min-w-0 grow outline-none text-gray-500 ${
+                      className={`text-body1-med min-w-0 grow text-gray-500 outline-none ${
                         buildingName
                           ? "text-gray-900"
                           : shouldHighlightBuilding

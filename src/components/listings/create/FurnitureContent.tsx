@@ -33,7 +33,7 @@ const FurnitureContent = ({ value, onChange }: FurnitureContentProps) => {
       : [...selectedItems, item];
     onChange(newSelected);
   };
-  console.log("selectedItems:", selectedItems);
+
   if (!furnitureOptions) return null;
   return (
     <>

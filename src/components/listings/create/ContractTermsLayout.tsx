@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
+import { useListingStore } from "@/stores/useListingStore";
 
+import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
-
-import { AnswerValue } from "@/types/createPropertyAnswer";
 
 import ContractTermsContent from "./ContractTermsContent";
 import DropdownSelector from "./DropdownSelector";
@@ -17,36 +16,65 @@ interface ContractTermsProps {
   onNext: () => void;
   onPrev: () => void;
 }
+
 const ContractTerms = ({ onNext }: ContractTermsProps) => {
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, AnswerValue>
-  >({});
-  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
+  const costDetails = useListingStore(state => state.costDetails);
+  const timeSlots = useListingStore(state => state.timeSlots);
+  const meetingDateFrom = useListingStore(state => state.meetingDateFrom);
+  const meetingDateTo = useListingStore(state => state.meetingDateTo);
+
+
+  const { openIndices, toggleIndex } = useDropdownAutoManager({
     totalCount: COMMON_CONTRACT_TERMS.length,
-    shouldAutoClose: index =>
-      !!selectedAnswers[COMMON_CONTRACT_TERMS[index].id],
+    shouldAutoClose: () => false,
   });
 
-  useEffect(() => {
-    openIndices.forEach(idx => {
-      if (autoAdvance && idx !== -1) {
-        const id = COMMON_CONTRACT_TERMS[idx].id;
-        const answer = selectedAnswers[id];
-        if (answer) autoAdvance(idx);
-      }
-    });
-  }, [selectedAnswers, openIndices, autoAdvance]);
+  const getAnswerText = (itemId: string): string | undefined => {
+    switch (itemId) {
+      case "costDetails": {
+        const { weeklyCost, deposit, keyDeposit, billIncluded } = costDetails;
+        const parts = [];
 
-  const handleSelect = (id: string, value: AnswerValue) => {
-    setSelectedAnswers(prev => ({ ...prev, [id]: value }));
+        if (weeklyCost && weeklyCost > 0) {
+          if (billIncluded) {
+            parts.push(`빌 포함 주 ${weeklyCost}$`);
+          } else {
+            parts.push(`주 ${weeklyCost}$`);
+          }
+        }
+        if (deposit && deposit > 0) parts.push(`디파짓 ${deposit}$`);
+        if (keyDeposit && keyDeposit > 0)
+          parts.push(`키 디파짓 ${keyDeposit}$`);
+
+        return parts.join(", ");
+      }
+
+      case "meetingTime": {
+        const formattedFrom = meetingDateFrom
+          ? formatMeetingDay(meetingDateFrom).date
+          : "";
+        const formattedTo = meetingDateTo
+          ? formatMeetingDay(meetingDateTo).date
+          : "";
+        if (!formattedFrom && !formattedTo) return "기한 상관없음";
+        return `${formattedFrom ?? ""} ~ ${formattedTo ?? ""}`;
+      }
+
+      case "timeSlots": {
+        const periods = timeSlots.map(slot => {
+          const hour = parseInt(slot.timeFrom.split(":")[0]);
+          if (hour < 12) return "아침";
+          if (hour < 18) return "점심";
+          return "저녁";
+        });
+        return [...new Set(periods)].join(", ");
+      }
+
+      default:
+        return "";
+    }
   };
-  const getAnswerText = (itemId: string) => {
-    const answer = selectedAnswers[itemId];
-    if (!answer) return "";
-    if (typeof answer === "string") return answer.trim();
-    if (Array.isArray(answer)) return answer.filter(Boolean).join(", ");
-    return "";
-  };
+
   return (
     <div className="pb-70">
       <BackHeader rightIcon="close" />
@@ -61,9 +89,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
         >
           {item.options && (
             <ContractTermsContent
-              id={item.id}
-              options={item.options}
-              onSelect={handleSelect}
+              option={item.options}
             />
           )}
         </DropdownSelector>

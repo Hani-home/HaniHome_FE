@@ -1,3 +1,8 @@
+export type OptionItem = {
+  optionId: number;
+  label: string;
+};
+
 export const CATEGORY_OPTIONS = {
   1: {
     key: "highlights",

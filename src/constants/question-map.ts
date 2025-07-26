@@ -1,3 +1,6 @@
+// 공통 ContractTerms
+import { ContractTermsOption } from "@/types/createPropertyAnswer";
+
 export const COMMON_MOVING_CONDITIONS = [
   {
     id: "genderPreference",
@@ -27,40 +30,23 @@ export const COMMON_MOVING_CONDITIONS = [
   },
 ];
 
-// 공통 ContractTerms
-
-export const COMMON_CONTRACT_TERMS = [
+export const COMMON_CONTRACT_TERMS: {
+  id: string;
+  label: string;
+  options: ContractTermsOption;
+}[] = [
   {
     id: "costDetails",
     label: "거래 비용을 입력해주세요",
     options: {
-      weeklyCost: {
-        label: "빌",
-        value: "",
-      },
-      includedItems: {
-        label: "빌에 포함된 항목",
-        value: [
-          "수도세",
-          "전기세",
-          "인터넷비",
-          "가스비",
-          "청소비",
-          "주차비",
-          "직접입력",
-        ],
-      },
-      billDescription: {
-        label: "빌 설명",
-        value: "",
-      },
-      deposit: {
-        label: "디파짓",
-        value: "",
-      },
-      keyDeposit: {
-        label: "Key 디파짓 (선택)",
-        value: "",
+      type: "costDetails",
+      value: {
+        weeklyCost: 0,
+        costDescription: "",
+        deposit: 0,
+        keyDeposit: 0,
+        depositAdjustable: false,
+        billIncluded: false,
       },
     },
   },
@@ -68,14 +54,24 @@ export const COMMON_CONTRACT_TERMS = [
     id: "meetingTime",
     label: "뷰잉 가능 기간을 설정해주세요",
     options: {
-      meetingDateFrom: { label: "시작일", value: null },
-      meetingDateTo: { label: "종료일", value: null },
+      type: "meetingTime",
+      value: {
+        meetingDateFrom: null,
+        meetingDateTo: null,
+      },
     },
   },
   {
     id: "timeSlots",
     label: "뷰잉 가능 시간대를 설정해주세요",
-    options: ["startTime", "endTime"]
+    options: {
+      type: "timeSlots",
+      value: [
+        { timeFrom: "", timeTo: "" },
+        { timeFrom: "", timeTo: "" },
+        { timeFrom: "", timeTo: "" },
+      ],
+    },
   },
 ];
 

@@ -1,22 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useListingStore } from "@/stores/useListingStore";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import TimeSpinner from "@/components/common/calendar/TimeSpinner";
 
-// 경로 맞게 조정하세요
-
 const PERIODS = ["아침", "점심", "저녁"] as const;
 type Period = (typeof PERIODS)[number];
 
-const TimeSlotField = () => {
-  const [times, setTimes] = useState<
-    Record<Period, { start: string; end: string }>
-  >({
-    아침: { start: "06:00", end: "11:30" },
-    점심: { start: "12:00", end: "17:30" },
-    저녁: { start: "18:00", end: "00:00" },
-  });
+const PERIOD_LIMITS: Record<Period, { minTime: string; maxTime: string }> = {
+  아침: { minTime: "06:00", maxTime: "11:30" },
+  점심: { minTime: "12:00", maxTime: "18:00" },
+  저녁: { minTime: "18:30", maxTime: "00:00" },
+};
 
+const TimeSlotField = () => {
+  const timeSlots = useListingStore(state => state.timeSlots);
+  const setTimeSlots = useListingStore(state => state.setTimeSlots);
+
+  const [slots, setSlots] = useState(
+    timeSlots.length
+      ? timeSlots
+      : [
+          { timeFrom: "00:00", timeTo: "00:00" },
+          { timeFrom: "00:00", timeTo: "00:00" },
+          { timeFrom: "00:00", timeTo: "00:00" },
+        ],
+  );
+  const [tempTime, setTempTime] = useState<string | null>(null);
   const [activeSpinner, setActiveSpinner] = useState<{
     period: Period;
     type: "start" | "end";
@@ -24,19 +35,38 @@ const TimeSlotField = () => {
 
   const [alertMsg, setAlertMsg] = useState<string | null>(null);
 
-  const timeLimits = {
-    아침: {
-      start: { minHour: 6, minMinute: 0, maxHour: 11, maxMinute: 30 },
-      end: { minHour: 6, minMinute: 0, maxHour: 11, maxMinute: 30 },
-    },
-    점심: {
-      start: { minHour: 12, minMinute: 0, maxHour: 17, maxMinute: 30 },
-      end: { minHour: 12, minMinute: 0, maxHour: 17, maxMinute: 30 },
-    },
-    저녁: {
-      start: { minHour: 18, minMinute: 0, maxHour: 24, maxMinute: 0 },
-      end: { minHour: 18, minMinute: 0, maxHour: 24, maxMinute: 0 },
-    },
+  useEffect(() => {
+    const isSame =
+      timeSlots.length === slots.length &&
+      timeSlots.every(
+        (slot, i) =>
+          slot.timeFrom === slots[i]?.timeFrom &&
+          slot.timeTo === slots[i]?.timeTo,
+      );
+
+    if (!isSame) {
+      if (timeSlots.length === 0) {
+        setSlots([
+          { timeFrom: "00:00", timeTo: "00:00" },
+          { timeFrom: "00:00", timeTo: "00:00" },
+          { timeFrom: "00:00", timeTo: "00:00" },
+        ]);
+      } else {
+        setSlots(timeSlots);
+      }
+    }
+  }, [timeSlots]);
+
+  const timeToMinutes = (timeStr: string) => {
+    if (!timeStr) return 0;
+    if (timeStr === "24:00") return 1440;
+    const [h, m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const displayTime = (timeStr: string) => {
+    if (timeStr === "24:00") return "00:00";
+    return timeStr;
   };
 
   const handleTimeChange = (
@@ -44,108 +74,176 @@ const TimeSlotField = () => {
     type: "start" | "end",
     val: string,
   ) => {
-    const otherType = type === "start" ? "end" : "start";
-    const otherVal = times[period][otherType];
+    const idx = PERIODS.indexOf(period);
+    if (idx === -1) return;
 
-    const [valH, valM] = val.split(":").map(Number);
-    const [otherH, otherM] = otherVal.split(":").map(Number);
+    const { minTime, maxTime } = PERIOD_LIMITS[period];
+    const minLimit = timeToMinutes(minTime);
+    const maxLimit = timeToMinutes(maxTime === "00:00" ? "24:00" : maxTime);
+   const valMin = timeToMinutes(val);
+   
+    if (valMin < minLimit || valMin > maxLimit) {
+      setAlertMsg(`${period} 시간대(${minTime}~ ${maxTime})사이여야 합니다.`);
+      return;
+    }
 
-    const valTotal = (valH === 0 ? 24 : valH) * 60 + valM;
-    const otherTotal = (otherH === 0 ? 24 : otherH) * 60 + otherM;
+    const otherVal =
+      slots[idx][type === "start" ? "timeTo" : "timeFrom"] || "00:00";
+ 
+    const otherMin = timeToMinutes(otherVal);
 
+    // 시작 종료 시간 관계 확인
     if (
-      (type === "start" && valTotal >= otherTotal) ||
-      (type === "end" && valTotal <= otherTotal)
+      (type === "start" && valMin >= otherMin && otherVal !== "00:00") ||
+      (type === "end" && valMin <= otherMin && val !== "00:00")
     ) {
       setAlertMsg("시작 시간은 종료 시간보다 이전이어야 합니다.");
       return;
     }
 
-    setTimes(prev => ({
-      ...prev,
-      [period]: {
-        ...prev[period],
-        [type]: val,
-      },
-    }));
+
+
+    setTempTime(val);
+  };
+
+  const handleSpinnerClose = () => {
+    if (activeSpinner && tempTime !== null) {
+      const { period, type } = activeSpinner;
+      const idx = PERIODS.indexOf(period);
+      if (idx !== -1) {
+        const updatedSlots = [...slots];
+        let saveTime = tempTime;
+
+        // timeTo가 '00:00'이면 저장 시 '24:00'으로 변경
+        if (type === "end" && tempTime === "00:00") {
+          saveTime = "24:00";
+        }
+
+        updatedSlots[idx] = {
+          ...updatedSlots[idx],
+          [type === "start" ? "timeFrom" : "timeTo"]: saveTime,
+        };
+        setSlots(updatedSlots);
+        setTimeSlots(updatedSlots);
+      }
+    }
+    setTempTime(null);
+    setActiveSpinner(null);
   };
 
   const handleButtonClick = (period: Period, type: "start" | "end") => {
+    const incompleteSlot = slots.find((slot, idx) => {
+      const isCurrent = PERIODS[idx] === period;
+      return (
+        !isCurrent &&
+        (slot.timeFrom === "00:00" || slot.timeFrom === "") !==
+          (slot.timeTo === "00:00" || slot.timeTo === "")
+      );
+    });
+
+    if (incompleteSlot) {
+      setAlertMsg(
+        "현재 시간대의 시작 시간과 종료 시간을 모두 설정한 후\n다른 시간대를 선택해 주세요",
+      );
+
+      return;
+    }
+
     if (activeSpinner?.period === period && activeSpinner?.type === type) {
-      setActiveSpinner(null);
+      handleSpinnerClose();
     } else {
       setActiveSpinner({ period, type });
+      const idx = PERIODS.indexOf(period);
+      if (idx !== -1 && slots[idx]) {
+        const currentTime =
+          slots[idx][type === "start" ? "timeFrom" : "timeTo"] || "00:00";
+        setTempTime(currentTime);
+      } else {
+        setTempTime("00:00");
+      }
     }
   };
-
+  console.log(timeSlots);
   return (
     <div className="relative">
-      {PERIODS.map(period => (
-        <div key={period} className="px-4 py-3">
-          <div className="flex items-center justify-between px-4 py-3">
-            <div
-              className={`text-body1-sb mb-2 ${activeSpinner?.period === period ? "text-gray-800" : "text-gray-400"}`}
-            >
-              {period}
-            </div>
-            <div className="flex gap-3">
-              {(["start", "end"] as const).map(type => (
-                <button
-                  key={type}
-                  className={`flex h-[33px] gap-1 rounded-[4px] border px-3 py-1 ${
+      {PERIODS.map(period => {
+        const idx = PERIODS.indexOf(period);
+        const slot = slots[idx] || { timeFrom: "00:00", timeTo: "00:00" };
+
+        return (
+          <div key={period} className="px-4 py-3">
+            <div className="flex items-center justify-between px-4 py-3">
+              <div
+                className={`text-body1-sb mb-2 ${
+                  activeSpinner?.period === period
+                    ? "text-gray-800"
+                    : "text-gray-400"
+                }`}
+              >
+                {period}
+              </div>
+              <div className="flex gap-3">
+                {(["start", "end"] as const).map(type => {
+                  const timeValue =
+                    slot[type === "start" ? "timeFrom" : "timeTo"] || "00:00";
+
+                  const isEmptyTime = timeValue === "00:00" || timeValue === "";
+                  const isTwentyFour = timeValue === "24:00";
+
+                  const buttonClass =
                     activeSpinner?.period === period &&
                     activeSpinner?.type === type
-                      ? "bg-mint-contrast border-mint-contrast"
-                      : "border-gray-400"
-                  } `}
-                  onClick={() => handleButtonClick(period, type)}
-                >
-                  {times[period][type].split(":").map((t, i) => (
-                    <span
-                      key={i}
-                      className={`text-body1-med ${
-                        activeSpinner?.period === period &&
-                        activeSpinner?.type === type
-                          ? "text-white"
-                          : "text-mint-contrast"
-                      }`}
+                      ? "bg-mint-contrast border-mint-contrast text-white"
+                      : isEmptyTime
+                        ? "bg-gray-0 border-gray-300 text-gray-300"
+                        : isTwentyFour
+                          ? "text-mint bg-white border-gray-400"
+                          : "text-mint border-gray-400";
+
+                  const showTime =
+                    activeSpinner?.period === period &&
+                    activeSpinner?.type === type
+                      ? "nn:nn"
+                      : displayTime(timeValue);
+                  return (
+                    <button
+                      key={type}
+                      className={`text-body1-med flex h-[33px] gap-1 rounded-[4px] border px-3 py-1 ${buttonClass}`}
+                      onClick={() => handleButtonClick(period, type)}
                     >
-                      {t}
-                    </span>
-                  ))}
-                </button>
-              ))}
+                      {showTime}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
+            {activeSpinner?.period === period && (
+              <TimeSpinner
+                key={`${period}-${activeSpinner.type}`}
+                initialHour={parseInt(tempTime?.split(":")[0] ?? "0")}
+                initialMinute={parseInt(tempTime?.split(":")[1] ?? "0")}
+                onChange={val =>
+                  handleTimeChange(period, activeSpinner.type, val)
+                }
+                onClose={handleSpinnerClose}
+                minHour={parseInt(PERIOD_LIMITS[period].minTime.split(":")[0])}
+                maxHour={
+                  PERIOD_LIMITS[period].maxTime === "00:00"
+                    ? 24
+                    : parseInt(PERIOD_LIMITS[period].maxTime.split(":")[0])
+                }
+              />
+            )}
           </div>
+        );
+      })}
 
-          {activeSpinner?.period === period && (
-            <TimeSpinner
-              key={`${period}-${activeSpinner.type}`}
-              initialHour={parseInt(
-                times[period][activeSpinner.type].split(":")[0],
-              )}
-              initialMinute={parseInt(
-                times[period][activeSpinner.type].split(":")[1],
-              )}
-              onChange={val =>
-                handleTimeChange(period, activeSpinner.type, val)
-              }
-              onClose={() => setActiveSpinner(null)}
-              minHour={timeLimits[period][activeSpinner.type].minHour}
-              maxHour={timeLimits[period][activeSpinner.type].maxHour}
-              minMinute={timeLimits[period][activeSpinner.type].minMinute}
-              maxMinute={timeLimits[period][activeSpinner.type].maxMinute}
-            />
-          )}
-        </div>
-      ))}
-
-      {/* AlertMessage 표시 */}
       {alertMsg && (
         <AlertMessage
           message={alertMsg}
           onDone={() => setAlertMsg(null)}
-          className="bottom-[70px]"
+          className="bottom-[70px] whitespace-pre-line"
         />
       )}
     </div>
