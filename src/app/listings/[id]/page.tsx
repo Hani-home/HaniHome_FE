@@ -5,8 +5,8 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { useState } from "react";
 
-import { useMember } from "@/hooks/member/useMember";
 import { usePropertyDetailList } from "@/hooks/property/useProperty";
+import { useToggleWish } from "@/hooks/wishlist/useWishList";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
@@ -31,14 +31,13 @@ const ListingDetailPage = () => {
 
   const router = useRouter();
 
-  const [liked, setLiked] = useState(false);
   const [isClicked, setIsClicked] = useState(false); //바텀시트
   const [isModalOpen, setIsModalOpen] = useState(false); //숨기기모달
 
   const { data, isLoading, isError } = usePropertyDetailList(listingId);
 
-  const memberId = data?.memberId;
-  const { data: member } = useMember(memberId ?? 0);
+  const { mutate: toggleWish } = useToggleWish();
+  const [liked, setLiked] = useState(data?.metaInfo?.wished);
 
   if (isLoading) return <></>; //추후 스켈레톤 UI
   if (isError || !data) return <></>;
@@ -62,8 +61,8 @@ const ListingDetailPage = () => {
         <div className="relative flex">
           <Image
             src={
-              data.photoUrls?.[0]?.startsWith("http")
-                ? data.photoUrls[0]
+              data.thumbnailUrl
+                ? data.thumbnailUrl
                 : "/svgs/common/room-img.svg"
             }
             width={375}
@@ -74,7 +73,16 @@ const ListingDetailPage = () => {
           />
           <button
             type="button"
-            onClick={() => setLiked(prev => !prev)}
+            onClick={() => {
+              toggleWish(
+                { id: data.id, isLiked: liked ?? false },
+                {
+                  onSuccess: () => {
+                    setLiked(prev => !prev);
+                  },
+                },
+              );
+            }}
             className="absolute right-6 bottom-5 flex cursor-pointer rounded-full bg-white p-2.5"
             aria-label={liked ? "즐겨찾기 취소" : "즐겨찾기"}
           >
@@ -90,9 +98,9 @@ const ListingDetailPage = () => {
         <div className="flex items-center justify-between border-b border-gray-200">
           <div className="flex items-center gap-[14px] px-4 py-3">
             {/* 프로필 이미지 */}
-            {member?.profileImage ? (
+            {data.hostSummary?.profileImage ? (
               <Image
-                src={member.profileImage}
+                src={data.hostSummary.profileImage}
                 alt="프로필 이미지"
                 width={48}
                 height={48}
@@ -104,9 +112,11 @@ const ListingDetailPage = () => {
 
             <div className="flex items-center gap-1">
               <span className="text-body1-sb font-bold text-black">
-                {member?.nickname ?? "사용자"}
+                {data.hostSummary?.nickname ?? "사용자"}
               </span>
-              {member?.verifiedUser && <CertificatedIcon className="h-6 w-6" />}
+              {data.hostSummary?.verified && (
+                <CertificatedIcon className="h-6 w-6" />
+              )}
             </div>
           </div>
 
@@ -146,7 +156,7 @@ const ListingDetailPage = () => {
             </div>
           </div>
 
-          <div className="text-cap1-med flex flex-col items-end gap-3 text-gray-700">
+          <div className="text-cap1-med flex flex-col items-end justify-end gap-3 text-gray-700">
             {data.costDetails.billIncluded ? (
               <div className="text-cap1-med flex items-center gap-1 text-gray-700">
                 <span>빌</span>

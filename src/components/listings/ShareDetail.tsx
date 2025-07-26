@@ -27,11 +27,7 @@ const ShareDetail = ({
     <div className="bg-gray-0 flex flex-col py-3">
       <InfoRow
         label="매물 유형"
-        value={
-          (Object.keys(SHARE_TYPE_MAP) as SharePropertySubType[]).find(
-            key => SHARE_TYPE_MAP[key] === data.sharePropertySubType,
-          ) ?? "쉐어"
-        }
+        value={`${SHARE_TYPE_MAP[data.sharePropertySubType as SharePropertySubType]} 쉐어`}
         textClassName="text-body2-med"
       />
 
@@ -80,14 +76,11 @@ const ShareDetail = ({
         </div>
       </Section>
 
-      <ParkingSection
-        texts={["전용공간 있어요", "Street parking 가능해요"]}
-        textClassName="text-body2-med"
-      />
-      <FurnitureSection listingId={listingId} />
+      <ParkingSection data={data.optionItems} textClassName="text-body2-med" />
+      <FurnitureSection data={data.optionItems} listingId={listingId} />
       <HostDescriptionSection
-        text="여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명여기는호스트설명
-     "
+        description={data.description}
+        badgeText={data.optionItems}
       />
     </div>
   );
