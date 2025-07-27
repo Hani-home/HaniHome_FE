@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { axiosInstance } from "@/apis/axios";
 import {
   cancelViewing,
+  fetchViewingGuests,
   getMyViewingDates,
   getMyViewingList,
   getViewingAvailableDates,
@@ -13,7 +13,7 @@ import {
   putViewingPropertyNotes,
 } from "@/apis/viewing";
 
-import { ViewingGuest, ViewingStatus, ViewingViewType } from "@/types/viewing";
+import { ViewingStatus, ViewingViewType } from "@/types/viewing";
 
 interface UseMyViewingListOptions {
   view?: ViewingViewType;
@@ -107,12 +107,7 @@ export const usePutViewingPropertyNotes = () => {
 export const useViewingGuests = (propertyId: number) => {
   return useQuery({
     queryKey: ["viewingGuests", propertyId],
-    queryFn: async () => {
-      const res = await axiosInstance.get(
-        `/api/v1/properties/${propertyId}/viewings`,
-      );
-      return res.data.data as ViewingGuest[];
-    },
+    queryFn: () => fetchViewingGuests(propertyId),
     enabled: !!propertyId,
   });
 };
