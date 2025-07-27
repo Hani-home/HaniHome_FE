@@ -261,6 +261,7 @@ const ListingDetailPage = () => {
           onClick={() => router.push("/home")}
         />
       )}
+
       {isEditMode && tradeStatus === "COMPLETED" && (
         <BottomActionBar
           label="거래한 게스트 입력하기"
