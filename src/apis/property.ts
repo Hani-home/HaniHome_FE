@@ -91,12 +91,14 @@ export const getMyPropertiesWithFilter = async (params: MyPropertiesParams) => {
 export const completeTrade = async ({
   propertyId,
   viewingId,
+  dealWithOutsider,
 }: {
   propertyId: number;
-  viewingId: number;
+  viewingId?: number;
+  dealWithOutsider: boolean;
 }) => {
   const res = await axiosInstance.post(
-    `/api/v1/properties/${propertyId}/complete?viewingId=${viewingId}`,
+    `/api/v1/properties/${propertyId}/complete?viewingId=${viewingId}?dealWithOutsider=${dealWithOutsider}`,
   );
   return res.data.data;
 };

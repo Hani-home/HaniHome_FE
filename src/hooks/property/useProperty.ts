@@ -124,10 +124,12 @@ export const useCompleteTrade = () => {
     mutationFn: ({
       propertyId,
       viewingId,
+      dealWithOutsider,
     }: {
       propertyId: number;
-      viewingId: number;
-    }) => completeTrade({ propertyId, viewingId }),
+      viewingId?: number;
+      dealWithOutsider: boolean;
+    }) => completeTrade({ propertyId, viewingId, dealWithOutsider }),
 
     onSuccess: () => {
       router.push("/mypage/listings");
