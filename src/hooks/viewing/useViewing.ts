@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  cancelAllViewings,
   cancelViewing,
   fetchViewingGuests,
   getMyViewingDates,
@@ -73,6 +74,12 @@ export const useCancelViewing = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myViewingList"] });
     },
+  });
+};
+
+export const useCancelAllViewings = () => {
+  return useMutation({
+    mutationFn: (propertyId: number) => cancelAllViewings(propertyId),
   });
 };
 
