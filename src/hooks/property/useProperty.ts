@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -6,6 +6,7 @@ import {
   completeTrade,
   fetchPropertyDetailList,
   fetchPropertyList,
+  getMyDeals,
   getMyPropertiesWithFilter,
 } from "@/apis/property";
 
@@ -61,5 +62,12 @@ export const useCompleteTrade = () => {
     onSuccess: () => {
       router.push("/mypage/listings");
     },
+  });
+};
+
+export const useMyDeals = (dealerType: "DEAL_AS_GUEST") => {
+  return useQuery<SummaryProperty[]>({
+    queryKey: ["myDeals", dealerType],
+    queryFn: () => getMyDeals(dealerType),
   });
 };

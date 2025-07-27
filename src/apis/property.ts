@@ -72,3 +72,13 @@ export const completeTrade = async ({
   );
   return res.data.data;
 };
+
+// 구한 매물 조회
+export const getMyDeals = async (
+  dealerType: "DEAL_AS_GUEST",
+): Promise<SummaryProperty[]> => {
+  const res = await axiosInstance.get("/api/v1/deals/my-deals", {
+    params: { dealerType },
+  });
+  return res.data.data;
+};

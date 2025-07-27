@@ -208,18 +208,21 @@ const ListingDetailPage = () => {
           onClick={() => router.push(`/listings/${id}/guests`)}
         />
       )}
+
       {!isConfirmMode && !isViewingMode && !isEditMode && (
         <BottomActionBar
           label="뷰잉 예약하기"
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}
         />
       )}
+
       {isClicked && (
         <BottomSheet
           onClose={() => setIsClicked(false)}
           onHideClick={() => setIsModalOpen(true)}
         />
       )}
+
       {isModalOpen && (
         <ListingHideModal onClose={() => setIsModalOpen(false)} />
       )}
