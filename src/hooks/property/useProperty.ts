@@ -1,8 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
-import { fetchPropertyDetailList, fetchPropertyList } from "@/apis/property";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { Property, PropertyViewType, SummaryProperty } from "@/types/property";
+import {
+  completeTrade,
+  fetchPropertyDetailList,
+  fetchPropertyList,
+  getMyPropertiesWithFilter,
+} from "@/apis/property";
+
+import {
+  MyPropertiesParams,
+  Property,
+  PropertyViewType,
+  SummaryProperty,
+} from "@/types/property";
 
 export const usePropertyList = <T extends PropertyViewType>(params: {
   view: T;
@@ -21,5 +33,33 @@ export const usePropertyDetailList = (propertyId: string) => {
     queryFn: () => fetchPropertyDetailList(propertyId),
     enabled: !!propertyId,
     staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useMyProperties = (params: MyPropertiesParams) => {
+  const { view, tradeStatus, displayStatus } = params;
+
+  return useQuery({
+    queryKey: ["my-properties", view, tradeStatus, displayStatus],
+    queryFn: () => getMyPropertiesWithFilter(params),
+    enabled: !!view,
+  });
+};
+
+export const useCompleteTrade = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: ({
+      propertyId,
+      viewingId,
+    }: {
+      propertyId: number;
+      viewingId: number;
+    }) => completeTrade({ propertyId, viewingId }),
+
+    onSuccess: () => {
+      router.push("/mypage/listings");
+    },
   });
 };

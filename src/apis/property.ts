@@ -1,6 +1,11 @@
 import { serializePropertyFilters } from "@/utils/serializePropertyFilters";
 
-import { Property, PropertyViewType, SummaryProperty } from "@/types/property";
+import {
+  MyPropertiesParams,
+  Property,
+  PropertyViewType,
+  SummaryProperty,
+} from "@/types/property";
 import { FilteredPropertyParams } from "@/types/property";
 
 import { axiosInstance } from "./axios";
@@ -44,4 +49,26 @@ export const postReport = async (body: {
   description: string;
 }) => {
   return axiosInstance.post("/api/v1/reports", body);
+};
+
+// 내놓은 매물 조회
+export const getMyPropertiesWithFilter = async (params: MyPropertiesParams) => {
+  const res = await axiosInstance.get("/api/v1/properties/my-properties", {
+    params,
+  });
+  return res.data.data;
+};
+
+// 거래 완료 상태 변경
+export const completeTrade = async ({
+  propertyId,
+  viewingId,
+}: {
+  propertyId: number;
+  viewingId: number;
+}) => {
+  const res = await axiosInstance.post(
+    `/api/v1/properties/${propertyId}/complete?viewingId=${viewingId}`,
+  );
+  return res.data.data;
 };
