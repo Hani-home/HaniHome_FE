@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+import { useAuthStore } from "@/stores/useAuthStore";
 
 import {
   usePatchDisplayStatus,
@@ -28,21 +30,20 @@ import HeartOutlineIcon from "@/public/svgs/common/heart-outline-icon.svg";
 const ListingDetailPage = () => {
   const { id } = useParams();
   const listingId = id as string;
-
+  const router = useRouter();
   const mode = useSearchParams().get("mode");
+
+  const { memberId } = useAuthStore();
+
   const isConfirmMode = mode === "confirm";
   const isViewingMode = mode === "viewing";
   const isEditMode = mode === "edit";
 
-  const router = useRouter();
-
-  const [isClicked, setIsClicked] = useState(false); //바텀시트
-  const [isModalOpen, setIsModalOpen] = useState(false); //숨기기모달
+  const [isClicked, setIsClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isLoading, isError, refetch } =
     usePropertyDetailList(listingId);
-  const [tradeStatus, setTradeStatus] = useState(data?.tradeStatus);
-
   const { data: viewingGuests } = useViewingGuests(Number(listingId), [
     "REQUESTED",
     "COMPLETED",
@@ -52,38 +53,58 @@ const ListingDetailPage = () => {
     Number(listingId),
   );
 
+  const [tradeStatus, setTradeStatus] = useState(data?.tradeStatus);
+
+  const isMyListing = useMemo(
+    () => data?.hostSummary?.id === Number(memberId),
+    [data, memberId],
+  );
+  const isMyReservedListing = useMemo(
+    () =>
+      viewingGuests?.some(guest => guest.guestId === Number(memberId)) ?? false,
+    [viewingGuests, memberId],
+  );
+
+  const isReservationConfirmed = useMemo(
+    () =>
+      isMyListing ||
+      isMyReservedListing ||
+      isConfirmMode ||
+      isViewingMode ||
+      isEditMode,
+    [
+      isMyListing,
+      isMyReservedListing,
+      isConfirmMode,
+      isViewingMode,
+      isEditMode,
+    ],
+  );
+
   const handleHideClick = () => {
     setIsClicked(false);
-
     if (!data?.kind || (data.kind !== "SHARE" && data.kind !== "RENT")) return;
 
-    if (
-      data.displayStatus === "ACTIVE" &&
-      viewingGuests &&
-      viewingGuests.length > 0
-    ) {
+    const hasGuests = viewingGuests && viewingGuests.length > 0;
+    const isActive = data.displayStatus === "ACTIVE";
+
+    if (isActive && hasGuests) {
       setIsModalOpen(true);
       return;
     }
 
-    const nextStatus = data.displayStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-
     patchDisplayStatus(
       {
-        displayStatus: nextStatus,
+        displayStatus: isActive ? "INACTIVE" : "ACTIVE",
         jsonDiscriminator: data.kind,
       },
       {
-        onSuccess: () => {
-          router.push("/mypage/listings");
-        },
+        onSuccess: () => router.push("/mypage/listings"),
       },
     );
   };
 
-  if (isLoading) return <></>; //추후 스켈레톤 UI
-  if (isError || !data) return <></>;
-
+  if (isLoading || isError || !data) return null;
   return (
     <>
       <div className="flex min-h-screen flex-col pb-16">
@@ -227,9 +248,7 @@ const ListingDetailPage = () => {
             <span className="text-heading3 text-gray-900">위치</span>
             <AddressMap
               region={data.region}
-              isReservationConfirmed={
-                isConfirmMode || isViewingMode || isEditMode
-              }
+              isReservationConfirmed={isReservationConfirmed}
             />
           </div>
         </div>

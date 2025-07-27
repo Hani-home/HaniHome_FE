@@ -30,7 +30,7 @@ const Purchases = () => {
             isLiked={false}
             onToggleLike={() => {}}
             heartColor="text-gray-400"
-            onClick={() => router.push(`/listings/${item.id}?mode=confirm`)}
+            onClick={() => router.push(`/listings/${item.id}`)}
           />
         ))
       )}
