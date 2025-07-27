@@ -104,10 +104,13 @@ export const usePutViewingPropertyNotes = () => {
   });
 };
 
-export const useViewingGuests = (propertyId: number) => {
+export const useViewingGuests = (
+  propertyId: number,
+  status?: ViewingStatus[],
+) => {
   return useQuery({
-    queryKey: ["viewingGuests", propertyId],
-    queryFn: () => fetchViewingGuests(propertyId),
+    queryKey: ["viewingGuests", propertyId, status],
+    queryFn: () => fetchViewingGuests(propertyId, status),
     enabled: !!propertyId,
     staleTime: 0,
   });

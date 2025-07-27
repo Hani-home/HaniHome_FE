@@ -43,7 +43,10 @@ const ListingDetailPage = () => {
     usePropertyDetailList(listingId);
   const [tradeStatus, setTradeStatus] = useState(data?.tradeStatus);
 
-  const { data: viewingGuests } = useViewingGuests(Number(listingId));
+  const { data: viewingGuests } = useViewingGuests(Number(listingId), [
+    "REQUESTED",
+    "COMPLETED",
+  ]);
   const { mutate: toggleWish } = useToggleWish();
   const { mutate: patchDisplayStatus } = usePatchDisplayStatus(
     Number(listingId),

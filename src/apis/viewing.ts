@@ -139,9 +139,13 @@ export const putViewingChecklists = async ({
 // 뷰잉 예약한 게스트 목록 조회
 export const fetchViewingGuests = async (
   propertyId: number,
+  status?: ViewingStatus[],
 ): Promise<ViewingGuest[]> => {
+  const searchParams = new URLSearchParams();
+  status?.forEach(s => searchParams.append("status", s));
+
   const res = await axiosInstance.get(
-    `/api/v1/properties/${propertyId}/viewings`,
+    `/api/v1/properties/${propertyId}/viewings?${searchParams.toString()}`,
   );
   return res.data.data;
 };
