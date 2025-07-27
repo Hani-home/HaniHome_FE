@@ -261,8 +261,13 @@ const ListingDetailPage = () => {
         />
       )}
 
-      {isModalOpen && (
-        <ListingHideModal onClose={() => setIsModalOpen(false)} />
+      {isModalOpen && viewingGuests && (
+        <ListingHideModal
+          listingId={data.id}
+          kind={data.kind}
+          viewingIds={viewingGuests.map(v => v.viewingId)}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </>
   );
