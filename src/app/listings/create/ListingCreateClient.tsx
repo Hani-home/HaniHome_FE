@@ -47,18 +47,22 @@ const ListingCreateClient = () => {
       <Funnel.Step name="ListingDetails">
         <ListingDetails onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
+
       <Funnel.Step name="MovingConditions">
         <MovingCondition onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
       <Funnel.Step name="ContractTerms">
         <ContractTerms onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
+
       <Funnel.Step name="ListingDescription">
         <ListingDescription onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
+
       <Funnel.Step name="CreateConfirm">
         <CreateConfirm onNext={onNextStep} onPrev={onPrevStep} />
       </Funnel.Step>
+      
       <Funnel.Step name="CreateSuccess">
         <CreateSuccess />
       </Funnel.Step>

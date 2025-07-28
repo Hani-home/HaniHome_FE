@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { useListingStore } from "@/stores/useListingStore";
-
 import AlertMessage from "@/components/common/AlertMessage";
 import TimeSpinner from "@/components/common/calendar/TimeSpinner";
+
+import { TimeSlot } from "@/types/listingDetail";
+
+interface TimeSlotFieldProps {
+  value: TimeSlot[];
+  onChange: (updated: TimeSlot[]) => void;
+}
 
 const PERIODS = ["아침", "점심", "저녁"] as const;
 type Period = (typeof PERIODS)[number];
@@ -14,19 +19,8 @@ const PERIOD_LIMITS: Record<Period, { minTime: string; maxTime: string }> = {
   저녁: { minTime: "18:30", maxTime: "24:00" },
 };
 
-const TimeSlotField = () => {
-  const timeSlots = useListingStore(state => state.timeSlots);
-  const setTimeSlots = useListingStore(state => state.setTimeSlots);
-
-  const [slots, setSlots] = useState(
-    timeSlots.length
-      ? timeSlots
-      : [
-          { timeFrom: "00:00", timeTo: "00:00" },
-          { timeFrom: "00:00", timeTo: "00:00" },
-          { timeFrom: "00:00", timeTo: "00:00" },
-        ],
-  );
+const TimeSlotField = ({value, onChange}: TimeSlotFieldProps) => {
+  const [slots, setSlots] = useState<TimeSlot[]>(value);
   const [tempTime, setTempTime] = useState<string | null>(null);
   const [activeSpinner, setActiveSpinner] = useState<{
     period: Period;
@@ -37,25 +31,25 @@ const TimeSlotField = () => {
 
   useEffect(() => {
     const isSame =
-      timeSlots.length === slots.length &&
-      timeSlots.every(
+      value.length === slots.length &&
+      value.every(
         (slot, i) =>
           slot.timeFrom === slots[i]?.timeFrom &&
           slot.timeTo === slots[i]?.timeTo,
       );
 
     if (!isSame) {
-      if (timeSlots.length === 0) {
+      if (value.length === 0) {
         setSlots([
           { timeFrom: "00:00", timeTo: "00:00" },
           { timeFrom: "00:00", timeTo: "00:00" },
           { timeFrom: "00:00", timeTo: "00:00" },
         ]);
       } else {
-        setSlots(timeSlots);
+        setSlots(value);
       }
     }
-  }, [timeSlots]);
+  }, [value]);
 
   const timeToMinutes = (timeStr: string) => {
     if (!timeStr) return 0;
@@ -122,7 +116,7 @@ const TimeSlotField = () => {
           [type === "start" ? "timeFrom" : "timeTo"]: saveTime,
         };
         setSlots(updatedSlots);
-        setTimeSlots(updatedSlots);
+        onChange(updatedSlots);
       }
     }
     setTempTime(null);
@@ -161,7 +155,7 @@ const TimeSlotField = () => {
       }
     }
   };
-  console.log(timeSlots);
+
   return (
     <div className="relative">
       {PERIODS.map(period => {

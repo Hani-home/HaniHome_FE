@@ -30,7 +30,8 @@ export function useDropdownAutoManager({
       ? shouldAutoClose(index)
       : defaultShouldAutoClose(index);
   };
-
+  const timeoutMapRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  
   const toggleIndex = (idx: number) => {
     setOpenIndices(prev => {
       if (prev.includes(idx)) {
@@ -48,6 +49,9 @@ export function useDropdownAutoManager({
   };
 
   const autoAdvance = (currentIndex: number) => {
+    const existing = timeoutMapRef.current.get(currentIndex);
+    if (existing) clearTimeout(existing);
+
     if (
       !finalShouldAutoClose(currentIndex) ||
       manualOpenedIndices.has(currentIndex)
@@ -61,12 +65,12 @@ export function useDropdownAutoManager({
     timeoutRef.current = setTimeout(() => {
       setOpenIndices(prev => {
         const filtered = prev.filter(i => i !== currentIndex); // 수동 여부 상관없이 닫음
-  
+
         const nextIndex = currentIndex + 1;
         if (nextIndex < totalCount && !filtered.includes(nextIndex)) {
           filtered.push(nextIndex);
         }
-  
+
         return filtered;
       });
     }, autoCloseDelay);

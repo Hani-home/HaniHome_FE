@@ -6,6 +6,7 @@ export interface AvailabilityOptions {
   immediate: boolean;
   negotiable: boolean;
 }
+
 export type ContractTermsOption =
   | {
       type: "costDetails";
@@ -16,6 +17,7 @@ export type ContractTermsOption =
       value: {
         meetingDateFrom: string | null;
         meetingDateTo: string | null;
+        viewingAlwaysAvailable: boolean | null;
       };
     }
   | {

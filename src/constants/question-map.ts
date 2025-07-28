@@ -58,6 +58,7 @@ export const COMMON_CONTRACT_TERMS: {
       value: {
         meetingDateFrom: null,
         meetingDateTo: null,
+        viewingAlwaysAvailable: null,
       },
     },
   },

@@ -1,35 +1,52 @@
-import { useListingStore } from "@/stores/useListingStore";
-
 import CheckIcon from "@/components/common/CheckIcon";
 import Divider from "@/components/common/Divider";
 
 import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 
-const CostDetailField = () => {
-  const { costDetails, setCostDetails, optionItemIds, setOptionItemIds } =
-    useListingStore();
+import { CostDetails } from "@/types/listingDetail";
 
-  const handleInputChange = <K extends keyof typeof costDetails>(
+interface CostDetailFieldProps {
+  value: CostDetails;
+  optionItemIds: number[];
+  onCostDetailsChange: (details: CostDetails) => void;
+  onOptionItemIdsChange: (ids: number[]) => void;
+}
+
+const CostDetailField = ({
+  value,
+  optionItemIds,
+  onCostDetailsChange,
+  onOptionItemIdsChange,
+}: CostDetailFieldProps) => {
+  const handleInputChange = <K extends keyof typeof value>(
     field: K,
-    value: (typeof costDetails)[K],
+    newValue: (typeof value)[K],
   ) => {
-    setCostDetails(field, value);
+    const updated = { ...value, [field]: newValue };
+    onCostDetailsChange(updated);
   };
 
   const handleBillIncluded = () => {
-    setCostDetails("billIncluded", !costDetails.billIncluded);
+    const updated = {
+      ...value,
+      billIncluded: !value.billIncluded,
+    };
+    onCostDetailsChange(updated);
   };
 
   const handleDepositAdjustable = () => {
-    setCostDetails("depositAdjustable", !costDetails.depositAdjustable);
+    const updated = {
+      ...value,
+      depositAdjustable: !value.depositAdjustable,
+    };
+    onCostDetailsChange(updated);
   };
 
   const handleIncludedItemClick = (id: number) => {
     const newIds = optionItemIds.includes(id)
       ? optionItemIds.filter(i => i !== id)
       : [...optionItemIds, id];
-
-    setOptionItemIds(newIds);
+    onOptionItemIdsChange(newIds);
   };
 
   return (
@@ -40,11 +57,13 @@ const CostDetailField = () => {
           <input
             type="text"
             placeholder="입력해주세요"
-            className="placeholder:text-body2-med h-9 w-[343px] rounded-[4px] border border-gray-400 px-4 py-3 placeholder:text-gray-500 focus:outline-none"
-            value={costDetails.weeklyCost === 0 ? "" : costDetails.weeklyCost}
+            className={`placeholder:text-body2-med h-9 w-[343px] rounded-[4px] border border-gray-400 px-4 py-3 placeholder:text-gray-500 focus:outline-none ${value.weeklyCost ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
+            value={value.weeklyCost === 0 ? "" : value.weeklyCost}
             onChange={e => handleInputChange("weeklyCost", +e.target.value)}
           />
-          <span className="text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-gray-500">
+          <span
+            className={`text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${value.weeklyCost ? "text-gray-900" : "text-gray-500"}`}
+          >
             주/$
           </span>
         </div>
@@ -53,7 +72,7 @@ const CostDetailField = () => {
           onClick={handleBillIncluded}
           className="flex cursor-pointer gap-1 select-none"
         >
-          <CheckIcon checked={costDetails.billIncluded} />
+          <CheckIcon checked={value.billIncluded} />
 
           <div className="text-cap1-med text-gray-700">빌 포함</div>
         </button>
@@ -93,8 +112,8 @@ const CostDetailField = () => {
         <input
           type="text"
           placeholder="ex) 주차비는 주/$20 입니다"
-          className="placeholder:text-body2-med h-9 w-[343px] rounded-[4px] border border-gray-400 px-4 py-3 placeholder:text-gray-500 focus:outline-none"
-          value={costDetails.costDescription}
+          className={`placeholder:text-body2-med h-9 w-[343px] rounded-[4px] border px-4 py-3 placeholder:text-gray-500 focus:outline-none ${value.costDescription ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
+          value={value.costDescription}
           onChange={e => handleInputChange("costDescription", e.target.value)}
         />
       </div>
@@ -109,11 +128,13 @@ const CostDetailField = () => {
             <input
               type="text"
               placeholder="입력해주세요"
-              className="placeholder:text-body2-med h-9 w-full rounded-[4px] border border-gray-400 px-4 py-3 pr-12 placeholder:text-gray-500 focus:outline-none"
-              value={costDetails.deposit === 0 ? "" : costDetails.deposit}
+              className={`placeholder:text-body2-med h-9 w-full rounded-[4px] border px-4 py-3 pr-12 placeholder:text-gray-500 focus:outline-none ${value.deposit ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
+              value={value.deposit === 0 ? "" : value.deposit}
               onChange={e => handleInputChange("deposit", +e.target.value)}
             />
-            <span className="text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
+            <span
+              className={`text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${value.deposit ? "text-gray-900" : "text-gray-500"}`}
+            >
               $
             </span>
           </div>
@@ -122,7 +143,7 @@ const CostDetailField = () => {
             onClick={handleDepositAdjustable}
             className="flex cursor-pointer items-center gap-1"
           >
-            <CheckIcon checked={costDetails.depositAdjustable} />
+            <CheckIcon checked={value.depositAdjustable} />
             <div className="text-cap1-med text-gray-700">디파짓 조정 가능</div>
           </button>
         </div>
@@ -133,11 +154,13 @@ const CostDetailField = () => {
             <input
               type="text"
               placeholder="입력해주세요"
-              className="placeholder:text-body2-med h-9 w-full rounded-[4px] border border-gray-400 px-4 py-3 pr-12 placeholder:text-gray-500 focus:outline-none"
-              value={costDetails.keyDeposit === 0 ? "" : costDetails.keyDeposit}
+              className={`placeholder:text-body2-med h-9 w-full rounded-[4px] border px-4 py-3 pr-12 placeholder:text-gray-500 focus:outline-none ${value.keyDeposit ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
+              value={value.keyDeposit === 0 ? "" : value.keyDeposit}
               onChange={e => handleInputChange("keyDeposit", +e.target.value)}
             />
-            <span className="text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
+            <span
+              className={`text-body2-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${value.keyDeposit ? "text-gray-900" : "text-gray-500"}`}
+            >
               $
             </span>
           </div>

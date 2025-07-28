@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { useListingStore } from "@/stores/useListingStore";
 import { format } from "date-fns";
 
 import Calendar from "@/components/common/calendar/Calendar";
@@ -11,21 +10,27 @@ interface Range {
   key: string;
 }
 
+interface MeetingTimeFieldProps {
+  meetingDateFrom: string | null;
+  meetingDateTo: string | null;
+  setMeetingDateRange: (from: string | null, to: string | null) => void;
+  viewingAlwaysAvailable: boolean;
+  setViewingAlwaysAvailable: (value: boolean) => void;
+}
+
 const toStartOfDay = (date: Date) => {
   const newDate = new Date(date);
   newDate.setHours(0, 0, 0, 0);
   return newDate;
 };
 
-const MeetingTimeField = () => {
-  const {
-    meetingDateFrom,
-    meetingDateTo,
-    setMeetingDateRange,
-    viewingAlwaysAvailable,
-    setViewingAlwaysAvailable,
-  } = useListingStore();
-
+const MeetingTimeField = ({
+  meetingDateFrom,
+  meetingDateTo,
+  setMeetingDateRange,
+  viewingAlwaysAvailable,
+  setViewingAlwaysAvailable,
+}: MeetingTimeFieldProps) => {
   const today = useMemo(() => new Date(), []);
   const dummyDate = useMemo(() => new Date("0000-01-01T00:00:00"), []);
 
@@ -95,7 +100,20 @@ const MeetingTimeField = () => {
   };
 
   const handleStatus = () => {
-    setViewingAlwaysAvailable(!viewingAlwaysAvailable);
+    const newStatus = !viewingAlwaysAvailable;
+    setViewingAlwaysAvailable(newStatus);
+
+    if (newStatus) {
+      // 기한 상관없음 선택 시, 날짜 초기화
+      setMeetingDateRange(null, null);
+    } else {
+      // 다시 날짜 선택하게 될 때 기본값 세팅 (선택사항)
+      const todayStart = toStartOfDay(today);
+      setMeetingDateRange(
+        format(todayStart, "yyyy-MM-dd'T'00:00:00"),
+        format(todayStart, "yyyy-MM-dd'T'00:00:00"),
+      );
+    }
   };
 
   const isSingleSelection = useMemo(() => {

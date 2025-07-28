@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { useListingStore } from "@/stores/useListingStore";
 
 import { formatMeetingDay } from "@/utils/dateFormatter";
@@ -7,6 +9,8 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
+
+import { ContractTermsOption } from "@/types/createPropertyAnswer";
 
 import ContractTermsContent from "./ContractTermsContent";
 import DropdownSelector from "./DropdownSelector";
@@ -18,14 +22,109 @@ interface ContractTermsProps {
 }
 
 const ContractTerms = ({ onNext }: ContractTermsProps) => {
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, ContractTermsOption>
+  >({});
+
   const costDetails = useListingStore(state => state.costDetails);
   const timeSlots = useListingStore(state => state.timeSlots);
   const meetingDateFrom = useListingStore(state => state.meetingDateFrom);
   const meetingDateTo = useListingStore(state => state.meetingDateTo);
+  const optionItemIds = useListingStore(state => state.optionItemIds);
+  const viewingAlwaysAvailable = useListingStore(
+    state => state.viewingAlwaysAvailable,
+  );
 
-  const { openIndices, toggleIndex } = useDropdownAutoManager({
+  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
     totalCount: COMMON_CONTRACT_TERMS.length,
-    shouldAutoClose: () => false,
+    shouldAutoClose: index => {
+      const id = COMMON_CONTRACT_TERMS[index].id;
+      if (id === "costDetails") {
+        const { weeklyCost, deposit } = costDetails;
+        return !!(weeklyCost && deposit);
+      }
+      if (id === "meetingTime") {
+        return !!((meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable);
+      }
+      if (id === "timeSlots") {
+        return timeSlots.length > 0;
+      }
+      return !!selectedAnswers[id];
+    },
+  });
+
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
+
+    openIndices.forEach(idx => {
+      const id = COMMON_CONTRACT_TERMS[idx].id;
+
+      if (!autoAdvance || idx === -1) return;
+
+      if (id === "costDetails") {
+        const { weeklyCost, deposit } = costDetails;
+
+        if (weeklyCost && deposit) {
+          const timer = setTimeout(() => {
+            autoAdvance(idx);
+          }, 4000);
+          timers.push(timer);
+        }
+      } else if (id === "meetingTime") {
+        if ((meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable) {
+          const timer = setTimeout(() => {
+            autoAdvance(idx);
+          }, 4000);
+          timers.push(timer);
+        }
+      } else {
+        const answer = selectedAnswers[id];
+        if (answer) {
+          autoAdvance(idx);
+        }
+      }
+    });
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
+  }, [
+    selectedAnswers,
+    openIndices,
+    autoAdvance,
+    costDetails,
+    meetingDateFrom,
+    meetingDateTo,
+    viewingAlwaysAvailable,
+  ]);
+
+  const handleSelect = (id: string, value: ContractTermsOption) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [id]: value,
+    }));
+    const index = COMMON_CONTRACT_TERMS.findIndex(item => item.id === id);
+    if (index !== -1) autoAdvance(index);
+  };
+
+  const handleOptionItemIdsChange = (newIds: number[]) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      optionItemIds: { type: "optionItemIds", value: newIds },
+    }));
+  };
+
+  const allAnswered = COMMON_CONTRACT_TERMS.every(item => {
+    if (item.id === "costDetails") {
+      return costDetails.weeklyCost && costDetails.deposit;
+    }
+    if (item.id === "meetingTime") {
+      return (meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable;
+    }
+    if (item.id === "timeSlots") {
+      return timeSlots.length > 0;
+    }
+    return !!selectedAnswers[item.id];
   });
 
   const getAnswerText = (itemId: string): string | undefined => {
@@ -90,7 +189,15 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           isOpen={openIndices.includes(index)}
           onClick={() => toggleIndex(index)}
         >
-          {item.options && <ContractTermsContent option={item.options} />}
+          {item.options && (
+            <ContractTermsContent
+              id={item.id}
+              value={selectedAnswers[item.id]}
+              onSelect={value => handleSelect(item.id, value)}
+              optionItemIds={optionItemIds}
+              onOptionItemIdsChange={handleOptionItemIdsChange}
+            />
+          )}
         </DropdownSelector>
       ))}
       <BottomActionBar
@@ -107,6 +214,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
             label: "다음",
             onClick: onNext,
             variant: "filled",
+            disabled: !allAnswered,
           },
         ]}
       />
