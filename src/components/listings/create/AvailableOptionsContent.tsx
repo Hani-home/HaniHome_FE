@@ -1,56 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-interface Props {
-  options: Record<string, string[]>;
-  defaultValue?: Record<string, string | string[]>;
-  multiSelectKeys?: string[];
-  onSelect: (value: Record<string, string | string[]>) => void;
+interface OptionItem {
+  optionId: number;
+  label: string;
+}
+interface AvailableOptionsContentProps {
+  options: Record<string, readonly OptionItem[]>;
+  defaultValue?: number[];
+  onSelect: (selectedIds: number[]) => void;
 }
 
 const AvailableOptionsContent = ({
   options,
-  defaultValue = {},
-  multiSelectKeys = [],
+  defaultValue = [],
   onSelect,
-}: Props) => {
-  const [selectedOptions, setSelectedOptions] =
-    useState<Record<string, string | string[]>>(defaultValue);
+}: AvailableOptionsContentProps) => {
+  const [selectedIds, setSelectedIds] = useState<number[]>(defaultValue);
 
-  const handleToggle = (key: string, option: string) => {
-    const prevValue = selectedOptions[key];
-    let nextValue: string | string[];
+  useEffect(() => {
+    setSelectedIds(defaultValue);
+  }, [defaultValue]);
 
-    if (multiSelectKeys.includes(key)) {
-      const list = Array.isArray(prevValue) ? prevValue : [];
-      nextValue = list.includes(option)
-        ? list.filter(o => o !== option)
-        : [...list, option];
+  const handleToggle = (optionId: number, categoryKey: string) => {
+    const isMultiple = categoryKey === "주차";
+
+    let nextSelected: number[];
+    if (isMultiple) {
+      nextSelected = selectedIds.includes(optionId)
+        ? selectedIds.filter(id => id !== optionId)
+        : [...selectedIds, optionId];
     } else {
-      nextValue = option === prevValue ? "" : option;
+      const categoryOptionIds = options[categoryKey].map(opt => opt.optionId);
+      const filtered = selectedIds.filter(
+        id => !categoryOptionIds.includes(id),
+      );
+      nextSelected = selectedIds.includes(optionId)
+        ? filtered 
+        : [...filtered, optionId];
     }
 
-    const updated = { ...selectedOptions, [key]: nextValue };
-    setSelectedOptions(updated);
-    onSelect(
-      Object.entries(updated).reduce(
-        (acc, [key, value]) => {
-          const isEmpty =
-            value === "" || (Array.isArray(value) && value.length === 0);
-
-          if (!isEmpty) {
-            acc[key] = value;
-          }
-          return acc;
-        },
-        {} as Record<string, string | string[]>,
-      ),
-    );
+    setSelectedIds(nextSelected);
+    onSelect(nextSelected);
   };
 
-  const isSelected = (key: string, option: string): boolean => {
-    const value = selectedOptions[key];
-    return Array.isArray(value) ? value.includes(option) : value === option;
-  };
+  const isSelected = (optionId: number) => selectedIds.includes(optionId);
 
   return (
     <div className="flex flex-col gap-2">
@@ -68,15 +61,15 @@ const AvailableOptionsContent = ({
           <ul className="flex gap-2">
             {values.map(option => (
               <li
-                key={option}
+                key={option.optionId}
                 className={`text-body1-med flex h-9 flex-1 cursor-pointer items-center justify-center rounded-[4px] border py-[10px] ${
-                  isSelected(key, option)
+                  isSelected(option.optionId)
                     ? "text-mint bg-mint-light border-mint"
                     : "border-gray-600 text-gray-800"
                 }`}
-                onClick={() => handleToggle(key, option)}
+                onClick={() => handleToggle(option.optionId, key)}
               >
-                {option}
+                {option.label}
               </li>
             ))}
           </ul>

@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 
-import BackHeader from "@/components/layout/header/BackHeader";
+import { useListingStore } from "@/stores/useListingStore";
+
 import BottomActionBar from "@/components/common/BottomActionBar";
+import BackHeader from "@/components/layout/header/BackHeader";
 
 interface ListingDescriptionProps {
   onNext: () => void;
@@ -9,7 +11,8 @@ interface ListingDescriptionProps {
 }
 const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [text, setText] = useState("");
+  const { description, setDescription } = useListingStore();
+  const [text, setText] = useState(description || "");
 
   const handleResize = () => {
     const textarea = textareaRef.current;
@@ -23,6 +26,7 @@ const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
     const value = e.target.value;
     if (value.length <= 300) {
       setText(value);
+      setDescription(value);
       handleResize();
     }
   };
@@ -60,14 +64,17 @@ const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
           {
             label: "저장",
             onClick: () => {
-              //Todo: 저장 로직 추가
+              setDescription(text); 
               console.log("저장");
             },
             variant: "outline",
           },
           {
             label: "다음",
-            onClick: onNext,
+            onClick: () => {
+              setDescription(text);
+              onNext();
+            },
             variant: "filled",
             disabled: !text,
           },

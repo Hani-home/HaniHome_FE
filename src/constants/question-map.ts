@@ -5,12 +5,12 @@ export const COMMON_MOVING_CONDITIONS = [
   {
     id: "genderPreference",
     label: "원하는 게스트 성별이 있으신가요?",
-    options: ["무관", "남자만", "여자만", "커플 가능"],
+    options: ["ANY", "MALE_ONLY", "FEMALE_ONLY", "COUPLE"],
   },
   {
     id: "livingConditions",
     label: "거주 조건을 입력해주세요",
-    options: ["노티스", "최소 거주 기간", "계약 형태 설명"],
+    options: ["noticePeriodWeeks", "minimumStayWeeks", "contractTerms"],
   },
   {
     id: "moveInInfo",

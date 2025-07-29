@@ -18,7 +18,7 @@ const steps = [
   "ListingType",
   // "AddressPhoto",
   // "ListingDetails",
-  // "MovingConditions",
+  "MovingConditions",
   "ContractTerms",
   "ListingDescription",
   "CreateConfirm",

@@ -1,11 +1,25 @@
-import { CostDetails, TimeSlot } from "./listingDetail";
+import {
+  CostDetails,
+  GenderPreference,
+  LivingConditions,
+  MoveInInfo,
+  TimeSlot,
+} from "./listingDetail";
 
-export interface AvailabilityOptions {
-  availableFrom: string | null;
-  availableTo: string | null;
-  immediate: boolean;
-  negotiable: boolean;
-}
+export type MovingConditionsOption =
+  | {
+      type: "genderPreference";
+      value: GenderPreference;
+    }
+  | {
+      type: "moveInInfo";
+      value: MoveInInfo;
+    }
+  | {
+      type: "livingConditions";
+      value: LivingConditions;
+    }
+  | { type: "optionItemIds"; value: number[] };
 
 export type ContractTermsOption =
   | {

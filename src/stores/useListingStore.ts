@@ -1,6 +1,13 @@
 import { create } from "zustand";
 
-import { CostDetails, PropertyRegion, TimeSlot } from "@/types/listingDetail";
+import {
+  CostDetails,
+  GenderPreference,
+  LivingConditions,
+  MoveInInfo,
+  PropertyRegion,
+  TimeSlot,
+} from "@/types/listingDetail";
 
 interface ListingState {
   listingType: "SHARE" | "RENT" | null;
@@ -31,6 +38,21 @@ interface ListingState {
 
   viewingAlwaysAvailable: boolean;
   setViewingAlwaysAvailable: (value: boolean) => void;
+
+  description: string;
+  setDescription: (data: string) => void;
+
+  genderPreference: GenderPreference | null;
+  setGenderPreference: (value: GenderPreference | null) => void;
+
+  lgbtAvailable: boolean;
+  setLgbtAvailable: (value: boolean) => void;
+
+  moveInInfo: MoveInInfo;
+  setMoveInInfo: (value: MoveInInfo) => void;
+
+  livingConditions: LivingConditions | null;
+  setLivingConditions: (value: LivingConditions | null) => void;
 }
 
 export const useListingStore = create<ListingState>(set => ({
@@ -89,4 +111,24 @@ export const useListingStore = create<ListingState>(set => ({
 
   viewingAlwaysAvailable: false,
   setViewingAlwaysAvailable: value => set({ viewingAlwaysAvailable: value }),
+
+  description: "",
+  setDescription: data => set({ description: data }),
+
+  genderPreference: null,
+  setGenderPreference: value => set({ genderPreference: value }),
+
+  lgbtAvailable: false,
+  setLgbtAvailable: value => set({ lgbtAvailable: value }),
+
+  moveInInfo: {
+    availableFrom: "",
+    availableTo: "",
+    isImmediate: false,
+    isNegotiable: false,
+  },
+  setMoveInInfo: value => set({ moveInInfo: value }),
+
+  livingConditions: null,
+  setLivingConditions: value => set({ livingConditions: value }),
 }));

@@ -13,9 +13,31 @@ interface CreateConfirmProps {
   onPrev: () => void;
 }
 const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
-  const { listingType, photoData } = useListingStore();
+  const {
+    listingType,
+    addressData,
+    photoData,
+    costDetails,
+    optionItemIds,
+    timeSlots,
+    meetingDateFrom,
+    meetingDateTo,
+    viewingAlwaysAvailable,
+    description,
+  } = useListingStore();
   const propertyContent = propertyInfo.find(item => item.kind === listingType);
-  console.log("photoData", photoData);
+  console.log("입력 정보 확인", {
+    listingType,
+    photoData,
+    description,
+    addressData,
+    costDetails,
+    optionItemIds,
+    timeSlots,
+    meetingDateFrom,
+    meetingDateTo,
+    viewingAlwaysAvailable,
+  });
   return (
     <div className="max-w-[375px] pb-[70px]">
       <BackHeader rightIcon="close" />

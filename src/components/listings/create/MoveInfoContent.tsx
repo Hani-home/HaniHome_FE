@@ -1,45 +1,39 @@
-import { useState, useEffect } from "react";
-
 import AvailableDatePicker from "@/components/home/filter/AvailableDatePicker";
+import { MoveInInfo } from "@/types/listingDetail";
+
 
 interface MoveInfoContentProps {
-  onSelect: (
-    value: Record<"availableFrom" | "availableTo", string | null> & {
-      immediate: boolean;
-      negotiable: boolean;
-    },
-  ) => void;
+  value: MoveInInfo;
+  onSelect: (value: MoveInInfo) => void;
 }
 
-const MoveInfoContent = ({ onSelect }: MoveInfoContentProps) => {
-  const [availableFrom, setAvailableFrom] = useState<string | null>(null);
-  const [availableTo, setAvailableTo] = useState<string | null>(null);
-  const [immediate, setImmediate] = useState(false);
-  const [negotiable, setNegotiable] = useState(false);
-
+const MoveInfoContent = ({ value, onSelect }: MoveInfoContentProps) => {
   const handleDateChange = (from: string, to: string) => {
-    setAvailableFrom(from);
-    setAvailableTo(to);
+    onSelect({
+      ...value,
+      availableFrom: from,
+      availableTo: to,
+    });
   };
 
-  const toggleImmediate = () => setImmediate(prev => !prev);
-  const toggleNegotiable = () => setNegotiable(prev => !prev);
-
-  useEffect(() => {
+  const toggleImmediate = () =>
     onSelect({
-      availableFrom,
-      availableTo,
-      immediate,
-      negotiable,
+      ...value,
+      isImmediate: !value.isImmediate,
     });
-  }, [availableFrom, availableTo, immediate, negotiable]);
-  
+
+  const toggleNegotiable = () =>
+    onSelect({
+      ...value,
+      isNegotiable: !value.isNegotiable,
+    });
+
   return (
     <AvailableDatePicker
-      availableFrom={availableFrom}
-      availableTo={availableTo}
-      immediate={immediate}
-      negotiable={negotiable}
+      availableFrom={value.availableFrom}
+      availableTo={value.availableTo}
+      immediate={value.isImmediate}
+      negotiable={value.isNegotiable}
       onDateChange={handleDateChange}
       onImmediateToggle={toggleImmediate}
       onNegotiableToggle={toggleNegotiable}
