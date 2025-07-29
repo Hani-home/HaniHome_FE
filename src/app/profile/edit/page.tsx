@@ -3,12 +3,10 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useMyInfo } from "@/hooks/member/useMember";
+import { useMyInfo, useUpdateUser } from "@/hooks/member/useMember";
 import { useNickname } from "@/hooks/signup/useNickname";
-
-import { DEFAULT_PROFILE_IMAGES } from "@/utils/getRandomDefaultProfile";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -16,24 +14,21 @@ import Divider from "@/components/common/Divider";
 import DropdownField from "@/components/common/DropdownField";
 import InputField from "@/components/common/InputField";
 import BackHeader from "@/components/layout/header/BackHeader";
+import ProfileImageUploader from "@/components/signup/profile/ProfileImageUploader";
+
+import { GENDER_OPTIONS } from "@/constants/dropdown-options";
+
+import { Gender } from "@/types/member";
 
 import Arrow from "@/public/svgs/common/left-arrow.svg";
-import PlusIcon from "@/public/svgs/common/plus-icon.svg";
 import GoogleIcon from "@/public/svgs/mypage/google-icon.svg";
 
-const GENDER_OPTIONS = [
-  { label: "남성", value: "MALE" },
-  { label: "여성", value: "FEMALE" },
-];
-
-const DEFAULT_IMAGE = DEFAULT_PROFILE_IMAGES[0];
-
-const ProfileEdit = () => {
+const ProfileEditPage = () => {
   const router = useRouter();
-
   const { data: myInfo, isLoading } = useMyInfo();
 
   const [profileImage, setProfileImage] = useState<string | null>(null);
+
   const [nickname, setNickname] = useState("");
   const [gender, setGender] = useState("");
   const [alerts, setAlerts] = useState<string[]>([]);
@@ -47,6 +42,7 @@ const ProfileEdit = () => {
     checkDuplicate,
     reset,
   } = useNickname();
+  const { mutate: updateUser } = useUpdateUser();
 
   useEffect(() => {
     if (!myInfo) return;
@@ -60,46 +56,56 @@ const ProfileEdit = () => {
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setNickname(e.target.value);
     reset();
+    validate(value);
   };
 
   const handleSubmit = async () => {
-    if (!isValid || !nickname || !gender) {
+    if (!nickname || !gender) {
       showAlert("모든 항목을 입력해주세요");
       return;
     }
-    if (result === "default") {
+
+    if (isNicknameEdited && result === "default") {
       showAlert("닉네임 중복 확인을 해주세요");
       return;
     }
-    if (result !== "available") return;
 
-    // TODO: 프로필 수정 반영 API 호출
-    router.push("/profile/edit");
+    if (isNicknameEdited && result !== "available") return;
+
+    const payload = {
+      nickname,
+      gender: gender as Gender,
+      profileImage: profileImage ?? "",
+      name: myInfo?.name ?? "",
+      birthDate: myInfo?.birthDate ?? "",
+      phoneNumber: myInfo?.phoneNumber ?? "",
+    };
+
+    updateUser(payload, {
+      onSuccess: () => {
+        showAlert("저장이 완료되었어요");
+      },
+    });
   };
 
-  const isFormReady = useMemo(() => {
-    return nickname && gender && result === "available";
-  }, [nickname, gender, result]);
+  const isNicknameEdited = nickname !== myInfo?.nickname;
+  const isFormReady = isNicknameEdited ? result === "available" : true;
 
   return (
     <div className="flex h-screen flex-col">
       <BackHeader />
       <div className="scrollbar-hide flex-1 overflow-auto">
         <div className="flex flex-col items-center justify-center">
-          <div className="relative h-30 w-30">
-            <Image
-              src={profileImage ?? DEFAULT_IMAGE}
-              alt="profileImg"
-              fill
-              className="rounded-full border border-gray-300 object-cover object-center"
-            />
-            {!profileImage && (
-              <PlusIcon className="absolute top-1/2 left-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2" />
-            )}
-          </div>
-
+          <ProfileImageUploader
+            size={120}
+            value={profileImage}
+            onChange={uploadedUrl => {
+              setProfileImage(uploadedUrl);
+            }}
+          />
           {!isLoading && (
             <div className="w-[343px] pb-[66px]">
               <InputField
@@ -179,4 +185,4 @@ const ProfileEdit = () => {
   );
 };
 
-export default ProfileEdit;
+export default ProfileEditPage;
