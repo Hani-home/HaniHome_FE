@@ -2,40 +2,68 @@ import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import Divider from "../common/Divider";
+import { useDeleteProperty } from "@/hooks/property/useProperty";
+
+import Divider from "@/components/common/Divider";
 
 interface BottomSheetProps {
   onClose: () => void;
+  onHideClick: () => void;
+  displayStatus?: "ACTIVE" | "INACTIVE";
 }
 
-const BottomSheet = ({ onClose }: BottomSheetProps) => {
+const BottomSheet = ({
+  onClose,
+  onHideClick,
+  displayStatus,
+}: BottomSheetProps) => {
   const { id } = useParams();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
+  const { mutate: deleteProperty } = useDeleteProperty(Number(id));
 
   useEffect(() => {
     setIsOpen(true);
   }, []);
 
-  const handleClose = () => {
+  const closeSheet = (callback?: () => void) => {
     setIsOpen(false);
     setTimeout(() => {
       onClose();
-    }, 300); 
+      callback?.();
+    }, 300);
+  };
+
+  const handleEditClick = () => {
+    router.push(`/listings/${id}/edit`);
+  };
+
+  const handleHideClick = () => {
+    closeSheet(onHideClick);
+  };
+
+  const handleDeleteClick = () => {
+    closeSheet(() => {
+      deleteProperty(undefined, {
+        onSuccess: () => {
+          router.replace("/mypage/listings");
+        },
+      });
+    });
   };
 
   return (
     <>
       {/* 오버레이 */}
       <div
-        className="fixed inset-0 z-80 bg-[rgba(72,74,79,0.6)]"
-        onClick={handleClose}
+        className="fixed inset-0 z-[100] bg-gray-800 opacity-60"
+        onClick={() => closeSheet()}
       />
 
       {/* 바텀시트 */}
       <div
-        className={`fixed bottom-0 left-1/2 z-100 w-[375px] -translate-x-1/2 rounded-t-2xl border border-gray-500 bg-white pt-3 transition-transform duration-300 ease-in-out ${
+        className={`fixed bottom-0 left-1/2 z-[100] w-[375px] -translate-x-1/2 rounded-t-2xl border border-gray-500 bg-white pt-3 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-y-0" : "translate-y-full"
         }`}
         onClick={e => e.stopPropagation()}
@@ -47,21 +75,21 @@ const BottomSheet = ({ onClose }: BottomSheetProps) => {
         <Divider className="my-1" />
         <div
           className="text-body1-sb w-full cursor-pointer py-2 text-center text-gray-900"
-          onClick={() => router.push(`/listings/${id}/edit`)}
+          onClick={handleEditClick}
         >
           매물정보 수정
         </div>
         <Divider className="my-1" />
         <div
           className="text-body1-sb w-full cursor-pointer py-2 text-center text-gray-900"
-          onClick={handleClose}
+          onClick={handleHideClick}
         >
-          숨기기
+          {displayStatus === "ACTIVE" ? "숨기기" : "숨기기 취소"}
         </div>
         <Divider className="my-1" />
         <div
           className="text-body1-sb text-red w-full cursor-pointer py-2 text-center"
-          onClick={handleClose}
+          onClick={handleDeleteClick}
         >
           삭제
         </div>

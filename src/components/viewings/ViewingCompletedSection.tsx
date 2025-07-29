@@ -1,10 +1,11 @@
-import { ViewingCardItem } from "@/types/viewing";
+import { ViewingPropertyItem } from "@/types/viewing";
 
+import ContentWrapper from "../layout/ContentWrapper";
 import ViewingEmptyMessage from "./ViewingEmptyMessage";
 import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingCompletedSectionProps {
-  data: ViewingCardItem[];
+  data: ViewingPropertyItem[];
 }
 
 const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
@@ -13,22 +14,19 @@ const ViewingCompletedSection = ({ data }: ViewingCompletedSectionProps) => {
   }
 
   return (
-    <ul className="mt-4 flex flex-col gap-4">
+    <ContentWrapper className="mt-4 mb-6 flex flex-col gap-4" bottomOffset={62}>
       {data.map(item => {
         return (
           <li key={item.id}>
             <ViewingManageCard
               id={item.id}
-              propertyId={item.propertyId}
+              viewingItem={item}
               status="COMPLETED"
-              roomImageUrl={item.photoUrls[0]}
-              nickname={item.nickname}
-              meetingDay={item.meetingDay}
             />
           </li>
         );
       })}
-    </ul>
+    </ContentWrapper>
   );
 };
 

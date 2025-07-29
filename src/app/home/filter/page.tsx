@@ -40,6 +40,7 @@ const Filter = () => {
     negotiable,
     minWeeklyCost,
     maxWeeklyCost,
+    suburb,
     radiusKm,
     setFilters,
     isHydrated,
@@ -84,6 +85,7 @@ const Filter = () => {
     radiusKm: debouncedRadiusKm,
     metroStopLatitude: tempFilters.selectedMetroStop?.latitude ?? null,
     metroStopLongitude: tempFilters.selectedMetroStop?.longitude ?? null,
+    suburb,
   });
 
   const { data } = usePropertySearch(params);
@@ -238,22 +240,26 @@ const Filter = () => {
       />
       <Divider />
 
-      <AvailableDatePicker
-        availableFrom={tempFilters.availableFrom}
-        availableTo={tempFilters.availableTo}
-        immediate={tempFilters.immediate}
-        negotiable={tempFilters.negotiable}
-        onDateChange={(from, to) => {
-          handleChange("availableFrom", from);
-          handleChange("availableTo", to);
-        }}
-        onImmediateToggle={() =>
-          handleChange("immediate", !tempFilters.immediate)
-        }
-        onNegotiableToggle={() =>
-          handleChange("negotiable", !tempFilters.negotiable)
-        }
-      />
+      <div className="flex flex-col py-4">
+        <span className="text-heading3 p-4 text-gray-900">입주 가능일</span>
+        <AvailableDatePicker
+          availableFrom={tempFilters.availableFrom}
+          availableTo={tempFilters.availableTo}
+          immediate={tempFilters.immediate}
+          negotiable={tempFilters.negotiable}
+          onDateChange={(from, to) => {
+            handleChange("availableFrom", from);
+            handleChange("availableTo", to);
+          }}
+          onImmediateToggle={() =>
+            handleChange("immediate", !tempFilters.immediate)
+          }
+          onNegotiableToggle={() =>
+            handleChange("negotiable", !tempFilters.negotiable)
+          }
+        />
+      </div>
+
       <Divider />
 
       <SubwayStationSelector

@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  cancelAllViewings,
   cancelViewing,
+  fetchViewingGuests,
   getMyViewingDates,
   getMyViewingList,
   getViewingAvailableDates,
@@ -16,16 +18,18 @@ import { ViewingStatus, ViewingViewType } from "@/types/viewing";
 
 interface UseMyViewingListOptions {
   view?: ViewingViewType;
+  status?: ViewingStatus;
   enabled?: boolean;
 }
 
 export const useMyViewingList = <T>({
   view = "DEFAULT",
+  status = undefined,
   enabled = true,
 }: UseMyViewingListOptions = {}) => {
   return useQuery<T>({
-    queryKey: ["myViewingList", view],
-    queryFn: () => getMyViewingList<T>(view),
+    queryKey: ["myViewingList", view, status],
+    queryFn: () => getMyViewingList<T>(view, status),
     enabled,
   });
 };
@@ -73,6 +77,12 @@ export const useCancelViewing = () => {
   });
 };
 
+export const useCancelAllViewings = () => {
+  return useMutation({
+    mutationFn: (propertyId: number) => cancelAllViewings(propertyId),
+  });
+};
+
 export const useCancelReason = (viewingId: number, enabled: boolean = true) => {
   return useQuery({
     queryKey: ["cancelReason", viewingId],
@@ -98,5 +108,17 @@ export const usePutViewingChecklists = () => {
 export const usePutViewingPropertyNotes = () => {
   return useMutation({
     mutationFn: putViewingPropertyNotes,
+  });
+};
+
+export const useViewingGuests = (
+  propertyId: number,
+  status?: ViewingStatus[],
+) => {
+  return useQuery({
+    queryKey: ["viewingGuests", propertyId, status],
+    queryFn: () => fetchViewingGuests(propertyId, status),
+    enabled: !!propertyId,
+    staleTime: 0,
   });
 };

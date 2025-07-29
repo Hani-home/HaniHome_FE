@@ -2,7 +2,7 @@ export const CATEGORY_OPTIONS = {
   1: {
     key: "highlights",
     items: [
-      { optionId: 1, label: "햇빛이 잘들어요" },
+      { optionId: 1, label: "햇빛이 잘 들어요" },
       { optionId: 2, label: "주변 편의시설이 많아요" },
       { optionId: 3, label: "전망이 좋아요" },
       { optionId: 4, label: "주변보다 저렴해요" },
@@ -56,7 +56,7 @@ export const CATEGORY_OPTIONS = {
         { optionId: 35, label: "가능" },
         { optionId: 36, label: "불가능" },
       ],
-      외부인방문: [
+      "외부인 방문": [
         { optionId: 38, label: "가능" },
         { optionId: 39, label: "불가능" },
       ],
