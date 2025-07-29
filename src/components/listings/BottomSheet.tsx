@@ -55,12 +55,12 @@ const BottomSheet = ({
       return;
     }
 
-    closeSheet(() => {
-      deleteProperty(undefined, {
-        onSuccess: () => {
+    deleteProperty(undefined, {
+      onSuccess: () => {
+        closeSheet(() => {
           router.replace("/mypage/listings");
-        },
-      });
+        });
+      },
     });
   };
 
