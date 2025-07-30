@@ -40,7 +40,7 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
         </button>
 
         {/* 이미지 */}
-        <div className="mb-4 flex gap-4">
+        <div className="mb-4 flex justify-center gap-4">
           {data.documentImageUrls.map((url, idx) => (
             <Image
               key={idx}
