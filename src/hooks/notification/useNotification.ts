@@ -68,7 +68,6 @@ export const useNotificationStream = () => {
       es.addEventListener(type, event => {
         try {
           const data = JSON.parse((event as MessageEvent).data);
-          console.log(`📩 ${type} 수신:`, data);
           setNotifications(prev => [data, ...prev]);
 
           queryClient.invalidateQueries({ queryKey: ["myNotifications"] });

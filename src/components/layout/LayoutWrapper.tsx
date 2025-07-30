@@ -40,7 +40,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       {children}
       {!isAdmin && showNavbar && <TabBar />}
 
-      <div className="fixed top-[47.85px] left-1/2 z-[999] flex w-full max-w-[343px] -translate-x-1/2 flex-col items-center gap-2">
+      <div className="fixed top-[47.85px] left-1/2 z-[999] flex w-full -translate-x-1/2 flex-col items-center gap-2">
         {queue.map(toast => (
           <NotificationToast
             key={toast.id}
