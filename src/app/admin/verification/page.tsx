@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Verification, VerificationDetail } from "../components/types/verification";
-import VerificationDetailModal from "../components/verification/VerificationDetailModal";
+import { Verification, VerificationDetail } from "@/types/admin/verification";
+import VerificationDetailModal from "@/components/admin/VerificationDetailModal";
 
 
 
@@ -13,7 +13,7 @@ const mockData: VerificationDetail[] = [
     status: "PENDING",
     requestedAt: "2025-07-18T13:59:28.276Z",
     memberId: 123,
-    documentImageUrls: ["/sample-id.jpg"], // 예시 이미지
+    documentImageUrls: ["/sample-id.jpg", "/sample-id2.jpg"], // 예시 이미지
   },
   {
     id: 1,
