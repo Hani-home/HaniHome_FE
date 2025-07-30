@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 
 interface NotificationToastProps {
-  message: string;
-  subMessage?: string;
+  title: string;
+  content?: string;
   onClose: () => void;
 }
 
 const NotificationToast = ({
-  message,
-  subMessage,
+  title,
+  content,
   onClose,
 }: NotificationToastProps) => {
   useEffect(() => {
@@ -18,9 +18,9 @@ const NotificationToast = ({
 
   return (
     <div className="border-mint bg-mint-light shadow-fab rounded-lg border p-4">
-      <div className="text-body1-sb text-mint-contrast">{message}</div>
-      {subMessage && (
-        <div className="text-cap1-med mt-1 text-gray-600">{subMessage}</div>
+      <div className="text-body1-sb text-mint-contrast">{title}</div>
+      {content && (
+        <div className="text-cap1-med mt-1 text-gray-600">{content}</div>
       )}
     </div>
   );

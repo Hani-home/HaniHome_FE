@@ -57,7 +57,8 @@ export const useNotificationStream = () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/notifications/stream`,
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          // Authorization: `Bearer ${accessToken}`,
+          Accept: "text/event-stream",
         },
         withCredentials: true,
       },
@@ -70,7 +71,6 @@ export const useNotificationStream = () => {
           console.log(`📩 ${type} 수신:`, data);
           setNotifications(prev => [data, ...prev]);
 
-          // ✅ 쿼리 무효화해서 최신 알림 refetch 트리거
           queryClient.invalidateQueries({ queryKey: ["myNotifications"] });
           queryClient.invalidateQueries({
             queryKey: ["unreadNotificationCount"],

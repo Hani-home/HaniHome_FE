@@ -2,8 +2,8 @@ import { useState } from "react";
 
 type Toast = {
   id: string;
-  message: string;
-  subMessage?: string;
+  title: string;
+  content?: string;
 };
 
 export const useToastQueue = () => {

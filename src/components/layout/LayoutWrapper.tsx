@@ -24,8 +24,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
     const latest = notifications[0];
 
     addToast({
-      message: latest.message || "새 알림이 도착했어요!",
-      subMessage: latest.type,
+      title: latest.title || "새 알림이 도착했어요!",
+      content: latest.content,
     });
   }, [notifications]);
 
@@ -44,8 +44,8 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
         {queue.map(toast => (
           <NotificationToast
             key={toast.id}
-            message={toast.message}
-            subMessage={toast.subMessage}
+            title={toast.title}
+            content={toast.content}
             onClose={() => removeToast(toast.id)}
           />
         ))}
