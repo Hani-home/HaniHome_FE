@@ -57,7 +57,7 @@ export const useNotificationStream = () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/notifications/stream`,
       {
         headers: {
-          // Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
           Accept: "text/event-stream",
         },
         withCredentials: true,
