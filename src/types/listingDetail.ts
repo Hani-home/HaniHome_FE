@@ -70,7 +70,6 @@ export interface InternalDetailsBase {
   totalArea: number;
   totalFloors: number;
   propertyFloor: number;
-  isSquareMeter: boolean;
 }
 
 // --- 공통 베이스 ---

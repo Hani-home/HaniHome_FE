@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 
+import { fromSquareMeter, toSquareMeter } from "@/utils/areaConverter";
+
 import CheckIcon from "@/components/common/CheckIcon";
 
 import {
-  InternalDetailsBase,
   RentInternalDetails,
   ShareInternalDetails,
 } from "@/types/listingDetail";
@@ -28,11 +29,10 @@ const InternalDetailsContent = <
   listingType,
   onChange,
 }: InternalDetailsContentProps<T>) => {
-
   const [withPropertyOwner, setWithPropertyOwner] = useState(false);
   const [yardIncluded, setYardIncluded] = useState(false);
   const [verandaIncluded, setVerandaIncluded] = useState(false);
-  const [isSquareMeter, setIsSquareMeter] = useState(false);
+  const [isSquareMeter, setIsSquareMeter] = useState(true); // true: m² (default), false: pyeong
 
   useEffect(() => {
     setWithPropertyOwner(
@@ -40,27 +40,48 @@ const InternalDetailsContent = <
     );
     setYardIncluded((value as RentInternalDetails).yardIncluded ?? false);
     setVerandaIncluded((value as RentInternalDetails).verandaIncluded ?? false);
-    setIsSquareMeter((value as InternalDetailsBase).isSquareMeter ?? false);
   }, [value]);
 
-  // Handle numeric input changes
+  const handleIsSquareMeterToggle = () => {
+    const newIsSquareMeter = !isSquareMeter;
+    setIsSquareMeter(newIsSquareMeter);
+
+    areaKeys.forEach(key => {
+      const current = value[key];
+      if (typeof current !== "number") return;
+
+      // If switching to m², assume current is in pyeong and convert to m²
+      // If switching to pyeong, assume current is in m² and convert to pyeong
+      const converted = newIsSquareMeter
+        ? toSquareMeter(current) // pyeong → m²
+        : fromSquareMeter(current); // m² → pyeong
+
+      onChange(key, +converted.toFixed(2) as T[typeof key]);
+    });
+  };
+
   const handleNumericInputChange = <K extends keyof T>(
     field: K,
     newValue: string,
   ) => {
-    // Only allow numeric fields to be updated with numbers
-    if (
-      field === "internalArea" ||
-      field === "totalArea" ||
-      field === "totalFloors" ||
-      field === "propertyFloor" ||
-      field === "numberOfRoom" ||
-      field === "numberOfBath" ||
-      field === "totalResidents" ||
-      field === "totalBathUser"
-    ) {
-      const numericValue = newValue === "" ? "" : +newValue;
-      onChange(field, numericValue as T[K]);
+    // Allow partial input (e.g., "2" while typing "20")
+    if (newValue === "" || isNaN(+newValue)) {
+      if (field === "internalArea" || field === "totalArea") {
+        onChange(field, "" as T[K]);
+      } else {
+        onChange(field, "" as T[K]);
+      }
+      return;
+    }
+
+    const numeric = +newValue;
+
+    if (field === "internalArea" || field === "totalArea") {
+      // Store in m²: if input is in pyeong, convert to m²; if m², use as is
+      const storedValue = isSquareMeter ? numeric : toSquareMeter(numeric);
+      onChange(field, storedValue as T[K]); // Store raw numeric value
+    } else {
+      onChange(field, numeric as T[K]);
     }
   };
 
@@ -85,14 +106,15 @@ const InternalDetailsContent = <
     onChange("withPropertyOwner" as keyof T, newChecked as T[keyof T]);
   };
 
-  const handleIsSquareMeterToggle = () => {
-    const newChecked = !isSquareMeter;
-    setIsSquareMeter(newChecked);
-    onChange("isSquareMeter" as keyof T, newChecked as T[keyof T]);
+  const getDisplayValue = (rawValue: number | undefined | "") => {
+    if (rawValue === undefined || rawValue === "" || rawValue === 0) return "";
+    return isSquareMeter
+      ? rawValue.toString()
+      : fromSquareMeter(rawValue).toString();
   };
 
-  const inputUnitText = isSquareMeter ? "평" : "㎡";
-  const buttonUnitText = isSquareMeter ? "㎡" : "평";
+  const inputUnitText = isSquareMeter ? "㎡" : "평";
+  const buttonUnitText = isSquareMeter ? "평" : "㎡";
 
   const areaKeys = ["internalArea", "totalArea"] as const;
   const rentOtherKeys = ["numberOfRoom", "numberOfBath"] as const;
@@ -132,54 +154,47 @@ const InternalDetailsContent = <
           >
             <ChangeIcon className="text-mint" />
             <div className="text-lab1-sb text-mint">
-              {inputUnitText} 단위로 입력
+              {buttonUnitText} 단위로 입력
             </div>
           </button>
         </div>
 
         {/* 면적 입력 */}
         <div className="flex justify-between">
-          {areaKeys.map(key => (
-            <div key={key} className="flex h-[73px] flex-col justify-between">
-              <div className="text-body2-med text-gray-600">
-                {labelMap[key]}
-              </div>
-              <div className="relative w-[167px]">
-                {(() => {
-                  const inputValue = details[key as keyof typeof details];
-                  const safeValue =
-                    typeof inputValue === "boolean"
-                      ? ""
-                      : inputValue === 0
-                        ? ""
-                        : inputValue || "";
+          {areaKeys.map(key => {
+            const rawValue = details[key];
+            const displayValue = getDisplayValue(rawValue);
 
-                  return (
-                    <input
-                      type="text"
-                      className={`text-body1-med h-11 w-full rounded-[4px] border px-4 py-3 pr-12 focus:outline-none ${
-                        inputValue
-                          ? "border-gray-600 text-gray-900"
-                          : "border-gray-400 text-gray-500"
-                      }`}
-                      placeholder="입력해주세요"
-                      value={safeValue}
-                      onChange={e =>
-                        handleNumericInputChange(key as keyof T, e.target.value)
-                      }
-                    />
-                  );
-                })()}
-                <span
-                  className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${
-                    details[key] ? "text-gray-900" : "text-gray-500"
-                  }`}
-                >
-                  {buttonUnitText}
-                </span>
+            return (
+              <div key={key} className="flex h-[73px] flex-col justify-between">
+                <div className="text-body2-med text-gray-600">
+                  {labelMap[key]}
+                </div>
+                <div className="relative w-[167px]">
+                  <input
+                    type="text"
+                    className={`text-body1-med h-11 w-full rounded-[4px] border px-4 py-3 pr-12 focus:outline-none ${
+                      rawValue
+                        ? "border-gray-600 text-gray-900"
+                        : "border-gray-400 text-gray-500"
+                    }`}
+                    placeholder="입력해주세요"
+                    value={displayValue}
+                    onChange={e =>
+                      handleNumericInputChange(key as keyof T, e.target.value)
+                    }
+                  />
+                  <span
+                    className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${
+                      rawValue ? "text-gray-900" : "text-gray-500"
+                    }`}
+                  >
+                    {inputUnitText}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
