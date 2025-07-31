@@ -122,7 +122,12 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       return (meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable;
     }
     if (item.id === "timeSlots") {
-      return timeSlots.length > 0;
+      return (
+        timeSlots.length > 0 &&
+        timeSlots.some(
+          slot => !(slot.timeFrom === "00:00" && slot.timeTo === "00:00"),
+        )
+      );
     }
     return !!selectedAnswers[item.id];
   });

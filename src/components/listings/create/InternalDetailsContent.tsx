@@ -113,7 +113,6 @@ const InternalDetailsContent = <
   };
   const toggleAreaInfo = () => {
     setIsOpenAreaInfo(prev => !prev);
-    console.log("열렸따");
   };
 
   const areaInfoRef = useRef<HTMLDivElement>(null);
