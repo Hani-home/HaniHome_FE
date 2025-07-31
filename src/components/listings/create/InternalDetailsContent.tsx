@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { fromSquareMeter, toSquareMeter } from "@/utils/areaConverter";
 
@@ -13,6 +13,8 @@ import {
 
 import ChangeIcon from "@/public/svgs/listings/change-icon.svg";
 import QuestionIcon from "@/public/svgs/listings/question-mark-icon.svg";
+
+import AreaInfo from "./AreaInfo";
 
 interface InternalDetailsContentProps<
   T extends RentInternalDetails | ShareInternalDetails,
@@ -32,7 +34,8 @@ const InternalDetailsContent = <
   const [withPropertyOwner, setWithPropertyOwner] = useState(false);
   const [yardIncluded, setYardIncluded] = useState(false);
   const [verandaIncluded, setVerandaIncluded] = useState(false);
-  const [isSquareMeter, setIsSquareMeter] = useState(true); // true: m² (default), false: pyeong
+  const [isSquareMeter, setIsSquareMeter] = useState(true);
+  const [isOpenAreaInfo, setIsOpenAreaInfo] = useState(false);
 
   useEffect(() => {
     setWithPropertyOwner(
@@ -50,11 +53,9 @@ const InternalDetailsContent = <
       const current = value[key];
       if (typeof current !== "number") return;
 
-      // If switching to m², assume current is in pyeong and convert to m²
-      // If switching to pyeong, assume current is in m² and convert to pyeong
       const converted = newIsSquareMeter
-        ? toSquareMeter(current) // pyeong → m²
-        : fromSquareMeter(current); // m² → pyeong
+        ? toSquareMeter(current) // 평 → m²
+        : fromSquareMeter(current); // m² → 평
 
       onChange(key, +converted.toFixed(2) as T[typeof key]);
     });
@@ -64,7 +65,6 @@ const InternalDetailsContent = <
     field: K,
     newValue: string,
   ) => {
-    // Allow partial input (e.g., "2" while typing "20")
     if (newValue === "" || isNaN(+newValue)) {
       if (field === "internalArea" || field === "totalArea") {
         onChange(field, "" as T[K]);
@@ -77,9 +77,8 @@ const InternalDetailsContent = <
     const numeric = +newValue;
 
     if (field === "internalArea" || field === "totalArea") {
-      // Store in m²: if input is in pyeong, convert to m²; if m², use as is
       const storedValue = isSquareMeter ? numeric : toSquareMeter(numeric);
-      onChange(field, storedValue as T[K]); // Store raw numeric value
+      onChange(field, storedValue as T[K]);
     } else {
       onChange(field, numeric as T[K]);
     }
@@ -112,6 +111,31 @@ const InternalDetailsContent = <
       ? rawValue.toString()
       : fromSquareMeter(rawValue).toString();
   };
+  const toggleAreaInfo = () => {
+    setIsOpenAreaInfo(prev => !prev);
+    console.log("열렸따");
+  };
+
+  const areaInfoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        areaInfoRef.current &&
+        !areaInfoRef.current.contains(event.target as Node)
+      ) {
+        setIsOpenAreaInfo(false);
+      }
+    };
+
+    if (isOpenAreaInfo) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpenAreaInfo]);
 
   const inputUnitText = isSquareMeter ? "㎡" : "평";
   const buttonUnitText = isSquareMeter ? "평" : "㎡";
@@ -141,11 +165,22 @@ const InternalDetailsContent = <
 
   return (
     <div className="max-w-[375px]">
+      <div className="relative">
+        {isOpenAreaInfo && (
+          <div
+            className="absolute top-[23px] left-[74px] z-50"
+            ref={areaInfoRef}
+          >
+            <AreaInfo />
+          </div>
+        )}
+      </div>
       <div className="flex flex-col gap-4 px-4 py-3">
         <div className="flex justify-between">
           <div className="flex items-center gap-1">
             <div className="text-body1-sb text-gray-800">방 면적</div>
-            <QuestionIcon className="text-gray-800" />
+
+            <QuestionIcon className="cursor-pointer" onClick={toggleAreaInfo} />
           </div>
           <button
             type="button"
@@ -158,7 +193,6 @@ const InternalDetailsContent = <
             </div>
           </button>
         </div>
-
         {/* 면적 입력 */}
         <div className="flex justify-between">
           {areaKeys.map(key => {
