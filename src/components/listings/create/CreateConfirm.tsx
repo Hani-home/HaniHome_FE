@@ -8,6 +8,8 @@ import TitleSection from "@/components/listings/detailShow/TitleSection";
 
 import { propertyInfo } from "@/constants/mock/listing-detail-dummies";
 
+import { PropertyDetail } from "@/types/listingDetail";
+
 interface CreateConfirmProps {
   onNext: () => void;
   onPrev: () => void;
@@ -15,8 +17,14 @@ interface CreateConfirmProps {
 const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
   const {
     listingType,
-    addressData,
-    photoData,
+    region,
+    photoUrls,
+    rentPropertyType,
+    sharePropertyType,
+    rentCapacityPeople,
+    shareCapacityPeople,
+    rentInternalDetails,
+    shareInternalDetails,
     costDetails,
     optionItemIds,
     timeSlots,
@@ -24,20 +32,45 @@ const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
     meetingDateTo,
     viewingAlwaysAvailable,
     description,
+    genderPreference,
+    lgbtAvailable,
+    moveInInfo,
+    livingConditions,
   } = useListingStore();
   const propertyContent = propertyInfo.find(item => item.kind === listingType);
-  console.log("입력 정보 확인", {
-    listingType,
-    photoData,
-    description,
-    addressData,
-    costDetails,
+
+  const listingData = {
+    kind: listingType,
+    region,
+    photoUrls,
     optionItemIds,
+    costDetails,
+    description,
     timeSlots,
     meetingDateFrom,
     meetingDateTo,
     viewingAlwaysAvailable,
-  });
+    genderPreference,
+    lgbtAvailable,
+    moveInInfo,
+    livingConditions,
+    ...(listingType === "RENT"
+      ? {
+          jsonDiscriminator: "RENT",
+          rentPropertySubType: rentPropertyType,
+          capacityRent: rentCapacityPeople,
+          internalDetails: rentInternalDetails,
+        }
+      : {
+          jsonDiscriminator: "SHARE",
+          sharePropertySubType: sharePropertyType,
+          capacityShare: shareCapacityPeople,
+          internalDetails: shareInternalDetails,
+        }),
+    memberId: 1,
+    thumbnailUrl: photoUrls?.[0] || null,
+  } as PropertyDetail;
+
   return (
     <div className="max-w-[375px] pb-[70px]">
       <BackHeader rightIcon="close" />
@@ -45,8 +78,8 @@ const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
         title="입력한 정보를 확인해주세요"
         label="수정을 원하는 섹션은 클릭해주세요"
       />
-      <ImageSlider images={photoData} />
-      {propertyContent && <DropDownSection listingData={propertyContent} />}
+      <ImageSlider images={photoUrls} />
+      {propertyContent && <DropDownSection listingData={listingData} />}
       <BottomActionBar
         buttons={[
           {

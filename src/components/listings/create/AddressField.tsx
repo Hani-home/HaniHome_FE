@@ -17,7 +17,7 @@ interface AddressFieldProps {
 }
 
 const AddressField = ({ onNext }: AddressFieldProps) => {
-  const { addressData, setAddressData } = useListingStore();
+  const { region: addressData, setRegion: setAddressData } = useListingStore();
   const [isFocused, setIsFocused] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [unit, setUnit] = useState(addressData.unit);

@@ -20,7 +20,7 @@ interface PhotoFieldProps {
 const MAX_IMAGE_COUNT = 10;
 
 const PhotoField = ({ onNext }: PhotoFieldProps) => {
-  const { setPhotoData } = useListingStore();
+  const { setPhotoUrls: setPhotoData } = useListingStore();
   const [isOpen, setIsOpen] = useState(false);
   const [, setUploadedFiles] = useState<File[]>([]);
   const [showErrorModal, setShowErrorModal] = useState(false);

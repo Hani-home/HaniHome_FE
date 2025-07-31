@@ -19,11 +19,11 @@ interface ListingState {
   listingType: "SHARE" | "RENT" | null;
   setListingType: (type: "SHARE" | "RENT" | null) => void;
 
-  addressData: PropertyRegion;
-  setAddressData: (data: PropertyRegion) => void;
+  region: PropertyRegion;
+  setRegion: (data: PropertyRegion) => void;
 
-  photoData: string[];
-  setPhotoData: (data: string[]) => void;
+  photoUrls: string[];
+  setPhotoUrls: (data: string[]) => void;
 
   rentPropertyType: RentPropertySubType | null;
   setRentPropertyType: (data: RentPropertySubType | null) => void;
@@ -83,7 +83,7 @@ export const useListingStore = create<ListingState>(set => ({
   listingType: null,
   setListingType: type => set({ listingType: type }),
 
-  addressData: {
+  region: {
     country: "",
     postCode: "",
     state: "",
@@ -95,10 +95,10 @@ export const useListingStore = create<ListingState>(set => ({
     longitude: 0,
     latitude: 0,
   },
-  setAddressData: data => set({ addressData: data }),
+  setRegion: data => set({ region: data }),
 
-  photoData: [],
-  setPhotoData: data => set({ photoData: data }),
+  photoUrls: [],
+  setPhotoUrls: data => set({ photoUrls: data }),
 
   costDetails: {
     weeklyCost: 0,

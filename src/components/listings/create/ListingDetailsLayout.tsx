@@ -96,7 +96,7 @@ const ListingDetails = ({ onNext}: ListingDetailsProps) => {
 
   const getAnswerText = (questionId: string): string => {
     const answer = selectedAnswers[questionId as ListingDetailsOption["type"]];
-    console.log("전달된응답값:", answer);
+
     if (questionId === "internalDetails") {
       const val = answer as Record<string, string> | undefined;
       if (!val) return "";

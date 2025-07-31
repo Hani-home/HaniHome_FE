@@ -2,8 +2,6 @@ export type PropertySuperType = "RENT" | "SHARE";
 
 export type GenderPreference = "ANY" | "MALE_ONLY" | "FEMALE_ONLY" | "COUPLE";
 
-export type ParkingOption = "NONE" | "STREET_PARKING" | "RESERVED_SPACE";
-
 export type SharePropertySubType =
   | "SECOND_ROOM"
   | "MASTER_ROOM"
@@ -25,13 +23,6 @@ export interface Furniture {
   [subCategory: string]: string[];
 }
 
-export interface AdditionalInfo {
-  smokingAllowed: boolean | null;
-  petsAllowed: boolean | null;
-  visitorsAllowed: boolean | null;
-  parking: string[]; // 주차 옵션 목록
-  kitchenAccess: boolean | null;
-}
 // --- 공통 타입 ---
 export interface PropertyRegion {
   country: string;
@@ -96,7 +87,6 @@ interface PropertyBase {
   optionItemIds: number[];
   livingConditions: LivingConditions;
   moveInInfo: MoveInInfo;
-  parkingOption: ParkingOption;
   meetingDateFrom: string;
   meetingDateTo: string;
   timeSlots: TimeSlot[];
