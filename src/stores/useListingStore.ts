@@ -1,11 +1,17 @@
 import { create } from "zustand";
 
 import {
+  CapacityRent,
+  CapacityShare,
   CostDetails,
   GenderPreference,
   LivingConditions,
   MoveInInfo,
   PropertyRegion,
+  RentInternalDetails,
+  RentPropertySubType,
+  ShareInternalDetails,
+  SharePropertySubType,
   TimeSlot,
 } from "@/types/listingDetail";
 
@@ -18,6 +24,24 @@ interface ListingState {
 
   photoData: string[];
   setPhotoData: (data: string[]) => void;
+
+  rentPropertyType: RentPropertySubType | null;
+  setRentPropertyType: (data: RentPropertySubType | null) => void;
+
+  sharePropertyType: SharePropertySubType | null;
+  setSharePropertyType: (data: SharePropertySubType | null) => void;
+
+  rentCapacityPeople: CapacityRent | null;
+  setRentCapacityPeople: (data: CapacityRent | null) => void;
+
+  shareCapacityPeople: CapacityShare | null;
+  setShareCapacityPeople: (data: CapacityShare | null) => void;
+
+  rentInternalDetails: RentInternalDetails | null;
+  setRentInternalDetails: (data: RentInternalDetails | null) => void;
+
+  shareInternalDetails: ShareInternalDetails | null;
+  setShareInternalDetails: (data: ShareInternalDetails | null) => void;
 
   costDetails: CostDetails;
   setCostDetails: <K extends keyof CostDetails>(
@@ -131,4 +155,41 @@ export const useListingStore = create<ListingState>(set => ({
 
   livingConditions: null,
   setLivingConditions: value => set({ livingConditions: value }),
+
+  rentPropertyType: null,
+  setRentPropertyType: data => set({ rentPropertyType: data }),
+
+  sharePropertyType: null,
+  setSharePropertyType: data => set({ sharePropertyType: data }),
+
+  rentCapacityPeople: null,
+  setRentCapacityPeople: data => set({ rentCapacityPeople: data }),
+
+  shareCapacityPeople: null,
+  setShareCapacityPeople: data => set({ shareCapacityPeople: data }),
+
+  rentInternalDetails: {
+    internalArea: 0,
+    totalArea: 0,
+    totalFloors: 0,
+    propertyFloor: 0,
+    isSquareMeter: false,
+    numberOfRoom: 0,
+    numberOfBath: 0,
+    yardIncluded: false,
+    verandaIncluded: false,
+  },
+  setRentInternalDetails: data => set({ rentInternalDetails: data }),
+
+  shareInternalDetails: {
+    internalArea: 0,
+    totalArea: 0,
+    totalFloors: 0,
+    propertyFloor: 0,
+    isSquareMeter: false,
+    totalResidents: 0,
+    totalBathUser: 0,
+    withPropertyOwner: false,
+  },
+  setShareInternalDetails: data => set({ shareInternalDetails: data }),
 }));

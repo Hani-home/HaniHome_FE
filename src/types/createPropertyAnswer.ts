@@ -1,8 +1,14 @@
 import {
+  CapacityRent,
+  CapacityShare,
   CostDetails,
   GenderPreference,
   LivingConditions,
   MoveInInfo,
+  RentInternalDetails,
+  RentPropertySubType,
+  ShareInternalDetails,
+  SharePropertySubType,
   TimeSlot,
 } from "./listingDetail";
 
@@ -39,3 +45,14 @@ export type ContractTermsOption =
       value: TimeSlot[];
     }
   | { type: "optionItemIds"; value: number[] };
+
+export type ListingDetailsOption =
+  | { type: "propertyType"; value: RentPropertySubType | SharePropertySubType }
+  | { type: "capacityPeople"; value: CapacityRent | CapacityShare }
+  | { type: "highlights"; value: number[] }
+  | { type: "furniture"; value: number[] }
+  | { type: "isBrokered"; value: number }
+  | {
+      type: "internalDetails";
+      value: ShareInternalDetails | RentInternalDetails;
+    };

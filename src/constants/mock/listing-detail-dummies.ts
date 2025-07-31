@@ -59,6 +59,8 @@ export const propertyInfo: PropertyDetail[] = [
       totalBathUser: 2,
       totalFloors: 7,
       propertyFloor: 4,
+      withPropertyOwner: false,
+      isSquareMeter: true,
     },
     capacityShare: "TRIPLE",
   },
@@ -91,7 +93,8 @@ export const propertyInfo: PropertyDetail[] = [
       billIncluded: false,
     },
     optionItemIds: [
-      1, 2, 3, 12, 13, 14, 25, 26, 33, 35, 38, 41, 42, 45, 47, 48, 49, 51, 53, 55, 94, 95,
+      1, 2, 3, 12, 13, 14, 25, 26, 33, 35, 38, 41, 42, 45, 47, 48, 49, 51, 53,
+      55, 94, 95,
     ],
     livingConditions: {
       noticePeriodWeeks: 2,
@@ -122,6 +125,9 @@ export const propertyInfo: PropertyDetail[] = [
       numberOfBath: 2,
       totalFloors: 10,
       propertyFloor: 5,
+      yardIncluded: true,
+      verandaIncluded: true,
+      isSquareMeter: false,
     },
     capacityRent: "TWO",
   },

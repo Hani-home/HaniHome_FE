@@ -17,7 +17,7 @@ import ContractTerms from "@/components/listings/create/ContractTermsLayout";
 const steps = [
   "ListingType",
   // "AddressPhoto",
-  // "ListingDetails",
+  "ListingDetails",
   "MovingConditions",
   "ContractTerms",
   "ListingDescription",

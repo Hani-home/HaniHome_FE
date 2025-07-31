@@ -19,14 +19,17 @@ const GenderPreferenceContent = ({
   onSelect,
   onToggleLGBT,
 }: GenderPreferenceContentProps) => {
-  const OPTIONS: GenderPreference[] = ["ANY", "MALE_ONLY", "FEMALE_ONLY", "COUPLE"];
-  const labels = OPTIONS.map(key => GENDER_PREFERENCE_MAP[key]);
+  const OPTIONS = (
+    Object.keys(GENDER_PREFERENCE_MAP) as GenderPreference[]
+  ).map(key => ({
+    value: key,
+    label: GENDER_PREFERENCE_MAP[key],
+  }));
 
   return (
     <div className="flex flex-col gap-2">
       <DropdownOptionsList
-        optionKeys={OPTIONS}
-        options={labels}
+        options={OPTIONS}
         value={value}
         onSelect={onSelect}
       />

@@ -7,37 +7,53 @@ import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 
+import {
+  CAPACITY_RENT_MAP,
+  CAPACITY_SHARE_MAP,
+} from "@/constants/capacity-options";
+import { RENT_TYPE_MAP, SHARE_TYPE_MAP } from "@/constants/housing-options";
+import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 import { QUESTION_MAP } from "@/constants/question-map";
+
+import { ListingDetailsOption } from "@/types/createPropertyAnswer";
 
 import DropdownSelector from "./DropdownSelector";
 import FunnelStepMenu from "./FunnelStepMenu";
-import ListingDetailDropdownContent from "./ListingDetailsDropdownContent";
+import ListingDetailsDropdownContent from "./ListingDetailsDropdownContent";
 
 interface ListingDetailsProps {
   onNext: () => void;
   onPrev: () => void;
 }
 
-interface SelectedAnswers {
-  [key: string]: string | Record<string, string> | string[];
-}
-
-const ListingDetails = ({ onNext }: ListingDetailsProps) => {
+const ListingDetails = ({ onNext}: ListingDetailsProps) => {
   const { listingType } = useListingStore();
 
-  const section = "ListingDetails"
+  const section = "ListingDetails";
   const questions = listingType ? QUESTION_MAP[listingType][section] : [];
 
-  const [selectedAnswers, setSelectedAnswers] = useState<SelectedAnswers>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Partial<Record<ListingDetailsOption["type"], ListingDetailsOption["value"]>>
+  >({});
 
+  // openIndices 관리 및 자동 닫기/다음 열기 로직
   const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
     totalCount: questions.length,
     shouldAutoClose: index => {
-      const id = questions[index].id;
+      const id = questions[index].id as ListingDetailsOption["type"];
       const answer = selectedAnswers[id];
 
       if (id === "highlights" && Array.isArray(answer)) {
-        return answer.length >= 5;
+        const highlightOptionIds =
+          CATEGORY_OPTIONS[1]?.items?.map(item => item.optionId) ?? [];
+
+        const selectedHighlightCount = (answer as number[]).filter(id =>
+          highlightOptionIds.includes(
+            id as (typeof highlightOptionIds)[number],
+          ),
+        ).length;
+
+        return selectedHighlightCount >= 5;
       }
 
       if (
@@ -53,11 +69,10 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
           "Internal Area",
         ];
         return requiredKeys.every(key => {
-          const val = answer[key];
+          const val = (answer as unknown as Record<string, string>)[key];
           return typeof val === "string" && val.trim().length > 0;
         });
       }
-
       return !!answer;
     },
   });
@@ -65,7 +80,10 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   useEffect(() => {
     openIndices.forEach(idx => {
       if (autoAdvance && idx !== -1) {
-        if (questions[idx] && selectedAnswers[questions[idx].id]) {
+        if (
+          questions[idx] &&
+          selectedAnswers[questions[idx].id as ListingDetailsOption["type"]]
+        ) {
           autoAdvance(idx);
         }
       }
@@ -76,90 +94,158 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     return <div>매물 타입이 선택되지 않았습니다.</div>;
   }
 
-  const handleSelectAnswer = (
-    questionId: string,
-    value: string | Record<string, string> | string[],
-  ) => {
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [questionId]: value,
-    }));
-  };
-
-  const formatInternalDetailsAnswerNoValue = (
-    internalDetails?: Record<string, string>,
-  ) => {
-    if (!internalDetails) return "";
-
-    const areaLabels = ["Internal Area", "Total Area (선택)"];
-    const areaTexts = areaLabels
-      .filter(key => internalDetails[key])
-      .map(() => "면적");
-
-    const resident = internalDetails["총 거주인"] ? "거주인" : "";
-    const shareBathroom = internalDetails["욕실 쉐어자 수"] ? "욕실 쉐어" : "";
-
-    const rooms = internalDetails["방 개수"] ? "방 개수" : "";
-    const bathrooms = internalDetails["욕실 개수"] ? "욕실 개수" : "";
-
-    const floorLabels = ["건물 전체 층 (선택)", "해당 층 (선택)"];
-    const floorTexts = floorLabels
-      .filter(key => internalDetails[key])
-      .map(() => "층수");
-
-    const parts = [
-      areaTexts.length > 0 ? "면적" : null,
-      resident || null,
-      shareBathroom || null,
-      rooms || null,
-      bathrooms || null,
-      floorTexts.length > 0 ? "층수" : null,
-    ].filter(Boolean);
-
-    const uniqueParts = Array.from(new Set(parts));
-
-    return uniqueParts.join(", ");
-  };
-
   const getAnswerText = (questionId: string): string => {
+    const answer = selectedAnswers[questionId as ListingDetailsOption["type"]];
+    console.log("전달된응답값:", answer);
     if (questionId === "internalDetails") {
-      return formatInternalDetailsAnswerNoValue(
-        selectedAnswers.internalDetails as Record<string, string>,
-      );
+      const val = answer as Record<string, string> | undefined;
+      if (!val) return "";
+
+      const areaLabels = ["internalArea", "totalArea"];
+      const areaTexts = areaLabels.filter(key => val[key]).map(() => "면적");
+
+      const resident = val["totalResidents"] ? "거주인" : "";
+      const shareBathroom = val["totalBathUser"] ? "욕실 쉐어" : "";
+
+      const rooms = val["numberOfRoom"] ? "방 개수" : "";
+      const bathrooms = val["numberOfBath"] ? "욕실 개수" : "";
+
+      const floorLabels = ["totalFloors", "propertyFloor"];
+      const floorTexts = floorLabels.filter(key => val[key]).map(() => "층수");
+
+      const parts = [
+        areaTexts.length > 0 ? "면적" : null,
+        resident || null,
+        shareBathroom || null,
+        rooms || null,
+        bathrooms || null,
+        floorTexts.length > 0 ? "층수" : null,
+      ].filter(Boolean);
+
+      const uniqueParts = Array.from(new Set(parts));
+
+      return uniqueParts.join(", ");
     }
+    switch (questionId) {
+      case "internalDetails": {
+        const val = answer as Record<string, string> | undefined;
+        if (!val) return "";
 
-    if (questionId === "highlights") {
-      const highlights = selectedAnswers.highlights as string[] | undefined;
-      if (!highlights || highlights.length === 0) return "";
-      return highlights[0] + (highlights.length > 1 ? "···" : "");
-    }
-    if (questionId === "furniture") {
-      const selected = selectedAnswers.furniture as string[] | undefined;
-      if (!selected || selected.length === 0 || !listingType) return "";
+        const areaLabels = ["internalArea", "totalArea"];
+        const areaTexts = areaLabels.filter(key => val[key]).map(() => "면적");
 
-      const furnitureOptions = QUESTION_MAP[listingType].ListingDetails.find(
-        q => q.id === "furniture",
-      )?.options;
+        const resident = val["totalResidents"] ? "거주인" : "";
+        const shareBathroom = val["totalBathUser"] ? "욕실 쉐어" : "";
 
-      if (
-        !furnitureOptions ||
-        typeof furnitureOptions !== "object" ||
-        Array.isArray(furnitureOptions)
-      ) {
+        const rooms = val["numberOfRoom"] ? "방 개수" : "";
+        const bathrooms = val["numberOfBath"] ? "욕실 개수" : "";
+
+        const floorLabels = ["totalFloors", "propertyFloor"];
+        const floorTexts = floorLabels
+          .filter(key => val[key])
+          .map(() => "층수");
+
+        const parts = [
+          areaTexts.length > 0 ? "면적" : null,
+          resident || null,
+          shareBathroom || null,
+          rooms || null,
+          bathrooms || null,
+          floorTexts.length > 0 ? "층수" : null,
+        ].filter(Boolean);
+
+        const uniqueParts = Array.from(new Set(parts));
+
+        return uniqueParts.join(", ");
+      }
+
+      case "isBrokered": {
+        const isBrokered = answer;
+        return isBrokered === 54 ? "개인임대" : "부동산 중개";
+      }
+
+      case "highlights": {
+        const highlights = answer as number[] | undefined;
+        if (!highlights || highlights.length === 0) return "";
+
+        const highlightOptions = CATEGORY_OPTIONS[1]?.items;
+        const filteredHighlights = highlights.filter(h =>
+          highlightOptions.some(item => item.optionId === h),
+        );
+
+        if (filteredHighlights.length === 0) return "";
+
+        const firstSelected = highlightOptions.find(
+          item => item.optionId === filteredHighlights[0],
+        );
+
+        return (
+          firstSelected?.label + (filteredHighlights.length > 1 ? "···" : "")
+        );
+      }
+
+      case "furniture": {
+        const furniture = answer as number[] | undefined;
+        if (!furniture || furniture.length === 0) return "";
+
+        const furnitureOptions = CATEGORY_OPTIONS[2]?.items;
+
+        if (
+          !furnitureOptions ||
+          typeof furnitureOptions !== "object" ||
+          Array.isArray(furnitureOptions)
+        ) {
+          return "";
+        }
+
+        const categories = Object.entries(furnitureOptions)
+          .filter(([, items]) =>
+            items.some(item => furniture.includes(item.optionId)),
+          )
+          .map(([category]) => category);
+
+        return categories.join(", ");
+      }
+
+      case "propertyType": {
+        if (typeof answer !== "string") return "";
+
+        if (listingType === "RENT") {
+          return RENT_TYPE_MAP[answer as keyof typeof RENT_TYPE_MAP] ?? "";
+        } else if (listingType === "SHARE") {
+          return SHARE_TYPE_MAP[answer as keyof typeof SHARE_TYPE_MAP] ?? "";
+        }
+
         return "";
       }
 
-      const categories = Object.entries(furnitureOptions)
-        .filter(([, items]) => items.some(item => selected.includes(item)))
-        .map(([category]) => category);
+      case "capacityPeople": {
+        if (typeof answer !== "string") return "";
 
-      return categories.join(", ");
+        if (listingType === "RENT") {
+          return (
+            CAPACITY_RENT_MAP[answer as keyof typeof CAPACITY_RENT_MAP] ?? ""
+          );
+        } else if (listingType === "SHARE") {
+          return (
+            CAPACITY_SHARE_MAP[answer as keyof typeof CAPACITY_SHARE_MAP] ?? ""
+          );
+        }
+
+        return "";
+      }
+      default: {
+        if (typeof answer === "string") {
+          return answer;
+        }
+        return "";
+      }
     }
-    return (selectedAnswers[questionId] as string) || "";
   };
 
+  
   const allAnswered = questions.every(q => {
-    const answer = selectedAnswers[q.id];
+    const answer = selectedAnswers[q.id as ListingDetailsOption["type"]];
 
     if (Array.isArray(answer)) {
       return answer.length > 0;
@@ -170,50 +256,54 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     return Boolean(answer);
   });
 
+  const handleSelect = <T extends ListingDetailsOption["type"]>(
+    id: T,
+    value: Extract<ListingDetailsOption, { type: T }>["value"],
+  ) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
   return (
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
       <FunnelStepMenu />
-      {questions.map((question, idx) => {
-        // question.id 별 value 전달 분기 처리
-        let contentValue;
-        if (question.id === "internalDetails") {
-          contentValue = selectedAnswers.internalDetails ?? {};
-        } else if (question.id === "highlights") {
-          contentValue = (selectedAnswers.highlights as string[]) ?? [];
-        } else if (question.id === "furniture") {
-          contentValue = (selectedAnswers.furniture as string[]) ?? [];
-        } else {
-          // 일반 문자열 value
-          contentValue = (selectedAnswers[question.id] as string) ?? "";
-        }
+      {QUESTION_MAP[listingType].ListingDetails.map((item, index) => {
+        const answer = selectedAnswers[item.id as ListingDetailsOption["type"]];
 
         return (
-          <div key={question.id}>
-            <DropdownSelector
-              label={question.label}
-              answer={getAnswerText(question.id)}
-              isOpen={openIndices.includes(idx)}
-              onClick={() => toggleIndex(idx)}
-            >
-              <ListingDetailDropdownContent
-                id={question.id}
-                value={contentValue}
-                onSelect={val => {
-                  handleSelectAnswer(question.id, val);
-                }}
-              />
-            </DropdownSelector>
-          </div>
+          <DropdownSelector
+            key={item.id}
+            label={item.label}
+            answer={getAnswerText(item.id)}
+            isOpen={openIndices.includes(index)}
+            onClick={() => toggleIndex(index)}
+          >
+            <ListingDetailsDropdownContent
+              id={item.id as ListingDetailsOption["type"]}
+              value={
+                answer as Extract<
+                  ListingDetailsOption,
+                  { type: typeof item.id }
+                >["value"]
+              }
+              onSelect={val =>
+                handleSelect(item.id as ListingDetailsOption["type"], val)
+              }
+            />
+          </DropdownSelector>
         );
       })}
+
       <BottomActionBar
         buttons={[
           {
             label: "저장",
             onClick: () => {
-              //Todo: 저장 로직 추가
-              console.log("저장");
+              // 저장 로직 필요시 추가
+              console.log("저장된 옵션들:", selectedAnswers);
             },
             variant: "outline",
           },
@@ -228,4 +318,5 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     </div>
   );
 };
+
 export default ListingDetails;

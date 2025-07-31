@@ -79,6 +79,7 @@ export interface InternalDetailsBase {
   totalArea: number;
   totalFloors: number;
   propertyFloor: number;
+  isSquareMeter: boolean;
 }
 
 // --- 공통 베이스 ---
@@ -107,6 +108,7 @@ interface PropertyBase {
 export interface ShareInternalDetails extends InternalDetailsBase {
   totalResidents: number; //총거주
   totalBathUser: number; //욕실쉐어자수
+  withPropertyOwner: boolean;
 }
 
 export interface SharePropertyDetail extends PropertyBase {
@@ -120,6 +122,8 @@ export interface SharePropertyDetail extends PropertyBase {
 export interface RentInternalDetails extends InternalDetailsBase {
   numberOfRoom: number;
   numberOfBath: number;
+  yardIncluded: boolean;
+  verandaIncluded: boolean;
 }
 
 export interface RentPropertyDetail extends PropertyBase {

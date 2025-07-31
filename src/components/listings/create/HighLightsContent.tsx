@@ -1,53 +1,40 @@
-import { QUESTION_MAP } from "@/constants/question-map";
+import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 
 interface HighLightsContentProps {
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: number[];
+  onChange: (value: number[]) => void;
 }
 
 const HighLightsContent = ({ value, onChange }: HighLightsContentProps) => {
-  const highlightOptions = Array.from(
-    new Set(
-      Object.values(QUESTION_MAP).flatMap(category => {
-        const highlightsItem = category.ListingDetails.find(
-          (item): item is { id: string; label: string; options: string[] } =>
-            item.id === "highlights" &&
-            typeof item.label === "string" &&
-            Array.isArray(item.options),
-        );
-        return highlightsItem ? highlightsItem.options : [];
-      }),
-    ),
-  );
-
-  const handleClick = (option: string) => {
-    if (value.includes(option)) {
-      onChange(value.filter(o => o !== option));
+  const highlightOptions = CATEGORY_OPTIONS[1].items;
+  const handleClick = (optionId: number) => {
+    if (value.includes(optionId)) {
+      onChange(value.filter(id => id !== optionId));
     } else {
       if (value.length < 5) {
-        onChange([...value, option]);
+        onChange([...value, optionId]);
       }
     }
   };
 
   return (
-    <div className="flex flex-col gap-3 py-2 px-4">
+    <div className="flex flex-col gap-3 px-4 py-2">
       <div className="text-lab1-sb text-gray-700">5개 골라주세요</div>
       <div className="flex w-[343px] flex-wrap content-center items-center gap-3 self-stretch">
-        {highlightOptions.map(option => {
-          const isSelected = value.includes(option);
+        {highlightOptions.map(({ optionId, label }) => {
+          const isSelected = value.includes(optionId);
           return (
             <button
-              key={option}
+              key={optionId}
               type="button"
               className={`text-lab1-sb cursor-pointer rounded-[100px] border px-2 py-1 ${
                 isSelected
                   ? "bg-mint-press border-transparent text-white"
                   : "border-gray-500 text-gray-600"
               }`}
-              onClick={() => handleClick(option)}
+              onClick={() => handleClick(optionId)}
             >
-              {option}
+              {label}
             </button>
           );
         })}

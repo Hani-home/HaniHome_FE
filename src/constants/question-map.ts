@@ -5,12 +5,12 @@ export const COMMON_MOVING_CONDITIONS = [
   {
     id: "genderPreference",
     label: "원하는 게스트 성별이 있으신가요?",
-    options: ["ANY", "MALE_ONLY", "FEMALE_ONLY", "COUPLE"],
+    options: ["무관", "남자만", "여자만", "커플 가능"],
   },
   {
     id: "livingConditions",
     label: "거주 조건을 입력해주세요",
-    options: ["noticePeriodWeeks", "minimumStayWeeks", "contractTerms"],
+    options: ["노티스", "최소 거주 기간", "계약 형태 설명"],
   },
   {
     id: "moveInInfo",
@@ -82,12 +82,12 @@ export const QUESTION_MAP = {
       {
         id: "propertyType",
         label: "매물 유형을 선택해주세요",
-        options: ["마스터 룸", "거실 쉐어", "세컨드 룸"],
+        options: ["MASTER_ROOM", "LIVING_SHARE", "SECOND_ROOM"],
       },
       {
         id: "capacityPeople",
         label: "최대 몇 명이 쓸 수 있나요?",
-        options: ["독방", "2인 1실", "3인 1실", "n인 1실"],
+        options: ["SINGLE", "DOUBLE", "TRIPLE", "OTHER"],
       },
       {
         id: "internalDetails",
@@ -138,18 +138,18 @@ export const QUESTION_MAP = {
         id: "propertyType",
         label: "매물 유형을 선택해주세요",
         options: [
-          "하우스",
-          "아파트",
-          "유닛",
-          "스튜디오",
-          "그래니 플랫",
-          "타운하우스",
+          "HOUSE",
+          "APARTMENT",
+          "UNIT",
+          "STUDIO",
+          "GRANNY_FLAT",
+          "TOWN_HOUSE",
         ],
       },
       {
         id: "capacityPeople",
         label: "최대 몇 명이 쓸 수 있나요?",
-        options: ["1명", "2명", "3명", "4명", "기타 (5명 이상)"],
+        options: ["ONE", "TWO", "THREE", "FOUR", "OTHER"],
       },
       {
         id: "internalDetails",
