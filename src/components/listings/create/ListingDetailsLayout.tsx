@@ -26,7 +26,7 @@ interface ListingDetailsProps {
   onPrev: () => void;
 }
 
-const ListingDetails = ({ onNext}: ListingDetailsProps) => {
+const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const { listingType } = useListingStore();
 
   const section = "ListingDetails";
@@ -64,13 +64,13 @@ const ListingDetails = ({ onNext}: ListingDetailsProps) => {
       ) {
         const requiredKeys = [
           ...(listingType === "RENT"
-            ? ["방 개수", "욕실 개수"]
-            : ["총 거주인", "욕실 쉐어자 수"]),
-          "Internal Area",
+            ? ["numberOfRoom", "numberOfBath"]
+            : ["totalResidents", "totalBathUser"]),
+          "internalArea",
         ];
         return requiredKeys.every(key => {
-          const val = (answer as unknown as Record<string, string>)[key];
-          return typeof val === "string" && val.trim().length > 0;
+          const val = (answer as unknown as Record<string, number>)[key];
+          return typeof val === "number" && !isNaN(val);
         });
       }
       return !!answer;
@@ -243,7 +243,6 @@ const ListingDetails = ({ onNext}: ListingDetailsProps) => {
     }
   };
 
-  
   const allAnswered = questions.every(q => {
     const answer = selectedAnswers[q.id as ListingDetailsOption["type"]];
 
