@@ -4,8 +4,6 @@ import { useParams } from "next/navigation";
 
 import { useEffect, useRef, useState } from "react";
 
-import axios from "axios";
-
 import { postReport } from "@/apis/property";
 import { getReportPresignedUrls } from "@/apis/s3Upload";
 
@@ -21,6 +19,7 @@ import BackHeader from "@/components/layout/header/BackHeader";
 
 const MAX_IMAGES = 5;
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
+
 const ListingReportPage = () => {
   const params = useParams();
   const propertyId = Number(params.id);
@@ -84,15 +83,17 @@ const ListingReportPage = () => {
         "PROPERTY",
         extensions,
       );
-
       await Promise.all(
         presignedUrls.map((item, idx) =>
-          axios.put(item.presignedUrl, newFiles[idx], {
-            headers: { "Content-Type": newFiles[idx].type },
+          fetch(item.presignedUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Type": newFiles[idx].type,
+            },
+            body: newFiles[idx],
           }),
         ),
       );
-
       await postReport({
         targetId: propertyId,
         targetType: "PROPERTY",
