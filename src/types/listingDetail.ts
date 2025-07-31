@@ -19,10 +19,6 @@ export type CapacityShare = "SINGLE" | "DOUBLE" | "TRIPLE" | "OTHER";
 
 export type CapacityRent = "ONE" | "TWO" | "THREE" | "FOUR" | "OTHER";
 
-export interface Furniture {
-  [subCategory: string]: string[];
-}
-
 // --- 공통 타입 ---
 export interface PropertyRegion {
   country: string;

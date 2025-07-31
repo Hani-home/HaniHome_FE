@@ -8,13 +8,12 @@ import {
   RENT_TYPE_MAP,
   SHARE_TYPE_MAP,
 } from "@/constants/housing-options";
+import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 
 import {
-  AdditionalInfo,
   CapacityRent,
   CapacityShare,
   CostDetails,
-  Furniture,
   GenderPreference,
   LivingConditions,
   MoveInInfo,
@@ -76,19 +75,24 @@ export const formatCapcityPeople = (
     : CAPACITY_SHARE_MAP[capcityPeople as CapacityShare];
 };
 
-export const formatFurniture = (furniture: Furniture | null) => {
-  if (!furniture || Object.keys(furniture).length === 0) return "없음";
-  return Object.entries(furniture)
-    .map(([category, items]) => {
-      if (!Array.isArray(items)) {
-        console.warn(`Invalid items for category ${category}:`, items);
-        return null;
+export function formatFurniture(optionItemIds: number[]): string {
+  if (!optionItemIds?.length) return "";
+  const furnitureGroups = CATEGORY_OPTIONS[2].items;
+  const grouped: Record<string, string[]> = {};
+
+  Object.entries(furnitureGroups).forEach(([key, items]) => {
+    items.forEach(item => {
+      if (optionItemIds.includes(item.optionId)) {
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(item.label);
       }
-      return `${items.join(", ")}`;
-    })
-    .filter(item => item !== null)
+    });
+  });
+
+  return Object.entries(grouped)
+    .map(([, labels]) => labels.join(" / "))
     .join(" / ");
-};
+}
 
 export const formatInternalDetails = (
   details: ShareInternalDetails | RentInternalDetails | null | undefined,
@@ -183,15 +187,21 @@ export const formatInternalDetails = (
   );
 };
 
-export const formatIsBrokered = (isBrokered: boolean | null) => {
-  if (isBrokered === null) return "없음";
-  return isBrokered ? "부동산 중개" : "개인 임대";
-};
+export function formatIsBrokered(optionItemIds: number[]): string {
+  if (!optionItemIds?.length) return "";
+  const items = CATEGORY_OPTIONS[5].items;
+  const label = items.find(opt => optionItemIds.includes(opt.optionId))?.label;
+  return label || "";
+}
 
-export const formatHighlights = (highlights: string[] | null) => {
-  if (!highlights || highlights.length === 0) return "없음";
-  return highlights.join(" / ");
-};
+export function formatHighlights(optionItemIds: number[]): string {
+  if (!optionItemIds?.length) return "";
+  const highlightOptions = CATEGORY_OPTIONS[1].items;
+  const labels = optionItemIds
+    .map(id => highlightOptions.find(opt => opt.optionId === id)?.label)
+    .filter(Boolean);
+  return labels.join(" / ");
+}
 
 export const formatGenderPreference = (
   genderPreference: GenderPreference | null | undefined,
@@ -236,9 +246,14 @@ export const formatLivingConditions = (
 
 export const formatCosts = (
   costs: CostDetails | null | undefined,
-  includedItems: string[] | null,
+  includedItems: number[] | null,
 ) => {
   if (!costs || !includedItems) return "N/A";
+
+  const includedLabels =
+    CATEGORY_OPTIONS[4]?.items
+      ?.filter(item => includedItems.includes(item.optionId))
+      .map(item => item.label) ?? [];
 
   return (
     <div className="flex flex-col divide-y divide-gray-100">
@@ -251,7 +266,7 @@ export const formatCosts = (
       {/* 포함 항목 */}
       {includedItems.length > 0 && (
         <div className="flex items-center justify-end py-2">
-          {includedItems.join(", ")}
+          {includedLabels.join(", ")}
         </div>
       )}
       {/* 디파짓 */}
@@ -294,29 +309,18 @@ export const formatMoveInDates = (
   );
 };
 
-export const formatAdditionalInfo = (
-  additionalInfo: AdditionalInfo | null | undefined,
-): string => {
-  if (!additionalInfo) return "N/A";
+export function formatAdditionalInfo(optionItemIds: number[]): string {
+  if (!optionItemIds?.length) return "";
+  const additionalInfoGroups = CATEGORY_OPTIONS[3].items;
+  const result: string[] = [];
 
-  const parts: string[] = [];
+  Object.entries(additionalInfoGroups).forEach(([key, items]) => {
+    items.forEach(item => {
+      if (optionItemIds.includes(item.optionId)) {
+        result.push(`${key} ${item.label}`);
+      }
+    });
+  });
 
-  parts.push(additionalInfo.smokingAllowed ? "흡연자 가능" : "흡연자 불가");
-  parts.push(additionalInfo.petsAllowed ? "반려동물 가능" : "반려동물 불가");
-  parts.push(
-    additionalInfo.visitorsAllowed ? "외부인 방문 가능" : "외부인 방문 불가",
-  );
-
-  // 주차는 가능한 옵션들을 쉼표로 연결
-  if (additionalInfo.parking.length > 0) {
-    parts.push(`주차 ${additionalInfo.parking.join(", ")}`);
-  } else {
-    parts.push("주차 불가");
-  }
-
-  parts.push(
-    additionalInfo.kitchenAccess ? "주방 사용 가능" : "주방 사용 불가",
-  );
-
-  return parts.join(" / ");
-};
+  return result.join(" / ");
+}

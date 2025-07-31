@@ -38,7 +38,28 @@ const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
     livingConditions,
   } = useListingStore();
   const propertyContent = propertyInfo.find(item => item.kind === listingType);
-
+  console.log(
+    listingType,
+    region,
+    photoUrls,
+    rentPropertyType,
+    sharePropertyType,
+    rentCapacityPeople,
+    shareCapacityPeople,
+    rentInternalDetails,
+    shareInternalDetails,
+    costDetails,
+    optionItemIds,
+    timeSlots,
+    meetingDateFrom,
+    meetingDateTo,
+    viewingAlwaysAvailable,
+    description,
+    genderPreference,
+    lgbtAvailable,
+    moveInInfo,
+    livingConditions,
+  );
   const listingData = {
     kind: listingType,
     region,
@@ -86,7 +107,7 @@ const CreateConfrim = ({ onNext }: CreateConfirmProps) => {
             label: "저장",
             onClick: () => {
               //Todo: 저장 로직 추가
-              console.log("저장");
+              console.log(listingData);
             },
             variant: "outline",
           },

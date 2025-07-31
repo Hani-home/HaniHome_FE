@@ -16,11 +16,11 @@ import MovingCondition from "@/components/listings/create/MovingConditionLayout"
 
 const steps = [
   "ListingType",
-  "AddressPhoto",
+  // "AddressPhoto",
   "ListingDetails",
   "MovingConditions",
   "ContractTerms",
-  "ListingDescription",
+  // "ListingDescription",
   "CreateConfirm",
   "CreateSuccess",
 ];

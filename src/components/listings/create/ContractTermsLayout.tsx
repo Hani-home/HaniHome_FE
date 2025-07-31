@@ -125,7 +125,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       return (
         timeSlots.length > 0 &&
         timeSlots.some(
-          slot => !(slot.timeFrom === "00:00" && slot.timeTo === "00:00"),
+          slot => !(slot.timeFrom === "00:00" || slot.timeTo === "00:00"),
         )
       );
     }
