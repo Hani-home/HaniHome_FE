@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { useCallback, useEffect, useState } from "react";
 
@@ -20,6 +20,7 @@ import {
 } from "@/types/listingDetailPost";
 
 const ListingsEdit = () => {
+  const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
@@ -50,7 +51,7 @@ const ListingsEdit = () => {
   if (error || !originalDetail || !currentDetail)
     return <div>데이터를 불러올 수 없습니다.</div>;
   // console.log(propertyDetail);
-  console.log("바뀐값: ", currentDetail);
+  // console.log("바뀐값: ", currentDetail);
   return (
     <>
       <div className="w-[375px] pb-[130px]">
@@ -59,7 +60,12 @@ const ListingsEdit = () => {
           title="수정할 정보 섹션을 클릭해주세요"
           label="추가로 변경해야하는 섹션도 수정해주세요"
         />
-        <div className="px-4">
+        <div
+          className="px-4 cursor-pointer"
+          onClick={() =>
+            router.push(`/listings/${id}/edit/addressPhoto?subStep=photo`)
+          }
+        >
           <ImageSlider images={previewUrls} onRemove={handleRemoveImage} />
         </div>
         {currentDetail && originalDetail && (

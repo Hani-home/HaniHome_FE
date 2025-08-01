@@ -1,3 +1,5 @@
+import { useParams, useRouter } from "next/navigation";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
@@ -13,13 +15,16 @@ import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 import BottomSheet from "./BottomSheet";
 
 interface PhotoFieldProps {
-  onNext: () => void;
-  onPrev: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  edit: boolean;
 }
 
 const MAX_IMAGE_COUNT = 10;
 
-const PhotoField = ({ onNext }: PhotoFieldProps) => {
+const PhotoField = ({ onNext, edit }: PhotoFieldProps) => {
+  const router = useRouter();
+  const { id } = useParams();
   const { setPhotoUrls: setPhotoData } = useListingStore();
   const [isOpen, setIsOpen] = useState(false);
   const [, setUploadedFiles] = useState<File[]>([]);
@@ -125,24 +130,33 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
         )}
       </div>
       {isOpen && <BottomSheet onClose={() => setIsOpen(false)} />}
-      <BottomActionBar
-        buttons={[
-          {
-            label: "저장",
-            onClick: () => {
-              //Todo: 저장 로직 추가
-              console.log("저장");
+      {!edit ? (
+        <BottomActionBar
+          buttons={[
+            {
+              label: "저장",
+              onClick: () => {
+                //Todo: 저장 로직 추가
+                console.log("저장");
+              },
+              variant: "outline",
             },
-            variant: "outline",
-          },
-          {
-            label: "다음",
-            onClick: onNext,
-            variant: "filled",
-            disabled: previewUrls.length < 3,
-          },
-        ]}
-      />
+            {
+              label: "다음",
+              onClick: () => {
+                if (onNext) onNext();
+              },
+              variant: "filled",
+              disabled: previewUrls.length < 3,
+            },
+          ]}
+        />
+      ) : (
+        <BottomActionBar
+          label="저장"
+          onClick={() => router.push(`/listings/${id}/edit`)}
+        />
+      )}
     </div>
   );
 };

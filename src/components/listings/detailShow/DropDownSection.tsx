@@ -41,7 +41,12 @@ const DropDownSection = ({
   const { id } = useParams();
 
   const handleItemClick = (key: string) => {
-    router.push(`/listings/${id}/edit/${key}`);
+    switch (key) {
+      case "region":
+        return router.push(`/listings/${id}/edit/addressPhoto?subStep=address`);
+      default:
+        return router.push(`/listings/${id}/edit/${key}`);
+    }
   };
 
   const handleToggle = (key: string) => {

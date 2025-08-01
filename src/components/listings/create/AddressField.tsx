@@ -1,5 +1,7 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
@@ -13,10 +15,11 @@ import { PropertyRegion } from "@/types/listingDetailPost";
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 
 interface AddressFieldProps {
-  onNext: () => void;
+  onNext?: () => void;
+  edit?: boolean;
 }
 
-const AddressField = ({ onNext }: AddressFieldProps) => {
+const AddressField = ({ onNext, edit }: AddressFieldProps) => {
   const { region: addressData, setRegion: setAddressData } = useListingStore();
   const [isFocused, setIsFocused] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
@@ -27,7 +30,8 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
   const [selectedAddress, setSelectedAddress] = useState<PropertyRegion | null>(
     null,
   );
-
+  const router = useRouter();
+  const { id } = useParams();
   const handleSearchClick = () => {
     setIsSearchClicked(true);
   };
@@ -197,7 +201,14 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
               </div>
             </div>
           </div>
-          <BottomActionBar label="다음" variant="outline" onClick={onNext} />
+          {!edit ? (
+            <BottomActionBar label="다음" variant="outline" onClick={onNext} />
+          ) : (
+            <BottomActionBar
+              label="저장"
+              onClick={() => router.push(`/listings/${id}/edit`)}
+            />
+          )}
         </>
       )}
     </div>

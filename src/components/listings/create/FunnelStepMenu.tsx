@@ -4,14 +4,17 @@ import { useSearchParams } from "next/navigation";
 
 import { FunnelSteps } from "@/constants/funnel-step-lists";
 
-const FunnelStepMenu = () => {
+interface FunnelStepMenuProps {
+  fixedKey?: string;
+}
+const FunnelStepMenu = ({ fixedKey }: FunnelStepMenuProps) => {
   const searchParams = useSearchParams();
   const currentStep = searchParams.get("step");
 
   return (
     <div className="flex items-center justify-center gap-6 border-b border-gray-200 px-4 py-2">
       {FunnelSteps.map(({ key, label }) => {
-        const isActive = currentStep === key;
+        const isActive = currentStep === key || fixedKey === key;
 
         return (
           <div
