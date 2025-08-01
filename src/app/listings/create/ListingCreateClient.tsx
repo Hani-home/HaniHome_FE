@@ -33,6 +33,7 @@ const ListingCreateClient = () => {
     <Funnel step={step}>
       <Funnel.Step name="ListingType">
         <ListingType
+          variant="create"
           onSelectType={type => {
             setListingType(type);
             onNextStep();

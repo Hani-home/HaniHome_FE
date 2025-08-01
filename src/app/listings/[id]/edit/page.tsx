@@ -22,17 +22,22 @@ import {
 const ListingsEdit = () => {
   const params = useParams();
   const id = params.id as string;
-  const [propertyDetail, setPropertyDetail] = useState<
+
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [originalDetail, setOriginalDetail] = useState<
     SharePropertyDetail | RentPropertyDetail | null
   >(null);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [currentDetail, setCurrentDetail] = useState<
+    SharePropertyDetail | RentPropertyDetail | null
+  >(null);
 
   const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
 
   useEffect(() => {
     if (data) {
       const detail = toPostPropertyDetail(data);
-      setPropertyDetail(detail);
+      setOriginalDetail(detail); // 최초 원본
+      setCurrentDetail(detail); // 수정할 값
       setPreviewUrls(data.photoUrls);
     }
   }, [data]);
@@ -42,8 +47,10 @@ const ListingsEdit = () => {
   }, []);
 
   if (isLoading) return <div>로딩 중...</div>;
-  if (error || !propertyDetail) return <div>데이터를 불러올 수 없습니다.</div>;
+  if (error || !originalDetail || !currentDetail)
+    return <div>데이터를 불러올 수 없습니다.</div>;
   // console.log(propertyDetail);
+  console.log("바뀐값: ", currentDetail);
   return (
     <>
       <div className="w-[375px] pb-[130px]">
@@ -55,7 +62,14 @@ const ListingsEdit = () => {
         <div className="px-4">
           <ImageSlider images={previewUrls} onRemove={handleRemoveImage} />
         </div>
-        {propertyDetail && <DropDownSection listingData={propertyDetail} />}
+        {currentDetail && originalDetail && (
+          <DropDownSection
+            listingData={currentDetail}
+            originalData={originalDetail}
+            setListingData={setCurrentDetail}
+            edit
+          />
+        )}
       </div>
       <BottomActionBar label="저장" />
     </>
