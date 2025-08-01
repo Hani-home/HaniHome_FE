@@ -3,7 +3,7 @@ import Divider from "@/components/common/Divider";
 
 import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 
-import { CostDetails } from "@/types/listingDetail";
+import { CostDetails } from "@/types/listingDetailPost";
 
 interface CostDetailFieldProps {
   value: CostDetails;

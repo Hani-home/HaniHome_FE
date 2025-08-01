@@ -9,7 +9,7 @@ import CheckIcon from "@/components/common/CheckIcon";
 import {
   RentInternalDetails,
   ShareInternalDetails,
-} from "@/types/listingDetail";
+} from "@/types/listingDetailPost";
 
 import ChangeIcon from "@/public/svgs/listings/change-icon.svg";
 import QuestionIcon from "@/public/svgs/listings/question-mark-icon.svg";

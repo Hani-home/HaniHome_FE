@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useParams } from "next/navigation";
+
+import { useCallback, useEffect, useState } from "react";
+
+import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+
+import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
@@ -8,19 +14,36 @@ import DropDownSection from "@/components/listings/detailShow/DropDownSection";
 import ImageSlider from "@/components/listings/detailShow/ImageSlider";
 import TitleSection from "@/components/listings/detailShow/TitleSection";
 
-import { propertyInfo } from "@/constants/mock/listing-detail-dummies";
-
-const propertyDetail = propertyInfo[1];
+import {
+  RentPropertyDetail,
+  SharePropertyDetail,
+} from "@/types/listingDetailPost";
 
 const ListingsEdit = () => {
-  const [previewUrls, setPreviewUrls] = useState<string[]>(
-    propertyInfo[0].photoUrls,
-  );
+  const params = useParams();
+  const id = params.id as string;
+  const [propertyDetail, setPropertyDetail] = useState<
+    SharePropertyDetail | RentPropertyDetail | null
+  >(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+  const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
+
+  useEffect(() => {
+    if (data) {
+      const detail = toPostPropertyDetail(data);
+      setPropertyDetail(detail);
+      setPreviewUrls(data.photoUrls);
+    }
+  }, [data]);
 
   const handleRemoveImage = useCallback((index: number) => {
     setPreviewUrls(prev => prev.filter((_, i) => i !== index));
   }, []);
 
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error || !propertyDetail) return <div>데이터를 불러올 수 없습니다.</div>;
+  // console.log(propertyDetail);
   return (
     <>
       <div className="w-[375px] pb-[130px]">

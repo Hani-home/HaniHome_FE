@@ -9,6 +9,7 @@ import {
 import { FilteredPropertyParams } from "@/types/property";
 
 import { axiosInstance } from "./axios";
+import { PropertyDetail } from "@/types/listingDetailGet";
 
 // 매물 목록 조회
 export const fetchPropertyList = async <T extends PropertyViewType>(
@@ -26,6 +27,13 @@ export const fetchPropertyDetailList = async (
   return res.data.data;
 };
 
+//내놓은 매물 상세 조회
+export const fetchPropertyDetaiEditlList = async (
+  propertyId: string,
+): Promise<PropertyDetail> => {
+  const res = await axiosInstance.get(`/api/v1/properties/${propertyId}`);
+  return res.data.data;
+};
 // 매물 수정
 export const patchProperty = async (propertyId: number, payload: Property) => {
   const res = await axiosInstance.patch(

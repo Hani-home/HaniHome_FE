@@ -15,7 +15,7 @@ import {
   PropertyDetail,
   RentPropertyDetail,
   SharePropertyDetail,
-} from "@/types/listingDetail";
+} from "@/types/listingDetailPost";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
@@ -26,7 +26,9 @@ interface DropDownSectionProps {
 }
 
 const DropDownSection = ({ listingData }: DropDownSectionProps) => {
-  const [openCategoryKeys, setOpenCategoryKeys] = useState<Set<string>>(new Set());
+  const [openCategoryKeys, setOpenCategoryKeys] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleToggle = (key: string) => {
     setOpenCategoryKeys(prev => {
@@ -65,7 +67,7 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
       );
     }
   }
-  
+
   return (
     <div className="py-3">
       {filteredCategories.map((item, index) => {

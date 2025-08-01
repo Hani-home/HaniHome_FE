@@ -3,7 +3,7 @@ import {
   CAPACITY_SHARE_MAP,
 } from "@/constants/capacity-options";
 
-import { CapacityRent, CapacityShare } from "@/types/listingDetail";
+import { CapacityRent, CapacityShare } from "@/types/listingDetailPost";
 
 import DropdownOptionsList from "./DropdownOptionsList";
 
@@ -31,7 +31,7 @@ const CapacityPeopleField = ({
   const handleSelect = (selected: string) => {
     onSelect(selected as CapacityRent | CapacityShare);
   };
-  
+
   return (
     <DropdownOptionsList
       options={mappedOptions}

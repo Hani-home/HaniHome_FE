@@ -8,7 +8,7 @@ import clsx from "clsx";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";
 
-import { PropertyRegion } from "@/types/listingDetail";
+import { PropertyRegion } from "@/types/listingDetailPost";
 
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 

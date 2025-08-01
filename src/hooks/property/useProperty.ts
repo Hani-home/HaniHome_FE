@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import {
   completeTrade,
   deleteProperty,
+  fetchPropertyDetaiEditlList,
   fetchPropertyDetailList,
   fetchPropertyList,
   getMyDeals,
@@ -20,6 +21,7 @@ import {
   patchProperty,
 } from "@/apis/property";
 
+import { PropertyDetail } from "@/types/listingDetailGet";
 import {
   MyPropertiesParams,
   Property,
@@ -43,6 +45,17 @@ export const usePropertyDetailList = (propertyId: string) => {
   return useQuery<Property, AxiosError<PropertyErrorResponse>>({
     queryKey: ["propertyDetailList", propertyId],
     queryFn: () => fetchPropertyDetailList(propertyId),
+    enabled: !!propertyId,
+    staleTime: 0,
+    retry: false,
+    refetchOnMount: true,
+  });
+};
+
+export const usePropertyDetailEditList = (propertyId: string) => {
+  return useQuery<PropertyDetail, AxiosError<PropertyErrorResponse>>({
+    queryKey: ["propertyDetailList", propertyId],
+    queryFn: () => fetchPropertyDetaiEditlList(propertyId),
     enabled: !!propertyId,
     staleTime: 0,
     retry: false,

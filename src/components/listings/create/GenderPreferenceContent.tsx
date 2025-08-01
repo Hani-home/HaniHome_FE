@@ -2,7 +2,7 @@ import CheckIcon from "@/components/common/CheckIcon";
 
 import { GENDER_PREFERENCE_MAP } from "@/constants/gender-options";
 
-import { GenderPreference } from "@/types/listingDetail";
+import { GenderPreference } from "@/types/listingDetailPost";
 
 import DropdownOptionsList from "./DropdownOptionsList";
 

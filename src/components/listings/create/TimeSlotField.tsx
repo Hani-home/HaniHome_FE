@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AlertMessage from "@/components/common/AlertMessage";
 import TimeSpinner from "@/components/common/calendar/TimeSpinner";
 
-import { TimeSlot } from "@/types/listingDetail";
+import { TimeSlot } from "@/types/listingDetailPost";
 
 interface TimeSlotFieldProps {
   value: TimeSlot[];
@@ -19,7 +19,7 @@ const PERIOD_LIMITS: Record<Period, { minTime: string; maxTime: string }> = {
   저녁: { minTime: "18:30", maxTime: "24:00" },
 };
 
-const TimeSlotField = ({value, onChange}: TimeSlotFieldProps) => {
+const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
   const [slots, setSlots] = useState<TimeSlot[]>(value);
   const [tempTime, setTempTime] = useState<string | null>(null);
   const [activeSpinner, setActiveSpinner] = useState<{

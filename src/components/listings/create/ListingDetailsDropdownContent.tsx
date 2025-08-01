@@ -11,7 +11,7 @@ import {
   RentPropertySubType,
   ShareInternalDetails,
   SharePropertySubType,
-} from "@/types/listingDetail";
+} from "@/types/listingDetailPost";
 
 import CapacityPeopleField from "./CapacityPeopleField";
 import FurnitureContent from "./FurnitureContent";
