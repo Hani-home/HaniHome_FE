@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useListingStore } from "@/stores/useListingStore";
 
 import useFunnel from "@/hooks/common/useFunnel";
@@ -14,20 +16,19 @@ import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/ListingType";
 import MovingCondition from "@/components/listings/create/MovingConditionLayout";
 
-const steps = [
-  "ListingType",
-  "AddressPhoto",
-  "ListingDetails",
-  "MovingConditions",
-  "ContractTerms",
-  "ListingDescription",
-  "CreateConfirm",
-  "CreateSuccess",
-];
+import { FUNNEL_STEPS } from "@/constants/funnel-steps";
 
 const ListingCreateClient = () => {
-  const { step, onNextStep, onPrevStep } = useFunnel({ steps });
+  const { step, onNextStep, onPrevStep } = useFunnel({ steps: FUNNEL_STEPS });
   const { setListingType } = useListingStore();
+
+  const reset = useListingStore(state => state.reset);
+
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
 
   return (
     <Funnel step={step}>
