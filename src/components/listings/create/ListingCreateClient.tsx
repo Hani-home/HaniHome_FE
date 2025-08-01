@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import useFunnel from "@/hooks/common/useFunnel";
+import { useFunnel } from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
 import AddressPhoto from "@/components/listings/create/AddressPhoto";

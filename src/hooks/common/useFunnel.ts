@@ -8,7 +8,7 @@ interface UseFunnelProps {
   steps: string[];
 }
 
-const useFunnel = ({ steps }: UseFunnelProps) => {
+export const useFunnel = ({ steps }: UseFunnelProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -54,5 +54,3 @@ const useFunnel = ({ steps }: UseFunnelProps) => {
     onPrevStep,
   };
 };
-
-export default useFunnel;
