@@ -63,7 +63,7 @@ const ListingDetailLoadingSkeleton = ({
 
       {isHidden && (
         <AlertMessage
-          message="숨김 처리된 매물입니다."
+          message="숨김 처리된 매물입니다"
           className="bottom-3"
           onDone={onHiddenProperty ?? (() => {})}
         />
