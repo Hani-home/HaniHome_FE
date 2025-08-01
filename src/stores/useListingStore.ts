@@ -25,6 +25,9 @@ interface ListingState {
   photoUrls: string[];
   setPhotoUrls: (data: string[]) => void;
 
+  searchKeyword: string;
+  setSearchKeyword: (keyword: string) => void;
+
   rentPropertyType: RentPropertySubType | null;
   setRentPropertyType: (data: RentPropertySubType | null) => void;
 
@@ -96,6 +99,7 @@ const initialState = {
     latitude: 0,
   },
   photoUrls: [],
+  searchKeyword: "",
   rentPropertyType: null,
   sharePropertyType: null,
   rentCapacityPeople: null,
@@ -156,6 +160,7 @@ export const useListingStore = create<ListingState>()(set => ({
   setListingType: type => set({ listingType: type }),
   setRegion: data => set({ region: data }),
   setPhotoUrls: data => set({ photoUrls: data }),
+  setSearchKeyword: keyword => set({ searchKeyword: keyword }),
   setRentPropertyType: data => set({ rentPropertyType: data }),
   setSharePropertyType: data => set({ sharePropertyType: data }),
   setRentCapacityPeople: data => set({ rentCapacityPeople: data }),

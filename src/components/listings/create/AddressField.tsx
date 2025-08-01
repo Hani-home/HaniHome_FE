@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
@@ -17,11 +17,15 @@ interface AddressFieldProps {
 }
 
 const AddressField = ({ onNext }: AddressFieldProps) => {
-  const { region: addressData, setRegion: setAddressData } = useListingStore();
+  const {
+    region: addressData,
+    setRegion: setAddressData,
+    searchKeyword,
+    setSearchKeyword,
+  } = useListingStore();
   const [isFocused, setIsFocused] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const [unit, setUnit] = useState(addressData.unit);
-  const [buildingName, setBuildingName] = useState(addressData.buildingName);
+
   const [isUnitFocused, setIsUnitFocused] = useState(false);
   const [isBuildingFocused, setIsBuildingFocused] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<PropertyRegion | null>(
@@ -29,45 +33,42 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
   );
 
   const handleSearchClick = () => {
-    setIsSearchClicked(true);
-  };
-
-  const handleInputClick = () => {
     const fakeAddress: PropertyRegion = {
       country: "Australia",
       postCode: "2000",
       state: "NSW",
       suburb: "Sydney",
-      streetName: "George St",
+      streetName: searchKeyword,
       streetNumber: "123",
-      unit: "",
-      buildingName: "",
+      unit: "33",
+      buildingName: "maru",
       longitude: 151.2093,
       latitude: -33.8688,
     };
-    setIsSearchClicked(true);
     setSelectedAddress(fakeAddress);
     setAddressData(fakeAddress);
+    setIsSearchClicked(true);
   };
 
-  useEffect(() => {
-    setAddressData({
-      ...addressData,
-      unit,
-      buildingName,
-    });
-  }, [unit, buildingName, setAddressData]);
+  const handleUnitChange = (value: string) => {
+    setAddressData({ ...addressData, unit: value });
+  };
+
+  const handleBuildingChange = (value: string) => {
+    setAddressData({ ...addressData, buildingName: value });
+  };
 
   const shouldHighlightMain = isFocused && !addressData.streetName;
-  const shouldHighlightUnit = isUnitFocused && unit.trim() === "";
+  const shouldHighlightUnit = isUnitFocused && addressData.unit.trim() === "";
   const shouldHighlightBuilding =
-    isBuildingFocused && buildingName.trim() === "";
+    isBuildingFocused && addressData.buildingName.trim() === "";
 
   const getTextColor = (value: string, highlight: boolean) =>
     value || highlight ? "text-gray-900" : "text-gray-500";
 
-  const getBorderColor = (value: string) =>
-    value.trim() ? "border-gray-600" : "border-gray-400";
+  const getBorderColor = (value: string, isFocused: boolean) => {
+    return isFocused ? "border-gray-900" : "border-gray-600";
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -79,19 +80,19 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
           <div
             className={clsx(
               "flex h-11 w-[343px] items-center justify-between rounded-[4px] border px-4 py-3",
-              getBorderColor(addressData.streetName),
+              getBorderColor(addressData.streetName, isFocused),
             )}
-            onClick={handleInputClick}
           >
             <input
               className={clsx(
-                "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
+                "text-body1-med min-w-0 grow text-gray-900 outline-none placeholder:text-gray-500",
                 getTextColor(addressData.streetName, shouldHighlightMain),
               )}
               placeholder="도로명, 건물명, suburb 검색"
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
-              onClick={handleInputClick}
+              value={searchKeyword}
+              onChange={e => setSearchKeyword(e.target.value)}
             />
             <SearchIcon
               className={clsx(
@@ -103,17 +104,19 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
               onClick={handleSearchClick}
             />
           </div>
-          {isFocused && (
+          {isFocused && !addressData.streetName && (
             <div className="text-cap1-med text-red">
               주소는 수정이 불가능하니 정확히 확인해주세요
             </div>
           )}
         </div>
         {isSearchClicked && selectedAddress && (
-          <GoogleMap
-            lat={selectedAddress.latitude}
-            lng={selectedAddress.longitude}
-          />
+          <div className="h-[343px] w-[343px] py-3">
+            <GoogleMap
+              lat={selectedAddress.latitude}
+              lng={selectedAddress.longitude}
+            />
+          </div>
         )}
       </div>
 
@@ -154,41 +157,47 @@ const AddressField = ({ onNext }: AddressFieldProps) => {
                   <div
                     className={clsx(
                       "flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3",
-                      getBorderColor(unit),
+                      getBorderColor(addressData.unit, isUnitFocused),
                     )}
                   >
                     <input
                       placeholder="입력해주세요"
                       className={clsx(
                         "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
-                        getTextColor(unit, shouldHighlightUnit),
+                        getTextColor(addressData.unit, shouldHighlightUnit),
                       )}
-                      value={unit}
-                      onChange={e => setUnit(e.target.value)}
+                      value={addressData.unit}
+                      onChange={e => handleUnitChange(e.target.value)}
                       onFocus={() => setIsUnitFocused(true)}
                       onBlur={() => setIsUnitFocused(false)}
                     />
                   </div>
                 </div>
                 {/* Building name */}
-                <div className="flex flex-col gap-2">
+                <div className="mb-15 flex flex-col gap-2">
                   <div className="text-body2-med text-gray-700">
                     건물 / 아파트 이름
                   </div>
                   <div
                     className={clsx(
                       "flex h-11 w-[343px] items-center rounded-[4px] border px-4 py-3",
-                      getBorderColor(buildingName),
+                      getBorderColor(
+                        addressData.buildingName,
+                        isBuildingFocused,
+                      ),
                     )}
                   >
                     <input
                       placeholder="입력해주세요"
                       className={clsx(
                         "text-body1-med min-w-0 grow outline-none placeholder:text-gray-500",
-                        getTextColor(buildingName, shouldHighlightBuilding),
+                        getTextColor(
+                          addressData.buildingName,
+                          shouldHighlightBuilding,
+                        ),
                       )}
-                      value={buildingName}
-                      onChange={e => setBuildingName(e.target.value)}
+                      value={addressData.buildingName}
+                      onChange={e => handleBuildingChange(e.target.value)}
                       onFocus={() => setIsBuildingFocused(true)}
                       onBlur={() => setIsBuildingFocused(false)}
                     />
