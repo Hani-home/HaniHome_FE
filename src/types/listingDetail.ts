@@ -19,6 +19,18 @@ export type CapacityShare = "SINGLE" | "DOUBLE" | "TRIPLE" | "OTHER";
 
 export type CapacityRent = "ONE" | "TWO" | "THREE" | "FOUR" | "OTHER";
 
+export interface Furniture {
+  [subCategory: string]: string[];
+}
+
+export interface AdditionalInfo {
+  smokingAllowed: boolean | null;
+  petsAllowed: boolean | null;
+  visitorsAllowed: boolean | null;
+  parking: string[]; // 주차 옵션 목록
+  kitchenAccess: boolean | null;
+}
+
 // --- 공통 타입 ---
 export interface PropertyRegion {
   country: string;

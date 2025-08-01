@@ -1,8 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
-import { fetchPropertyDetailList, fetchPropertyList } from "@/apis/property";
+import {
+  UseQueryOptions,
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
-import { Property, PropertyViewType, SummaryProperty } from "@/types/property";
+import {
+  completeTrade,
+  deleteProperty,
+  fetchPropertyDetailList,
+  fetchPropertyList,
+  getMyDeals,
+  getMyPropertiesWithFilter,
+  patchDisplayStatus,
+  patchProperty,
+} from "@/apis/property";
+
+import {
+  MyPropertiesParams,
+  Property,
+  PropertyErrorResponse,
+  PropertyViewType,
+  SummaryProperty,
+} from "@/types/property";
 
 export const usePropertyList = <T extends PropertyViewType>(params: {
   view: T;
@@ -16,10 +40,109 @@ export const usePropertyList = <T extends PropertyViewType>(params: {
 };
 
 export const usePropertyDetailList = (propertyId: string) => {
-  return useQuery({
+  return useQuery<Property, AxiosError<PropertyErrorResponse>>({
     queryKey: ["propertyDetailList", propertyId],
     queryFn: () => fetchPropertyDetailList(propertyId),
     enabled: !!propertyId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    retry: false,
+    refetchOnMount: true,
+  });
+};
+
+// 매물 수정
+export const usePatchProperty = (propertyId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: Property) => patchProperty(propertyId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["propertyDetailList", propertyId],
+      });
+    },
+  });
+};
+
+// 매물 숨기기
+export const usePatchDisplayStatus = (propertyId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      displayStatus,
+      jsonDiscriminator,
+    }: {
+      displayStatus: "ACTIVE" | "INACTIVE";
+      jsonDiscriminator: "SHARE" | "RENT";
+    }) => {
+      return patchDisplayStatus(propertyId, {
+        jsonDiscriminator,
+        displayStatus,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["propertyDetailList", propertyId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-properties"] });
+    },
+  });
+};
+
+// 매물 삭제
+export const useDeleteProperty = (propertyId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteProperty(propertyId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-properties"] });
+    },
+  });
+};
+
+export const useMyProperties = (
+  params: MyPropertiesParams,
+  options?: Omit<
+    UseQueryOptions<SummaryProperty[], Error>,
+    "queryKey" | "queryFn"
+  >,
+): UseQueryResult<SummaryProperty[], Error> => {
+  const { view, tradeStatus, displayStatus } = params;
+
+  return useQuery({
+    queryKey: ["my-properties", view, tradeStatus, displayStatus],
+    queryFn: () => getMyPropertiesWithFilter(params),
+    enabled: !!view,
+    staleTime: 0,
+    ...options,
+  });
+};
+
+export const useCompleteTrade = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: ({
+      propertyId,
+      viewingId,
+      dealWithOutsider,
+    }: {
+      propertyId: number;
+      viewingId?: number;
+      dealWithOutsider: boolean;
+    }) => completeTrade({ propertyId, viewingId, dealWithOutsider }),
+
+    onSuccess: () => {
+      router.push("/mypage/listings");
+    },
+  });
+};
+
+export const useMyDeals = (dealerType: "DEAL_AS_GUEST") => {
+  return useQuery<SummaryProperty[]>({
+    queryKey: ["myDeals", dealerType],
+    queryFn: () => getMyDeals(dealerType),
   });
 };

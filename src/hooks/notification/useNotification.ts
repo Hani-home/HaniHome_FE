@@ -1,15 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 import {
-  connectNotificationStream,
   deleteNotification,
   getMyNotifications,
   patchNotificationRead,
 } from "@/apis/notification";
 
-import { NotificationItem } from "@/types/notification";
+import { NOTIFICATION_TYPES, NotificationItem } from "@/types/notification";
 
 export const useMyNotifications = (read?: boolean) => {
   return useQuery<NotificationItem[]>({
@@ -44,19 +45,63 @@ export const useDeleteAllNotifications = (notificationIds: number[]) => {
   });
 };
 
-export const useNotificationStream = (
-  onMessage: (data: { timeout: number }) => void,
-) => {
-  useEffect(() => {
-    const eventSource = connectNotificationStream();
+export const useNotificationStream = () => {
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const queryClient = useQueryClient();
 
-    eventSource.onmessage = event => {
-      const parsed = JSON.parse(event.data) as { timeout: number };
-      onMessage(parsed);
+  useEffect(() => {
+    if (!accessToken) return;
+
+    const es = new EventSourcePolyfill(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/notifications/stream`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "text/event-stream",
+        },
+        withCredentials: true,
+      },
+    );
+
+    NOTIFICATION_TYPES.forEach(type => {
+      es.addEventListener(type, event => {
+        try {
+          const data = JSON.parse((event as MessageEvent).data);
+          setNotifications(prev => [data, ...prev]);
+
+          queryClient.invalidateQueries({ queryKey: ["myNotifications"] });
+          queryClient.invalidateQueries({
+            queryKey: ["unreadNotificationCount"],
+          });
+        } catch (e) {
+          console.error(`${type} 파싱 오류:`, e);
+        }
+      });
+    });
+
+    es.onerror = err => {
+      console.error("SSE 연결 오류:", err);
+      es.close();
     };
 
     return () => {
-      eventSource.close();
+      es.close();
     };
-  }, [onMessage]);
+  }, [accessToken, queryClient]);
+
+  return notifications;
+};
+
+export const useUnreadNotificationCount = () => {
+  const { isLoggedIn } = useAuthStore();
+
+  return useQuery<number>({
+    queryKey: ["unreadNotificationCount"],
+    queryFn: async () => {
+      const data = await getMyNotifications(false);
+      return data.length;
+    },
+    enabled: isLoggedIn,
+  });
 };

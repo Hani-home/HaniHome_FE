@@ -1,13 +1,14 @@
 import { useState } from "react";
 
-import { ViewingCardItem } from "@/types/viewing";
+import { ViewingPropertyItem } from "@/types/viewing";
 
+import ContentWrapper from "../layout/ContentWrapper";
 import CancelReasonModal from "./CancelReasonModal";
 import ViewingEmptyMessage from "./ViewingEmptyMessage";
 import ViewingManageCard from "./ViewingManageCard";
 
 interface ViewingCanceledSectionProps {
-  data: ViewingCardItem[];
+  data: ViewingPropertyItem[];
 }
 
 const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
@@ -19,17 +20,14 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
   }
 
   return (
-    <>
+    <ContentWrapper className="mb-6 flex flex-col" bottomOffset={62}>
       <ul className="mt-4 flex flex-col gap-4">
         {data.map(item => (
           <li key={item.id}>
             <ViewingManageCard
               id={item.id}
-              propertyId={item.propertyId}
+              viewingItem={item}
               status="CANCELLED"
-              roomImageUrl={item.photoUrls[0]}
-              nickname={item.nickname}
-              meetingDay={item.meetingDay}
               onArrowClick={() => setOpenId(item.id)}
             />
           </li>
@@ -40,11 +38,11 @@ const ViewingCanceledSection = ({ data }: ViewingCanceledSectionProps) => {
         <CancelReasonModal
           isOpen={openId !== null}
           onClose={() => setOpenId(null)}
-          userType={selectedItem.userType}
+          userType={selectedItem.canSeeViewingDetail ? "guest" : "host"}
           viewingId={selectedItem.id}
         />
       )}
-    </>
+    </ContentWrapper>
   );
 };
 

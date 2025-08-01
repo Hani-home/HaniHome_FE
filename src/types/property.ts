@@ -69,6 +69,18 @@ interface InternalDetailsForRent {
   propertyFloors: number;
 }
 
+interface HostSummary {
+  id: number;
+  profileImage: string;
+  nickname: string;
+  verified: boolean;
+}
+
+interface MetaInfo {
+  owner: boolean;
+  wished: boolean;
+}
+
 // 공통 매물 베이스 타입
 interface BaseProperty {
   id: number;
@@ -89,6 +101,8 @@ interface BaseProperty {
   parkingOption: string;
   description: string;
   wishCount: number;
+  metaInfo?: MetaInfo;
+  hostSummary?: HostSummary;
 }
 
 // 쉐어 매물 타입
@@ -126,6 +140,7 @@ export interface FilteredPropertyParams {
   metroStopLatitude?: number;
   metroStopLongitude?: number;
   radiusKm?: number;
+  suburb: string;
 }
 
 // 매물 조회 뷰 타입
@@ -146,6 +161,10 @@ export interface SummaryProperty {
   tradeStatus: string;
   wishCount: number;
   nearestStation: NearestStation;
+  metaInfo: {
+    owner: boolean;
+    wished: boolean;
+  };
 }
 
 export interface NearestStation {
@@ -156,3 +175,22 @@ export interface NearestStation {
 
 // 상세 매물 타입
 export type FullProperty = ShareProperty | RentProperty;
+
+// 내놓은 매물 쿼리 파라미터 타입
+export interface MyPropertiesParams {
+  view: "SUMMARY" | "DEFAULT";
+  tradeStatus?: "BEFORE" | "IN_PROGRESS" | "COMPLETED";
+  displayStatus?: "ACTIVE" | "INACTIVE";
+}
+
+// 매물 상세 에러 처리
+export interface PropertyErrorResponse {
+  serviceCode: string;
+  message: string;
+  data: {
+    statusCode: number;
+    message: string;
+    codeName: string;
+  };
+  success: boolean;
+}
