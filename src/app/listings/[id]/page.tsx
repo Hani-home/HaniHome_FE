@@ -295,7 +295,7 @@ const ListingDetailPage = () => {
         />
       )}
 
-      {!isConfirmMode && !isViewingMode && !isEditMode && !isLoading && (
+      {!isConfirmMode && !isViewingMode && !isEditMode && (
         <BottomActionBar
           label="뷰잉 예약하기"
           onClick={() => router.push(`/viewing/reservation/${listingId}`)}
