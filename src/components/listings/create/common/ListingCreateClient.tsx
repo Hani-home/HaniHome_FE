@@ -11,9 +11,9 @@ import ContractTerms from "@/components/listings/create/ContractTermsLayout";
 import CreateConfirm from "@/components/listings/create/CreateConfirm";
 import CreateSuccess from "@/components/listings/create/CreateSuccess";
 import ListingDescription from "@/components/listings/create/ListingDescription";
-import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
 import MovingCondition from "@/components/listings/create/MovingConditionLayout";
 import AddressPhoto from "@/components/listings/create/addressPhoto/AddressPhoto";
+import ListingDetails from "@/components/listings/create/listingDetails/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/listingType/ListingType";
 
 import { FUNNEL_FLOW } from "@/constants/funnel-steps";

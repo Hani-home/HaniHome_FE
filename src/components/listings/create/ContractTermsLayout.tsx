@@ -6,7 +6,7 @@ import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
-import BackHeader from "@/components/layout/header/BackHeader";
+import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 
@@ -14,7 +14,6 @@ import { ContractTermsOption } from "@/types/createPropertyAnswer";
 
 import ContractTermsContent from "./ContractTermsContent";
 import DropdownSelector from "./DropdownSelector";
-import FunnelStepMenu from "./common/FunnelStepMenu";
 
 interface ContractTermsProps {
   onNext: () => void;
@@ -183,9 +182,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
   };
 
   return (
-    <div className="pb-70">
-      <BackHeader rightIcon="close" />
-      <FunnelStepMenu />
+    <FunnelLayout>
       {COMMON_CONTRACT_TERMS.map((item, index) => (
         <DropdownSelector
           key={item.id}
@@ -223,7 +220,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           },
         ]}
       />
-    </div>
+    </FunnelLayout>
   );
 };
 export default ContractTerms;

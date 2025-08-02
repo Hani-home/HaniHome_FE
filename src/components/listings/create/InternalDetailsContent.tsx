@@ -6,6 +6,8 @@ import { fromSquareMeter, toSquareMeter } from "@/utils/areaConverter";
 
 import CheckIcon from "@/components/common/CheckIcon";
 
+import { LISTING_INFORMATION_LABEL } from "@/constants/listing-create-options";
+
 import {
   RentInternalDetails,
   ShareInternalDetails,
@@ -144,17 +146,6 @@ const InternalDetailsContent = <
   const shareOtherKeys = ["totalResidents", "totalBathUser"] as const;
   const floorKeys = ["totalFloors", "propertyFloor"] as const;
 
-  const labelMap: Record<string, string> = {
-    internalArea: "Internal Area",
-    totalArea: "Total Area (선택)",
-    numberOfRoom: "방 개수",
-    numberOfBath: "욕실 개수",
-    totalResidents: "총 거주인",
-    totalBathUser: "욕실 쉐어자 수",
-    totalFloors: "건물 전체 층 (선택)",
-    propertyFloor: "해당 층 (선택)",
-  };
-
   if (!listingType || !value) return null;
 
   const details =
@@ -201,7 +192,7 @@ const InternalDetailsContent = <
             return (
               <div key={key} className="flex h-[73px] flex-col justify-between">
                 <div className="text-body2-med text-gray-600">
-                  {labelMap[key]}
+                  {LISTING_INFORMATION_LABEL[key]}
                 </div>
                 <div className="relative w-[167px]">
                   <input
@@ -247,7 +238,7 @@ const InternalDetailsContent = <
               {pair.map(key => (
                 <div key={key} className="flex flex-col">
                   <div className="text-body1-sb mb-3 text-gray-800">
-                    {labelMap[key]}
+                    {LISTING_INFORMATION_LABEL[key]}
                   </div>
                   <div className="relative w-[167px]">
                     {(() => {

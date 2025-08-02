@@ -4,9 +4,8 @@ import { useRouter } from "next/navigation";
 
 import { useEffect } from "react";
 
-import BackHeader from "@/components/layout/header/BackHeader";
 import PhotoField from "@/components/listings/create/PhotoField";
-import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
+import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import AddressField from "./AddressField";
 
@@ -29,12 +28,10 @@ const AddressPhoto = ({ onNext, onPrev, subStep }: AddressPhotoProps) => {
   }, [subStep]);
 
   return (
-    <>
-      <BackHeader rightIcon="close" />
-      <FunnelStepMenu />
+    <FunnelLayout>
       {subStep === "address" && <AddressField onNext={onNext} />}
       {subStep === "photo" && <PhotoField onNext={onNext} onPrev={onPrev} />}
-    </>
+    </FunnelLayout>
   );
 };
 
