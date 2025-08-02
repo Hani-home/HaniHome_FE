@@ -62,30 +62,40 @@ const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
             >
               {period}
             </div>
-            <div className="flex items-center gap-[12px]">
-              {["start", "end"].map(type => {
-                const time =
-                  slots[idx][type === "start" ? "timeFrom" : "timeTo"] ||
-                  "00:00";
-                const isActive =
+            <div className="flex items-center gap-3">
+              <button
+                key="start"
+                className={`text-body1-med flex h-[33px] w-[77px] items-center justify-center gap-1 rounded-[4px] border px-3 py-1 ${getButtonClass(
+                  slots[idx].timeFrom,
                   activeSpinner?.period === period &&
-                  activeSpinner?.type === type;
+                    activeSpinner?.type === "start",
+                )}`}
+                onClick={() => handleButtonClick(period, "start")}
+              >
+                {getDisplayTime(
+                  slots[idx].timeFrom,
+                  activeSpinner?.period === period &&
+                    activeSpinner?.type === "start",
+                )}
+              </button>
 
-                return (
-                  <button
-                    key={type}
-                    className={`text-body1-med flex h-[33px] w-[77px] items-center justify-center gap-1 rounded-[4px] border px-3 py-1 ${getButtonClass(
-                      time,
-                      isActive,
-                    )}`}
-                    onClick={() =>
-                      handleButtonClick(period, type as "start" | "end")
-                    }
-                  >
-                    {getDisplayTime(time, isActive)}
-                  </button>
-                );
-              })}
+              <span className="text-gray-500">~</span>
+
+              <button
+                key="end"
+                className={`text-body1-med flex h-[33px] w-[77px] items-center justify-center gap-1 rounded-[4px] border px-3 py-1 ${getButtonClass(
+                  slots[idx].timeTo,
+                  activeSpinner?.period === period &&
+                    activeSpinner?.type === "end",
+                )}`}
+                onClick={() => handleButtonClick(period, "end")}
+              >
+                {getDisplayTime(
+                  slots[idx].timeTo,
+                  activeSpinner?.period === period &&
+                    activeSpinner?.type === "end",
+                )}
+              </button>
             </div>
           </div>
 
