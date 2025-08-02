@@ -1,11 +1,11 @@
+import DropdownOptionsList from "@/components/listings/create/common/DropdownOptionsList";
+
 import {
   CAPACITY_RENT_MAP,
   CAPACITY_SHARE_MAP,
 } from "@/constants/capacity-options";
 
 import { CapacityRent, CapacityShare } from "@/types/listingDetail";
-
-import DropdownOptionsList from "./DropdownOptionsList";
 
 interface CapacityPeopleFieldProps {
   listingType: "RENT" | "SHARE";
@@ -31,7 +31,7 @@ const CapacityPeopleField = ({
   const handleSelect = (selected: string) => {
     onSelect(selected as CapacityRent | CapacityShare);
   };
-  
+
   return (
     <DropdownOptionsList
       options={mappedOptions}

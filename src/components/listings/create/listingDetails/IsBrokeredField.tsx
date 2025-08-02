@@ -1,6 +1,6 @@
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import DropdownOptionsList from "@/components/listings/create/common/DropdownOptionsList";
 
-import DropdownOptionsList from "./DropdownOptionsList";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 
 interface IsBrokeredFieldProps {
   value: number[];

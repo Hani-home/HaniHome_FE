@@ -13,7 +13,8 @@ import {
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
-import DropdownSelector from "@/components/listings/create/DropdownSelector";
+import DropdownSelector from "@/components/listings/create/common/DropdownSelector";
+import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import { QUESTION_MAP } from "@/constants/question-map";
 
@@ -27,7 +28,6 @@ import {
   SharePropertySubType,
 } from "@/types/listingDetail";
 
-import FunnelLayout from "../common/FunnelLayout";
 import ListingDetailsDropdownContent from "./ListingDetailsDropdownContent";
 
 interface ListingDetailsProps {

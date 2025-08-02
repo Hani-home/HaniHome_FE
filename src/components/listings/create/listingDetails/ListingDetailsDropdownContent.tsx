@@ -2,15 +2,15 @@
 import { useListingStore } from "@/stores/useListingStore";
 
 // 세부 항목별 UI 컴포넌트
-import CapacityPeopleField from "@/components/listings/create/CapacityPeopleField";
-import FurnitureContent from "@/components/listings/create/FurnitureContent";
-import HighLightsContent from "@/components/listings/create/HighLightsContent";
-import InternalDetailsContent from "@/components/listings/create/InternalDetailsContent";
-import IsBrokeredField from "@/components/listings/create/IsBrokeredField";
-import PropertyTypeField from "@/components/listings/create/PropertyTypeField";
+import CapacityPeopleField from "@/components/listings/create/listingDetails/CapacityPeopleField";
+import FurnitureContent from "@/components/listings/create/listingDetails/FurnitureContent";
+import HighLightsContent from "@/components/listings/create/listingDetails/HighLightsContent";
+import InternalDetailsContent from "@/components/listings/create/listingDetails/InternalDetailsContent";
+import IsBrokeredField from "@/components/listings/create/listingDetails/IsBrokeredField";
+import PropertyTypeField from "@/components/listings/create/listingDetails/PropertyTypeField";
 
 // 카테고리별 옵션과 질문 매핑
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { QUESTION_MAP } from "@/constants/question-map";
 
 // 타입 정의

@@ -1,11 +1,11 @@
+import DropdownOptionsList from "@/components/listings/create/common/DropdownOptionsList";
+
 import { RENT_TYPE_MAP, SHARE_TYPE_MAP } from "@/constants/housing-options";
 
 import {
   RentPropertySubType,
   SharePropertySubType,
 } from "@/types/listingDetail";
-
-import DropdownOptionsList from "./DropdownOptionsList";
 
 interface PropertyTypeFieldProps {
   listingType: "RENT" | "SHARE";

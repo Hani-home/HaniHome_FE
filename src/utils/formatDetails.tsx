@@ -8,7 +8,7 @@ import {
   RENT_TYPE_MAP,
   SHARE_TYPE_MAP,
 } from "@/constants/housing-options";
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 
 import {
   CapacityRent,

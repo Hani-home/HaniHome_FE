@@ -6,15 +6,15 @@ import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import DropdownSelector from "@/components/listings/create/common/DropdownSelector";
 import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import { GENDER_PREFERENCE_MAP } from "@/constants/gender-options";
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 
 import { MovingConditionsOption } from "@/types/createPropertyAnswer";
 
-import DropdownSelector from "./DropdownSelector";
 import MovingConditionDropdownContent from "./MovingConditionDropdownContent";
 
 interface MovingConditionProps {

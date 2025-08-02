@@ -1,10 +1,9 @@
 import CheckIcon from "@/components/common/CheckIcon";
+import DropdownOptionsList from "@/components/listings/create/common/DropdownOptionsList";
 
 import { GENDER_PREFERENCE_MAP } from "@/constants/gender-options";
 
 import { GenderPreference } from "@/types/listingDetail";
-
-import DropdownOptionsList from "./DropdownOptionsList";
 
 interface GenderPreferenceContentProps {
   value: GenderPreference | null;

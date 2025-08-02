@@ -1,7 +1,7 @@
 import CheckIcon from "@/components/common/CheckIcon";
 import Divider from "@/components/common/Divider";
 
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 
 import { CostDetails } from "@/types/listingDetail";
 

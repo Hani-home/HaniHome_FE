@@ -1,4 +1,4 @@
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 
 interface HighLightsContentProps {
   value: number[];

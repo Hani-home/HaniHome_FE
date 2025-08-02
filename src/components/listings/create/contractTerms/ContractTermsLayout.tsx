@@ -6,6 +6,7 @@ import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import DropdownSelector from "@/components/listings/create/common/DropdownSelector";
 import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
@@ -13,7 +14,6 @@ import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 import { ContractTermsOption } from "@/types/createPropertyAnswer";
 
 import ContractTermsContent from "./ContractTermsContent";
-import DropdownSelector from "./DropdownSelector";
 
 interface ContractTermsProps {
   onNext: () => void;

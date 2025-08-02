@@ -1,6 +1,6 @@
 import { useListingStore } from "@/stores/useListingStore";
 
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 
 import { MovingConditionsOption } from "@/types/createPropertyAnswer";
@@ -55,9 +55,10 @@ const MovingConditionDropdownContent = ({
         <AvailableOptionsContent
           options={additionalInfoOptions}
           defaultValue={optionItemIds}
-          onSelect={(selectedIds) => {
+          onSelect={selectedIds => {
             setOptionItemIds(selectedIds);
-            onSelect({ type: "optionItemIds", value: selectedIds }); }}
+            onSelect({ type: "optionItemIds", value: selectedIds });
+          }}
         />
       );
 

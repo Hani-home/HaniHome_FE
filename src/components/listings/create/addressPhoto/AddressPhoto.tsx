@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { useEffect } from "react";
 
-import PhotoField from "@/components/listings/create/PhotoField";
+import PhotoField from "@/components/listings/create/addressPhoto/PhotoField";
 import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import AddressField from "./AddressField";
