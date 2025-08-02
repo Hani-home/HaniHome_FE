@@ -84,7 +84,6 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
         return !!genderPreference;
       case "availableOptions": {
         const additionalInfoItems = CATEGORY_OPTIONS[3].items;
-
         const requiredGroups = Object.keys(additionalInfoItems);
 
         const selectedItems = Object.entries(additionalInfoItems).flatMap(
@@ -95,7 +94,6 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
         );
 
         const selectedGroups = new Set(selectedItems.map(item => item.group));
-
         return requiredGroups.every(group => selectedGroups.has(group));
       }
       case "moveInInfo":
@@ -108,7 +106,8 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
         return (
           !!livingConditions &&
           !!livingConditions.noticePeriodWeeks &&
-          !!livingConditions.minimumStayWeeks
+          !!livingConditions.minimumStayWeeks &&
+          !!livingConditions.contractTerms
         );
       default:
         return false;

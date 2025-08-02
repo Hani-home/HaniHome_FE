@@ -1,5 +1,10 @@
+import { useState } from "react";
+
+import clsx from "clsx";
+
 import CheckIcon from "@/components/common/CheckIcon";
 import Divider from "@/components/common/Divider";
+import SelectableChip from "@/components/common/SelectableChip";
 
 import { CATEGORY_OPTIONS } from "@/constants/property-category";
 
@@ -18,6 +23,7 @@ const CostDetailField = ({
   onCostDetailsChange,
   onOptionItemIdsChange,
 }: CostDetailFieldProps) => {
+  const [customIncludedItemText, setCustomIncludedItemText] = useState("");
   const handleInputChange = <K extends keyof typeof value>(
     field: K,
     newValue: (typeof value)[K],
@@ -83,25 +89,33 @@ const CostDetailField = ({
       {/* 빌에 포함된 항목 */}
       <div className="flex flex-col gap-4">
         <div className="text-body1-sb text-gray-800">빌에 포함된 항목</div>
+
         <div className="flex w-[343px] flex-wrap content-center items-center gap-2 self-stretch">
           {CATEGORY_OPTIONS[4].items.map(({ optionId, label }) => {
             const isSelected = optionItemIds.includes(optionId);
             return (
-              <button
+              <SelectableChip
                 key={label}
-                type="button"
+                label={label}
+                selected={isSelected}
                 onClick={() => handleIncludedItemClick(optionId)}
-                className={`rounded-full border px-3 py-1 text-sm ${
-                  isSelected
-                    ? "bg-mint-press border-transparent text-white"
-                    : "border-gray-400 text-gray-700"
-                }`}
-              >
-                {label}
-              </button>
+              />
             );
           })}
         </div>
+
+        {optionItemIds.includes(53) && (
+          <input
+            type="text"
+            value={customIncludedItemText}
+            onChange={e => setCustomIncludedItemText(e.target.value)}
+            placeholder="항목을 입력해주세요"
+            className={clsx(
+              "text-body2-med h-9 w-[343px] rounded-[4px] border px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none",
+              customIncludedItemText ? "border-gray-600" : "border-gray-400",
+            )}
+          />
+        )}
       </div>
 
       <Divider className="my-[2px]" />
@@ -112,7 +126,7 @@ const CostDetailField = ({
         <input
           type="text"
           placeholder="ex) 주차비는 주/$20 입니다"
-          className={`placeholder:text-body2-med h-9 w-[343px] rounded-[4px] border px-4 py-3 placeholder:text-gray-500 focus:outline-none ${value.costDescription ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
+          className={`text-body2-med h-9 w-[343px] rounded-[4px] border px-4 py-3 placeholder:text-gray-500 focus:outline-none ${value.costDescription ? "border-gray-600 text-gray-900" : "border-gray-400"}`}
           value={value.costDescription}
           onChange={e => handleInputChange("costDescription", e.target.value)}
         />

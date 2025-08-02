@@ -314,7 +314,7 @@ const InternalDetailsContent = <
           ))}
       </div>
       {listingType === "RENT" && (
-        <div className="flex flex-col gap-3 px-4 pt-3">
+        <div className="flex flex-col gap-3 px-4 py-3">
           <div
             className="flex cursor-pointer items-center gap-1 select-none"
             onClick={handleYardChecked}
