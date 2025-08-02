@@ -202,9 +202,41 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
 
   const allAnswered = questions.every(q => {
     const answer = getAnswerValue(q.id as ListingDetailsOption["type"]);
+
+    if (q.id === "highlights" && Array.isArray(answer)) {
+      const selected = answer.filter(id =>
+        CATEGORY_OPTIONS[1].items.some(opt => opt.optionId === id),
+      );
+      return selected.length >= 5;
+    }
+
+    if (
+      q.id === "internalDetails" &&
+      typeof answer === "object" &&
+      answer !== null &&
+      !Array.isArray(answer)
+    ) {
+      const requiredKeys = [
+        ...(listingType === "RENT"
+          ? ["numberOfRoom", "numberOfBath"]
+          : ["totalResidents", "totalBathUser"]),
+        "internalArea",
+      ];
+      return requiredKeys.every(
+        key =>
+          typeof (answer as unknown as Record<string, number>)[key] ===
+          "number",
+      );
+    }
+
+    if (q.id === "isBrokered") {
+      return typeof answer === "number";
+    }
+
     if (Array.isArray(answer)) return answer.length > 0;
-    if (answer && typeof answer === "object")
+    if (typeof answer === "object" && answer !== null)
       return Object.keys(answer).length > 0;
+
     return Boolean(answer);
   });
 
@@ -260,10 +292,12 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
                     const newIds = (Array.isArray(val) ? val : [val]).filter(
                       (v): v is number => typeof v === "number",
                     );
-                    const updated = [
-                      ...optionItemIds.filter(id => !targetIds.includes(id)),
-                      ...newIds,
-                    ];
+                    const updated = Array.from(
+                      new Set([
+                        ...optionItemIds.filter(id => !targetIds.includes(id)),
+                        ...newIds,
+                      ]),
+                    );
                     setOptionItemIds(updated);
                     break;
                   }
