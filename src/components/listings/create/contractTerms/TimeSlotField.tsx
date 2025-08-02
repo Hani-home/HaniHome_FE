@@ -19,7 +19,7 @@ const PERIOD_LIMITS: Record<Period, { minTime: string; maxTime: string }> = {
   저녁: { minTime: "18:30", maxTime: "24:00" },
 };
 
-const TimeSlotField = ({value, onChange}: TimeSlotFieldProps) => {
+const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
   const [slots, setSlots] = useState<TimeSlot[]>(value);
   const [tempTime, setTempTime] = useState<string | null>(null);
   const [activeSpinner, setActiveSpinner] = useState<{
@@ -156,15 +156,58 @@ const TimeSlotField = ({value, onChange}: TimeSlotFieldProps) => {
     }
   };
 
+  const getDisplayTime = (period: Period, type: "start" | "end") => {
+    const timeValue =
+      slots[PERIODS.indexOf(period)][
+        type === "start" ? "timeFrom" : "timeTo"
+      ] || "00:00";
+
+    const isActive =
+      activeSpinner?.period === period && activeSpinner?.type === type;
+
+    const [hour, minute] = (displayTime(timeValue) || "00:00").split(":");
+
+    return isActive ? (
+      <span>nn : nn</span>
+    ) : (
+      <span className="flex items-center gap-[2px]">
+        <span>{hour}</span>
+        <span>:</span>
+        <span>{minute}</span>
+      </span>
+    );
+  };
+
+  const getButtonClass = (period: Period, type: "start" | "end") => {
+    const timeValue =
+      slots[PERIODS.indexOf(period)][
+        type === "start" ? "timeFrom" : "timeTo"
+      ] || "00:00";
+
+    const isEmptyTime = timeValue === "00:00" || timeValue === "";
+    const isTwentyFour = timeValue === "24:00";
+
+    if (activeSpinner?.period === period && activeSpinner?.type === type) {
+      return "bg-mint-contrast border-mint-contrast text-white";
+    }
+
+    if (isEmptyTime) {
+      return "bg-gray-0 border-gray-300 text-gray-300";
+    }
+
+    if (isTwentyFour) {
+      return "text-mint bg-white border-gray-400";
+    }
+
+    return "text-mint border-gray-400";
+  };
+
   return (
     <div className="relative">
       {PERIODS.map(period => {
-        const idx = PERIODS.indexOf(period);
-        const slot = slots[idx] || { timeFrom: "00:00", timeTo: "00:00" };
-
         return (
           <div key={period} className="px-4 py-3">
-            <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center justify-between">
               <div
                 className={`text-body1-sb ${
                   activeSpinner?.period === period
@@ -174,39 +217,22 @@ const TimeSlotField = ({value, onChange}: TimeSlotFieldProps) => {
               >
                 {period}
               </div>
-              <div className="flex items-center gap-3">
-                {(["start", "end"] as const).map(type => {
-                  const timeValue =
-                    slot[type === "start" ? "timeFrom" : "timeTo"] || "00:00";
+              <div className="flex items-center gap-[12px]">
+                <button
+                  className={`text-body1-med flex h-[33px] w-[77px] items-center justify-center gap-1 rounded-[4px] border px-3 py-1 ${getButtonClass(period, "start")}`}
+                  onClick={() => handleButtonClick(period, "start")}
+                >
+                  {getDisplayTime(period, "start")}
+                </button>
 
-                  const isEmptyTime = timeValue === "00:00" || timeValue === "";
-                  const isTwentyFour = timeValue === "24:00";
+                <span className="text-body1-med text-gray-400">~</span>
 
-                  const buttonClass =
-                    activeSpinner?.period === period &&
-                    activeSpinner?.type === type
-                      ? "bg-mint-contrast border-mint-contrast text-white"
-                      : isEmptyTime
-                        ? "bg-gray-0 border-gray-300 text-gray-300"
-                        : isTwentyFour
-                          ? "text-mint bg-white border-gray-400"
-                          : "text-mint border-gray-400";
-
-                  const showTime =
-                    activeSpinner?.period === period &&
-                    activeSpinner?.type === type
-                      ? "nn:nn"
-                      : displayTime(timeValue);
-                  return (
-                    <button
-                      key={type}
-                      className={`text-body1-med flex h-[33px] gap-1 rounded-[4px] border px-3 py-1 ${buttonClass}`}
-                      onClick={() => handleButtonClick(period, type)}
-                    >
-                      {showTime}
-                    </button>
-                  );
-                })}
+                <button
+                  className={`text-body1-med flex h-[33px] w-[77px] items-center justify-center gap-1 rounded-[4px] border px-3 py-1 ${getButtonClass(period, "end")}`}
+                  onClick={() => handleButtonClick(period, "end")}
+                >
+                  {getDisplayTime(period, "end")}
+                </button>
               </div>
             </div>
 

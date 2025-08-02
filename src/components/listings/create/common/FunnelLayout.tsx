@@ -16,7 +16,7 @@ const FunnelLayout = ({ children }: FunnelLayoutProps) => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col pb-[70px]">
+    <div className="flex flex-col pb-[125px]">
       <BackHeader rightIcon="close" onRightClick={() => router.push("/home")} />
       <FunnelStepMenu />
       {children}
