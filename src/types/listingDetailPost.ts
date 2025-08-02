@@ -62,10 +62,10 @@ export interface TimeSlot {
 }
 
 export interface InternalDetailsBase {
-  internalArea: number;
-  totalArea: number;
-  totalFloors: number;
-  propertyFloor: number;
+  internalArea: number | null;
+  totalArea: number | null;
+  totalFloors: number | null;
+  propertyFloor: number | null;
 }
 
 // --- 공통 베이스 ---
@@ -91,8 +91,8 @@ interface PropertyBase {
 
 // --- SHARE 전용 ---
 export interface ShareInternalDetails extends InternalDetailsBase {
-  totalResidents: number; //총거주
-  totalBathUser: number; //욕실쉐어자수
+  totalResidents: number | null;
+  totalBathUser: number | null;
   withPropertyOwner: boolean;
 }
 
@@ -105,8 +105,8 @@ export interface SharePropertyDetail extends PropertyBase {
 
 // --- RENT 전용 ---
 export interface RentInternalDetails extends InternalDetailsBase {
-  numberOfRoom: number;
-  numberOfBath: number;
+  numberOfRoom: number | null;
+  numberOfBath: number | null;
   yardIncluded: boolean;
   verandaIncluded: boolean;
 }

@@ -25,6 +25,9 @@ interface ListingState {
   photoUrls: string[];
   setPhotoUrls: (data: string[]) => void;
 
+  searchKeyword: string;
+  setSearchKeyword: (keyword: string) => void;
+
   rentPropertyType: RentPropertySubType | null;
   setRentPropertyType: (data: RentPropertySubType | null) => void;
 
@@ -77,12 +80,15 @@ interface ListingState {
 
   livingConditions: LivingConditions | null;
   setLivingConditions: (value: LivingConditions | null) => void;
+
+  isSquareMeter: boolean;
+  setIsSquareMeter: (value: boolean) => void;
+
+  reset: () => void;
 }
 
-export const useListingStore = create<ListingState>(set => ({
+const initialState = {
   listingType: null,
-  setListingType: type => set({ listingType: type }),
-
   region: {
     country: "",
     postCode: "",
@@ -95,11 +101,31 @@ export const useListingStore = create<ListingState>(set => ({
     longitude: 0,
     latitude: 0,
   },
-  setRegion: data => set({ region: data }),
-
   photoUrls: [],
-  setPhotoUrls: data => set({ photoUrls: data }),
-
+  searchKeyword: "",
+  rentPropertyType: null,
+  sharePropertyType: null,
+  rentCapacityPeople: null,
+  shareCapacityPeople: null,
+  rentInternalDetails: {
+    internalArea: null,
+    totalArea: null,
+    totalFloors: null,
+    propertyFloor: null,
+    numberOfRoom: null,
+    numberOfBath: null,
+    yardIncluded: false,
+    verandaIncluded: false,
+  },
+  shareInternalDetails: {
+    internalArea: null,
+    totalArea: null,
+    totalFloors: null,
+    propertyFloor: null,
+    totalResidents: null,
+    totalBathUser: null,
+    withPropertyOwner: false,
+  },
   costDetails: {
     weeklyCost: 0,
     costDescription: "",
@@ -108,6 +134,44 @@ export const useListingStore = create<ListingState>(set => ({
     depositAdjustable: false,
     billIncluded: false,
   },
+  optionItemIds: [],
+  timeSlots: [
+    { timeFrom: "00:00", timeTo: "00:00" },
+    { timeFrom: "00:00", timeTo: "00:00" },
+    { timeFrom: "00:00", timeTo: "00:00" },
+  ],
+  meetingDateFrom: null,
+  meetingDateTo: null,
+  viewingAlwaysAvailable: false,
+  description: "",
+  genderPreference: null,
+  lgbtAvailable: false,
+  moveInInfo: {
+    availableFrom: "",
+    availableTo: "",
+    immediate: false,
+    negotiable: false,
+  },
+  livingConditions: null,
+  isSquareMeter: false,
+};
+
+export const useListingStore = create<ListingState>()(set => ({
+  ...initialState,
+
+  reset: () => set(initialState),
+
+  setListingType: type => set({ listingType: type }),
+  setRegion: data => set({ region: data }),
+  setPhotoUrls: data => set({ photoUrls: data }),
+  setSearchKeyword: keyword => set({ searchKeyword: keyword }),
+  setRentPropertyType: data => set({ rentPropertyType: data }),
+  setSharePropertyType: data => set({ sharePropertyType: data }),
+  setRentCapacityPeople: data => set({ rentCapacityPeople: data }),
+  setShareCapacityPeople: data => set({ shareCapacityPeople: data }),
+  setRentInternalDetails: data => set({ rentInternalDetails: data }),
+  setShareInternalDetails: data => set({ shareInternalDetails: data }),
+
   setCostDetails: (key, value) =>
     set(state => ({
       costDetails: {
@@ -115,79 +179,19 @@ export const useListingStore = create<ListingState>(set => ({
         [key]: value,
       },
     })),
-
   setAllCostDetails: value => set({ costDetails: value }),
 
-  optionItemIds: [],
   setOptionItemIds: ids => set({ optionItemIds: ids }),
-
-  timeSlots: [
-    { timeFrom: "00:00", timeTo: "00:00" },
-    { timeFrom: "00:00", timeTo: "00:00" },
-    { timeFrom: "00:00", timeTo: "00:00" },
-  ],
   setTimeSlots: data => set({ timeSlots: data }),
-
-  meetingDateFrom: null,
-  meetingDateTo: null,
   setMeetingDateRange: (from, to) =>
     set({ meetingDateFrom: from, meetingDateTo: to }),
-
-  viewingAlwaysAvailable: false,
   setViewingAlwaysAvailable: value => set({ viewingAlwaysAvailable: value }),
-
-  description: "",
   setDescription: data => set({ description: data }),
-
-  genderPreference: null,
   setGenderPreference: value => set({ genderPreference: value }),
-
-  lgbtAvailable: false,
   setLgbtAvailable: value => set({ lgbtAvailable: value }),
-
-  moveInInfo: {
-    availableFrom: "",
-    availableTo: "",
-    immediate: false,
-    negotiable: false,
-  },
   setMoveInInfo: value => set({ moveInInfo: value }),
-
-  livingConditions: null,
   setLivingConditions: value => set({ livingConditions: value }),
-
-  rentPropertyType: null,
-  setRentPropertyType: data => set({ rentPropertyType: data }),
-
-  sharePropertyType: null,
-  setSharePropertyType: data => set({ sharePropertyType: data }),
-
-  rentCapacityPeople: null,
-  setRentCapacityPeople: data => set({ rentCapacityPeople: data }),
-
-  shareCapacityPeople: null,
-  setShareCapacityPeople: data => set({ shareCapacityPeople: data }),
-
-  rentInternalDetails: {
-    internalArea: 0,
-    totalArea: 0,
-    totalFloors: 0,
-    propertyFloor: 0,
-    numberOfRoom: 0,
-    numberOfBath: 0,
-    yardIncluded: false,
-    verandaIncluded: false,
-  },
-  setRentInternalDetails: data => set({ rentInternalDetails: data }),
-
-  shareInternalDetails: {
-    internalArea: 0,
-    totalArea: 0,
-    totalFloors: 0,
-    propertyFloor: 0,
-    totalResidents: 0,
-    totalBathUser: 0,
-    withPropertyOwner: false,
-  },
-  setShareInternalDetails: data => set({ shareInternalDetails: data }),
+  setIsSquareMeter: value => set({ isSquareMeter: value }),
 }));
+
+export type UseListingStoreReturn = ReturnType<typeof useListingStore.getState>;

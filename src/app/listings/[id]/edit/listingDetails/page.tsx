@@ -22,7 +22,7 @@ import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
 import BackHeader from "@/components/layout/header/BackHeader";
-import FunnelStepMenu from "@/components/listings/create/FunnelStepMenu";
+import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
 
 import { QUESTION_MAP } from "@/constants/question-map";
 
