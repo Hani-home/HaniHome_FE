@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { useListingStore } from "@/stores/useListingStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
+import TextareaField from "@/components/common/TextareaField";
 import BackHeader from "@/components/layout/header/BackHeader";
 
 interface ListingDescriptionProps {
@@ -22,8 +23,7 @@ const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
+  const handleChange = (value: string) => {
     if (value.length <= 300) {
       setText(value);
       setDescription(value);
@@ -43,28 +43,19 @@ const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
           자세하게 적을수록 조회수가 높아져요
         </div>
       </div>
-      <div className="flex flex-col gap-2 px-4 py-3">
-        <div className="bg-gray-0 flex items-center rounded-[4px] p-3">
-          <textarea
-            ref={textareaRef}
-            rows={2}
-            value={text}
-            onChange={handleChange}
-            className={`text-body1-med w-[319px] resize-none overflow-hidden bg-transparent leading-[22px] text-gray-400 focus:outline-none ${text ? "text-gray-700" : "text-gray-400"}`}
-            placeholder={`주변 인프라, 편리한 교통, 깔끔한 집 등 다양하게\n매물을 홍보해요`}
-          />
-        </div>
-
-        <div className="text-cap1-med flex justify-end text-gray-400">
-          {text.length} / 300
-        </div>
-      </div>
+      <TextareaField
+        onChange={handleChange}
+        value={text}
+        maxLength={300}
+        placeholder="주변 인프라, 편리한 교통, 깔끔한 집 등 다양하게 매물을 홍보해요"
+        gap="gap-2"
+      />
       <BottomActionBar
         buttons={[
           {
             label: "저장",
             onClick: () => {
-              setDescription(text); 
+              setDescription(text);
               console.log("저장");
             },
             variant: "outline",

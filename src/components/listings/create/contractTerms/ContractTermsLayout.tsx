@@ -131,6 +131,11 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     return !!selectedAnswers[item.id];
   });
 
+  const allowedOptionIds = [47, 48, 49, 50, 51, 52, 53];
+  const isBillIncludedSelected = optionItemIds.some(id =>
+    allowedOptionIds.includes(id),
+  );
+
   const getAnswerText = (itemId: string): string | undefined => {
     switch (itemId) {
       case "costDetails": {
@@ -216,7 +221,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
             label: "다음",
             onClick: onNext,
             variant: "filled",
-            disabled: !allAnswered,
+            disabled: !allAnswered || !isBillIncludedSelected,
           },
         ]}
       />
