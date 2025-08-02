@@ -53,8 +53,14 @@ export const useCalendarHandlers = ({
   };
 
   useEffect(() => {
+    const firstRange = range[0];
+    if (!firstRange) return;
+
     const selected =
-      focusedRange[1] === 0 ? range[0].startDate : range[0].endDate;
+      focusedRange[1] === 0
+        ? (firstRange.startDate ?? new Date())
+        : (firstRange.endDate ?? new Date());
+
     setTempDate(selected);
   }, [focusedRange, range]);
 

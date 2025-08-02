@@ -16,7 +16,6 @@ interface MeetingTimeFieldProps {
   setMeetingDateRange: (from: string | null, to: string | null) => void;
   viewingAlwaysAvailable: boolean;
   setViewingAlwaysAvailable: (value: boolean) => void;
-  onCompleteSelection?: () => void;
 }
 
 const toStartOfDay = (date: Date) => {
@@ -26,12 +25,13 @@ const toStartOfDay = (date: Date) => {
 };
 
 const MeetingTimeField = ({
+  meetingDateFrom,
+  meetingDateTo,
   setMeetingDateRange,
   viewingAlwaysAvailable,
   setViewingAlwaysAvailable,
 }: MeetingTimeFieldProps) => {
   const today = useMemo(() => new Date(), []);
-  const dummyDate = useMemo(() => new Date("0000-01-01T00:00:00"), []);
 
   const [focusedRange, setFocusedRange] = useState<[number, number]>([0, 0]);
   const [currentMonth, setCurrentMonth] = useState<Date>(today);
@@ -92,25 +92,30 @@ const MeetingTimeField = ({
   };
 
   const isSingleSelection = useMemo(() => {
-    if (!range) return true;
-    const { startDate, endDate } = range[0];
+    const { startDate, endDate } = range[0] || {};
+    if (!startDate || !endDate) return true;
     return startDate.toDateString() === endDate.toDateString();
   }, [range]);
 
   useEffect(() => {
     if (viewingAlwaysAvailable) {
-      setCurrentMonth(dummyDate);
-      setRange([
-        { startDate: dummyDate, endDate: dummyDate, key: "selection" },
-      ]);
-    } else {
-      const todayStart = toStartOfDay(today);
-      setCurrentMonth(todayStart);
-      setRange([
-        { startDate: todayStart, endDate: todayStart, key: "selection" },
-      ]);
+      setRange([]);
+      setMeetingDateRange(null, null);
+      return;
     }
-  }, [viewingAlwaysAvailable]);
+
+    const from = meetingDateFrom ? new Date(meetingDateFrom) : today;
+    const to = meetingDateTo ? new Date(meetingDateTo) : today;
+
+    setRange([
+      {
+        startDate: toStartOfDay(from),
+        endDate: toStartOfDay(to),
+        key: "selection",
+      },
+    ]);
+    setCurrentMonth(from);
+  }, [viewingAlwaysAvailable, meetingDateFrom, meetingDateTo]);
 
   return (
     <div>
