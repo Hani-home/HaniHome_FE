@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { fromSquareMeter, toSquareMeter } from "@/utils/areaConverter";
+import {
+  fromSquareMeter,
+  toSquareMeter,
+} from "@/utils/listing/create/areaConverter";
 
 import CheckIcon from "@/components/common/CheckIcon";
 

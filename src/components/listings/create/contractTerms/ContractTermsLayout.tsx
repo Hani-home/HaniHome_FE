@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { formatMeetingDay } from "@/utils/dateFormatter";
-import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
+import { formatMeetingDay } from "@/utils/formatter/dateFormatter";
+import { useDropdownAutoManager } from "@/utils/listing/create/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownSelector from "@/components/listings/create/common/DropdownSelector";

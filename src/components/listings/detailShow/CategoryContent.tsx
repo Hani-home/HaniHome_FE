@@ -16,7 +16,7 @@ import {
   formatLivingConditions,
   formatMoveInDates,
   formatPropertySubType,
-} from "@/utils/formatDetails";
+} from "@/utils/formatter/detailFormatter";
 
 import {
   CapacityRent,

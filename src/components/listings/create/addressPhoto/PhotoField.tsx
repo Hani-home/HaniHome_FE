@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
+import { uploadMultipleImages } from "@/utils/images/uploadMultipleImages";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";

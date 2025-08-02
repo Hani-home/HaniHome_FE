@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { calculateNewRange } from "@/utils/calculateNewRange";
+import { calculateNewRange } from "@/utils/calendar/calculateNewRange";
 
 import { CalendarProps } from "@/types/calendar";
 

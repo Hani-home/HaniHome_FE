@@ -42,7 +42,6 @@ export const propertyInfo: PropertyDetail[] = [
       isImmediate: false,
       isNegotiable: false,
     },
-    parkingOption: "STREET_PARKING",
     meetingDateFrom: "2025-10-25",
     meetingDateTo: "2025-10-30",
     timeSlots: [
@@ -60,7 +59,6 @@ export const propertyInfo: PropertyDetail[] = [
       totalFloors: 7,
       propertyFloor: 4,
       withPropertyOwner: false,
-      isSquareMeter: true,
     },
     capacityShare: "TRIPLE",
   },
@@ -108,7 +106,6 @@ export const propertyInfo: PropertyDetail[] = [
       isImmediate: true, //즉시 입주 가능 여부
       isNegotiable: false, //입주 일자 협의 가능 여부
     },
-    parkingOption: "NONE",
     meetingDateFrom: "2025-09-25",
     meetingDateTo: "2025-09-30",
     timeSlots: [
@@ -127,7 +124,6 @@ export const propertyInfo: PropertyDetail[] = [
       propertyFloor: 5,
       yardIncluded: true,
       verandaIncluded: true,
-      isSquareMeter: false,
     },
     capacityRent: "TWO",
   },

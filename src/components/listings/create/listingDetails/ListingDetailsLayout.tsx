@@ -10,7 +10,7 @@ import {
   getAnswerValue,
   isAllAnswered,
 } from "@/utils/listing/create/answerHelpers";
-import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
+import { useDropdownAutoManager } from "@/utils/listing/create/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownSelector from "@/components/listings/create/common/DropdownSelector";
