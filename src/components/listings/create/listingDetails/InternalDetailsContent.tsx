@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useListingStore } from "@/stores/useListingStore";
+
 import { fromSquareMeter, toSquareMeter } from "@/utils/areaConverter";
 
 import CheckIcon from "@/components/common/CheckIcon";
@@ -33,57 +35,22 @@ const InternalDetailsContent = <
   listingType,
   onChange,
 }: InternalDetailsContentProps<T>) => {
+  const isSquareMeter = useListingStore(state => state.isSquareMeter);
+  const setIsSquareMeter = useListingStore(state => state.setIsSquareMeter);
+
+  const [localInputValues, setLocalInputValues] = useState<
+    Partial<Record<keyof T, string>>
+  >({});
+  const [isUserTyping, setIsUserTyping] = useState(false);
   const [withPropertyOwner, setWithPropertyOwner] = useState(false);
   const [yardIncluded, setYardIncluded] = useState(false);
   const [verandaIncluded, setVerandaIncluded] = useState(false);
-  const [isSquareMeter, setIsSquareMeter] = useState(true);
   const [isOpenAreaInfo, setIsOpenAreaInfo] = useState(false);
 
-  useEffect(() => {
-    setWithPropertyOwner(
-      (value as ShareInternalDetails).withPropertyOwner ?? false,
-    );
-    setYardIncluded((value as RentInternalDetails).yardIncluded ?? false);
-    setVerandaIncluded((value as RentInternalDetails).verandaIncluded ?? false);
-  }, [value]);
+  const areaInfoRef = useRef<HTMLDivElement>(null);
 
   const handleIsSquareMeterToggle = () => {
-    const newIsSquareMeter = !isSquareMeter;
-    setIsSquareMeter(newIsSquareMeter);
-
-    areaKeys.forEach(key => {
-      const current = value[key];
-      if (typeof current !== "number") return;
-
-      const converted = newIsSquareMeter
-        ? toSquareMeter(current) // 평 → m²
-        : fromSquareMeter(current); // m² → 평
-
-      onChange(key, +converted.toFixed(2) as T[typeof key]);
-    });
-  };
-
-  const handleNumericInputChange = <K extends keyof T>(
-    field: K,
-    newValue: string,
-  ) => {
-    if (newValue === "" || isNaN(+newValue)) {
-      if (field === "internalArea" || field === "totalArea") {
-        onChange(field, "" as T[K]);
-      } else {
-        onChange(field, "" as T[K]);
-      }
-      return;
-    }
-
-    const numeric = +newValue;
-
-    if (field === "internalArea" || field === "totalArea") {
-      const storedValue = isSquareMeter ? numeric : toSquareMeter(numeric);
-      onChange(field, storedValue as T[K]);
-    } else {
-      onChange(field, numeric as T[K]);
-    }
+    setIsSquareMeter(!isSquareMeter);
   };
 
   const handleYardChecked = () => {
@@ -107,17 +74,52 @@ const InternalDetailsContent = <
     onChange("withPropertyOwner" as keyof T, newChecked as T[keyof T]);
   };
 
-  const getDisplayValue = (rawValue: number | undefined | "") => {
-    if (rawValue === undefined || rawValue === "" || rawValue === 0) return "";
-    return isSquareMeter
-      ? rawValue.toString()
-      : fromSquareMeter(rawValue).toString();
+  const handleNumericInputChange = <K extends keyof T>(
+    field: K,
+    newValue: string,
+  ) => {
+    setIsUserTyping(true);
+    setLocalInputValues(prev => ({ ...prev, [field]: newValue }));
+
+    if (newValue === "") {
+      onChange(field, null as T[K]);
+      return;
+    }
+
+    const numeric = +newValue;
+    if (isNaN(numeric)) return;
+
+    const valueToSave = isSquareMeter ? numeric : toSquareMeter(numeric);
+    onChange(field, valueToSave as T[K]);
   };
+
   const toggleAreaInfo = () => {
     setIsOpenAreaInfo(prev => !prev);
   };
 
-  const areaInfoRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setWithPropertyOwner(
+      (value as ShareInternalDetails).withPropertyOwner ?? false,
+    );
+    setYardIncluded((value as RentInternalDetails).yardIncluded ?? false);
+    setVerandaIncluded((value as RentInternalDetails).verandaIncluded ?? false);
+  }, [value]);
+
+  useEffect(() => {
+    if (isUserTyping) return;
+
+    const converted: Partial<Record<keyof T, string>> = {};
+    for (const key of areaKeys) {
+      const raw = value[key];
+      if (typeof raw === "number") {
+        converted[key] = (
+          isSquareMeter ? raw : fromSquareMeter(raw)
+        ).toString();
+      }
+    }
+
+    setLocalInputValues(converted);
+  }, [isSquareMeter, value, isUserTyping]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -140,7 +142,6 @@ const InternalDetailsContent = <
 
   const inputUnitText = isSquareMeter ? "㎡" : "평";
   const buttonUnitText = isSquareMeter ? "평" : "㎡";
-
   const areaKeys = ["internalArea", "totalArea"] as const;
   const rentOtherKeys = ["numberOfRoom", "numberOfBath"] as const;
   const shareOtherKeys = ["totalResidents", "totalBathUser"] as const;
@@ -183,11 +184,11 @@ const InternalDetailsContent = <
             </div>
           </button>
         </div>
+
         {/* 면적 입력 */}
         <div className="flex justify-between">
           {areaKeys.map(key => {
             const rawValue = details[key];
-            const displayValue = getDisplayValue(rawValue);
 
             return (
               <div key={key} className="flex h-[73px] flex-col justify-between">
@@ -203,10 +204,11 @@ const InternalDetailsContent = <
                         : "border-gray-400 text-gray-500"
                     }`}
                     placeholder="입력해주세요"
-                    value={displayValue}
+                    value={localInputValues[key] ?? ""}
                     onChange={e =>
-                      handleNumericInputChange(key as keyof T, e.target.value)
+                      handleNumericInputChange(key, e.target.value)
                     }
+                    onBlur={() => setIsUserTyping(false)}
                   />
                   <span
                     className={`text-body1-med pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 ${

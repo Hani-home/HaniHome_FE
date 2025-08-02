@@ -81,6 +81,9 @@ interface ListingState {
   livingConditions: LivingConditions | null;
   setLivingConditions: (value: LivingConditions | null) => void;
 
+  isSquareMeter: boolean;
+  setIsSquareMeter: (value: boolean) => void;
+
   reset: () => void;
 }
 
@@ -105,22 +108,22 @@ const initialState = {
   rentCapacityPeople: null,
   shareCapacityPeople: null,
   rentInternalDetails: {
-    internalArea: 0,
-    totalArea: 0,
-    totalFloors: 0,
-    propertyFloor: 0,
-    numberOfRoom: 0,
-    numberOfBath: 0,
+    internalArea: null,
+    totalArea: null,
+    totalFloors: null,
+    propertyFloor: null,
+    numberOfRoom: null,
+    numberOfBath: null,
     yardIncluded: false,
     verandaIncluded: false,
   },
   shareInternalDetails: {
-    internalArea: 0,
-    totalArea: 0,
-    totalFloors: 0,
-    propertyFloor: 0,
-    totalResidents: 0,
-    totalBathUser: 0,
+    internalArea: null,
+    totalArea: null,
+    totalFloors: null,
+    propertyFloor: null,
+    totalResidents: null,
+    totalBathUser: null,
     withPropertyOwner: false,
   },
   costDetails: {
@@ -150,6 +153,7 @@ const initialState = {
     isNegotiable: false,
   },
   livingConditions: null,
+  isSquareMeter: false,
 };
 
 export const useListingStore = create<ListingState>()(set => ({
@@ -187,6 +191,7 @@ export const useListingStore = create<ListingState>()(set => ({
   setLgbtAvailable: value => set({ lgbtAvailable: value }),
   setMoveInInfo: value => set({ moveInInfo: value }),
   setLivingConditions: value => set({ livingConditions: value }),
+  setIsSquareMeter: value => set({ isSquareMeter: value }),
 }));
 
 export type UseListingStoreReturn = ReturnType<typeof useListingStore.getState>;
