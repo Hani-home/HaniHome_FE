@@ -4,9 +4,11 @@ import { useListingStore } from "@/stores/useListingStore";
 
 import { uploadMultipleImages } from "@/utils/uploadMultipleImages";
 
+import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
 import ImageSlider from "@/components/listings/detailShow/ImageSlider";
+import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
 
 import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
@@ -20,11 +22,13 @@ interface PhotoFieldProps {
 const MAX_IMAGE_COUNT = 10;
 
 const PhotoField = ({ onNext }: PhotoFieldProps) => {
-  const { setPhotoUrls: setPhotoData } = useListingStore();
+  const { photoUrls, setPhotoUrls } = useListingStore();
+  const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrls);
+
   const [isOpen, setIsOpen] = useState(false);
   const [, setUploadedFiles] = useState<File[]>([]);
   const [showErrorModal, setShowErrorModal] = useState(false);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +45,16 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files;
       if (!files || files.length === 0) return;
+
+      const totalCount = previewUrls.length + files.length;
+
+      if (totalCount > MAX_IMAGE_COUNT) {
+        setAlertMessage(
+          `이미지는 최대 ${MAX_IMAGE_COUNT}장까지 업로드할 수 있어요.`,
+        );
+        e.target.value = "";
+        return;
+      }
 
       try {
         await uploadMultipleImages({
@@ -59,12 +73,20 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
 
       e.target.value = "";
     },
-    [setPhotoData, setUploadedFiles],
+    [previewUrls, setPhotoUrls, setUploadedFiles],
   );
 
   useEffect(() => {
-    setPhotoData(previewUrls);
-  }, [previewUrls, setPhotoData]);
+    if (photoUrls.length > 0) {
+      setPreviewUrls(photoUrls);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (previewUrls.length > 0) {
+      setPhotoUrls(previewUrls);
+    }
+  }, [previewUrls]);
 
   return (
     <div className="max-w-[375px]">
@@ -104,6 +126,7 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
       <Divider className="my-1" />
       <input
         type="file"
+        multiple
         accept="image/png, image/jpeg"
         className="hidden"
         ref={fileInputRef}
@@ -117,14 +140,10 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
             className="py-6"
           />
         )}
-
-        {showErrorModal && (
-          <div className="text-body2-med text-red-500">
-            이미지 업로드 중 오류가 발생했습니다. 다시 시도해주세요.
-          </div>
-        )}
       </div>
+
       {isOpen && <BottomSheet onClose={() => setIsOpen(false)} />}
+
       <BottomActionBar
         buttons={[
           {
@@ -143,6 +162,18 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
           },
         ]}
       />
+
+      {showErrorModal && (
+        <ImageAlertModal onClose={() => setShowErrorModal(false)} />
+      )}
+
+      {alertMessage && (
+        <AlertMessage
+          message={alertMessage}
+          className="bottom-17"
+          onDone={() => setAlertMessage(null)}
+        />
+      )}
     </div>
   );
 };

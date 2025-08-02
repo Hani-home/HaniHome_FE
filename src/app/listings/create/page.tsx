@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import ListingCreateClient from "@/components/listings/create/ListingCreateClient";
+import ListingCreateClient from "@/components/listings/create/common/ListingCreateClient";
 
 export default function ListingCreatePage() {
   return (
