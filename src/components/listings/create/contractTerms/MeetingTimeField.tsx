@@ -16,6 +16,7 @@ interface MeetingTimeFieldProps {
   setMeetingDateRange: (from: string | null, to: string | null) => void;
   viewingAlwaysAvailable: boolean;
   setViewingAlwaysAvailable: (value: boolean) => void;
+  onCompleteSelection?: () => void;
 }
 
 const toStartOfDay = (date: Date) => {
@@ -25,8 +26,6 @@ const toStartOfDay = (date: Date) => {
 };
 
 const MeetingTimeField = ({
-  meetingDateFrom,
-  meetingDateTo,
   setMeetingDateRange,
   viewingAlwaysAvailable,
   setViewingAlwaysAvailable,
@@ -44,39 +43,6 @@ const MeetingTimeField = ({
     },
   ]);
   const [, setIsWheelOpen] = useState(false);
-
-  useEffect(() => {
-    if (viewingAlwaysAvailable) {
-      setCurrentMonth(dummyDate);
-      setRange([
-        {
-          startDate: dummyDate,
-          endDate: dummyDate,
-          key: "selection",
-        },
-      ]);
-      setFocusedRange([0, 0]);
-    } else {
-      const fromDate = meetingDateFrom ? new Date(meetingDateFrom) : today;
-      const toDate = meetingDateTo ? new Date(meetingDateTo) : today;
-
-      setCurrentMonth(fromDate);
-      setRange([
-        {
-          startDate: toStartOfDay(fromDate),
-          endDate: toStartOfDay(toDate),
-          key: "selection",
-        },
-      ]);
-      setFocusedRange([0, 0]);
-    }
-  }, [
-    meetingDateFrom,
-    meetingDateTo,
-    viewingAlwaysAvailable,
-    today,
-    dummyDate,
-  ]);
 
   const handleRangeChange = (newRange: Range[]) => {
     if (viewingAlwaysAvailable) return;
@@ -104,11 +70,20 @@ const MeetingTimeField = ({
     setViewingAlwaysAvailable(newStatus);
 
     if (newStatus) {
-      // 기한 상관없음 선택 시, 날짜 초기화
       setMeetingDateRange(null, null);
     } else {
-      // 다시 날짜 선택하게 될 때 기본값 세팅 (선택사항)
-      const todayStart = toStartOfDay(today);
+      const todayStart = toStartOfDay(new Date());
+
+      const todayRange = [
+        {
+          startDate: todayStart,
+          endDate: todayStart,
+          key: "selection",
+        },
+      ];
+
+      setRange(todayRange);
+      setCurrentMonth(todayStart);
       setMeetingDateRange(
         format(todayStart, "yyyy-MM-dd'T'00:00:00"),
         format(todayStart, "yyyy-MM-dd'T'00:00:00"),
@@ -122,10 +97,24 @@ const MeetingTimeField = ({
     return startDate.toDateString() === endDate.toDateString();
   }, [range]);
 
+  useEffect(() => {
+    if (viewingAlwaysAvailable) {
+      setCurrentMonth(dummyDate);
+      setRange([
+        { startDate: dummyDate, endDate: dummyDate, key: "selection" },
+      ]);
+    } else {
+      const todayStart = toStartOfDay(today);
+      setCurrentMonth(todayStart);
+      setRange([
+        { startDate: todayStart, endDate: todayStart, key: "selection" },
+      ]);
+    }
+  }, [viewingAlwaysAvailable]);
+
   return (
     <div>
       <Calendar
-        key={viewingAlwaysAvailable ? "always" : "normal"}
         range={range}
         focusedRange={focusedRange}
         currentMonth={currentMonth}
