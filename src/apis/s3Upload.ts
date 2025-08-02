@@ -35,6 +35,17 @@ export const getVerificationPresignedUrl = async (
   return res.data.data;
 };
 
+// 매물 등록 이미지 업로드용 Presigned URL 요청
+export const getPropertyPresignedUrl = async (
+  fileExtensions: string[],
+): Promise<PresignedUrlResponse[]> => {
+  const res = await axiosInstance.post("/api/v1/s3/properties/presigned-url", {
+    fileExtensions,
+  });
+
+  return res.data.data;
+};
+
 // 매물 기록 이미지 업로드용 Presigned URL 요청
 export const getPropertyNotePresignedUrl = async (
   fileExtensions: string[],

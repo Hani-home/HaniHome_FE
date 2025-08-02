@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { uploadMultipleImages } from "@/utils/images/uploadMultipleImages";
+import { getPropertyPresignedUrl } from "@/apis/s3Upload";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -14,12 +14,12 @@ import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
 import BottomSheet from "./BottomSheet";
 
+const MAX_IMAGE_COUNT = 10;
+
 interface PhotoFieldProps {
   onNext: () => void;
   onPrev: () => void;
 }
-
-const MAX_IMAGE_COUNT = 10;
 
 const PhotoField = ({ onNext }: PhotoFieldProps) => {
   const { photoUrls, setPhotoUrls } = useListingStore();
@@ -57,15 +57,27 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
       }
 
       try {
-        await uploadMultipleImages({
-          files,
-          setPreviewUrls,
-          setUploadedFiles,
-          setField: (_key, value) => setUploadedFiles(value),
-          fieldName: "unused",
-          setShowErrorModal,
-          maxFiles: MAX_IMAGE_COUNT,
+        const fileExtensions = Array.from(files).map(
+          file => file.type.split("/")[1],
+        );
+
+        const presignedUrls = await getPropertyPresignedUrl(fileExtensions);
+
+        const uploadPromises = Array.from(files).map(async (file, index) => {
+          const presignedUrl = presignedUrls[index];
+          await fetch(presignedUrl.presignedUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Type": file.type,
+            },
+            body: file,
+          });
+
+          setPreviewUrls(prev => [...prev, presignedUrl.fileUrl]);
+          setUploadedFiles(prev => [...prev, file]);
         });
+
+        await Promise.all(uploadPromises);
       } catch (error) {
         console.error("이미지 업로드 중 에러 발생:", error);
         setShowErrorModal(true);
@@ -73,7 +85,7 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
 
       e.target.value = "";
     },
-    [previewUrls, setPhotoUrls, setUploadedFiles],
+    [previewUrls, setUploadedFiles],
   );
 
   useEffect(() => {
@@ -156,9 +168,9 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
           },
           {
             label: "다음",
-            onClick: onNext,
+            onClick: onNext, // "다음" 버튼 클릭 시 onNext 호출
             variant: "filled",
-            disabled: previewUrls.length < 3,
+            disabled: previewUrls.length < 3, // 3장 이상이어야만 활성화
           },
         ]}
       />
