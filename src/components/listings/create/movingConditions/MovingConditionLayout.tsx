@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useListingStore } from "@/stores/useListingStore";
 
 import { formatMeetingDay } from "@/utils/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
@@ -23,33 +23,83 @@ interface MovingConditionProps {
 }
 
 const MovingCondition = ({ onNext }: MovingConditionProps) => {
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<string, MovingConditionsOption>
-  >({});
+  const {
+    genderPreference,
+    moveInInfo,
+    livingConditions,
+    optionItemIds,
+    setGenderPreference,
+    setMoveInInfo,
+    setLivingConditions,
+    setOptionItemIds,
+  } = useListingStore();
 
-  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
+  const { openIndices, toggleIndex } = useDropdownAutoManager({
     totalCount: COMMON_MOVING_CONDITIONS.length,
-    shouldAutoClose: index =>
-      !!selectedAnswers[COMMON_MOVING_CONDITIONS[index].id],
+    shouldAutoClose: index => {
+      const id = COMMON_MOVING_CONDITIONS[index].id;
+      switch (id) {
+        case "genderPreference":
+          return !!genderPreference;
+        case "availableOptions":
+          return optionItemIds.length > 0;
+        case "moveInInfo":
+          return (
+            !!moveInInfo.availableFrom ||
+            !!moveInInfo.isImmediate ||
+            !!moveInInfo.isNegotiable
+          );
+        case "livingConditions":
+          return (
+            !!livingConditions &&
+            (!!livingConditions.noticePeriodWeeks ||
+              !!livingConditions.minimumStayWeeks)
+          );
+        default:
+          return false;
+      }
+    },
   });
 
-  useEffect(() => {
-    openIndices.forEach(idx => {
-      if (autoAdvance && idx !== -1) {
-        const id = COMMON_MOVING_CONDITIONS[idx].id;
-        const answer = selectedAnswers[id];
-        if (answer) autoAdvance(idx);
-      }
-    });
-  }, [selectedAnswers, openIndices, autoAdvance]);
-
-  const handleSelect = (id: string, value: MovingConditionsOption) => {
-    setSelectedAnswers(prev => ({ ...prev, [id]: value }));
+  const handleSelect = (id: string, option: MovingConditionsOption) => {
+    switch (option.type) {
+      case "genderPreference":
+        setGenderPreference(option.value);
+        break;
+      case "optionItemIds":
+        setOptionItemIds(option.value);
+        break;
+      case "moveInInfo":
+        setMoveInInfo(option.value);
+        break;
+      case "livingConditions":
+        setLivingConditions(option.value);
+        break;
+    }
   };
 
-  const allAnswered = COMMON_MOVING_CONDITIONS.every(
-    item => !!selectedAnswers[item.id],
-  );
+  const allAnswered = COMMON_MOVING_CONDITIONS.every(item => {
+    switch (item.id) {
+      case "genderPreference":
+        return !!genderPreference;
+      case "availableOptions":
+        return optionItemIds.length > 0;
+      case "moveInInfo":
+        return (
+          !!moveInInfo.availableFrom ||
+          !!moveInInfo.isImmediate ||
+          !!moveInInfo.isNegotiable
+        );
+      case "livingConditions":
+        return (
+          !!livingConditions &&
+          (!!livingConditions.noticePeriodWeeks ||
+            !!livingConditions.minimumStayWeeks)
+        );
+      default:
+        return false;
+    }
+  });
 
   const AVAILABLE_KEY_LABEL_MAP: Record<string, string> = {
     흡연자: "흡연자",
@@ -60,14 +110,12 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
   };
 
   const getAnswerText = (itemId: string): string => {
-    const answer = selectedAnswers[itemId];
-    if (!answer) return "";
-    if (itemId === "genderPreference" && typeof answer.value === "string") {
-      return GENDER_PREFERENCE_MAP[answer.value] || "";
+    if (itemId === "genderPreference") {
+      return genderPreference ? GENDER_PREFERENCE_MAP[genderPreference] : "";
     }
 
-    if (itemId === "availableOptions" && typeof answer.value === "object") {
-      const selectedIds = answer.value as number[];
+    if (itemId === "availableOptions") {
+      const selectedIds = optionItemIds;
       const additionalInfoItems = CATEGORY_OPTIONS[3].items;
 
       const selectedCategories = Object.entries(additionalInfoItems)
@@ -79,13 +127,9 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       return selectedCategories.join(", ");
     }
 
-    if (itemId === "livingConditions" && typeof answer.value === "object") {
+    if (itemId === "livingConditions" && livingConditions) {
       const { noticePeriodWeeks, minimumStayWeeks, contractTerms } =
-        answer.value as {
-          noticePeriodWeeks: number;
-          minimumStayWeeks: number;
-          contractTerms: string;
-        };
+        livingConditions;
 
       const parts: string[] = [];
       if (noticePeriodWeeks) parts.push(`노티스 ${noticePeriodWeeks}주`);
@@ -94,14 +138,9 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       return parts.join(", ");
     }
 
-    if (itemId === "moveInInfo" && typeof answer.value === "object") {
+    if (itemId === "moveInInfo" && moveInInfo) {
       const { availableFrom, availableTo, isImmediate, isNegotiable } =
-        answer.value as {
-          availableFrom?: string | null;
-          availableTo?: string | null;
-          isImmediate?: boolean;
-          isNegotiable?: boolean;
-        };
+        moveInInfo;
 
       const parts: string[] = [];
 
@@ -117,36 +156,65 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       return parts.join(", ");
     }
 
-    if (typeof answer.value === "string") return answer.value.trim();
-    if (Array.isArray(answer.value))
-      return answer.value.filter(Boolean).join(", ");
-
     return "";
+  };
+
+  const getValueById = (id: string): MovingConditionsOption | undefined => {
+    switch (id) {
+      case "genderPreference":
+        return genderPreference !== null
+          ? { type: "genderPreference", value: genderPreference }
+          : undefined;
+
+      case "availableOptions":
+        return {
+          type: "optionItemIds",
+          value: optionItemIds,
+        };
+
+      case "moveInInfo":
+        return moveInInfo !== null
+          ? { type: "moveInInfo", value: moveInInfo }
+          : undefined;
+
+      case "livingConditions":
+        return livingConditions !== null
+          ? { type: "livingConditions", value: livingConditions }
+          : undefined;
+
+      default:
+        return undefined;
+    }
   };
 
   return (
     <FunnelLayout>
-      {COMMON_MOVING_CONDITIONS.map((item, index) => (
-        <DropdownSelector
-          key={item.id}
-          label={item.label}
-          answer={getAnswerText(item.id)}
-          isOpen={openIndices.includes(index)}
-          onClick={() => toggleIndex(index)}
-        >
-          <MovingConditionDropdownContent
-            id={item.id}
-            value={selectedAnswers[item.id]}
-            onSelect={value => handleSelect(item.id, value)}
-          />
-        </DropdownSelector>
-      ))}
+      {COMMON_MOVING_CONDITIONS.map((item, index) => {
+        const value = getValueById(item.id);
+        if (value === undefined) return null;
+
+        return (
+          <DropdownSelector
+            key={item.id}
+            label={item.label}
+            answer={getAnswerText(item.id)}
+            isOpen={openIndices.includes(index)}
+            onClick={() => toggleIndex(index)}
+          >
+            <MovingConditionDropdownContent
+              id={item.id}
+              value={value}
+              onSelect={value => handleSelect(item.id, value)}
+            />
+          </DropdownSelector>
+        );
+      })}
+
       <BottomActionBar
         buttons={[
           {
             label: "저장",
             onClick: () => {
-              //Todo: 저장 로직 추가
               console.log("저장");
             },
             variant: "outline",
@@ -162,4 +230,5 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     </FunnelLayout>
   );
 };
+
 export default MovingCondition;

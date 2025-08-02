@@ -7,10 +7,10 @@ import { useListingStore } from "@/stores/useListingStore";
 import { useFunnel } from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
-import CreateSuccess from "@/components/listings/create/CreateSuccess";
 import AddressPhoto from "@/components/listings/create/addressPhoto/AddressPhoto";
 import ContractTerms from "@/components/listings/create/contractTerms/ContractTermsLayout";
 import CreateConfirm from "@/components/listings/create/createConfirm/CreateConfirm";
+import CreateSuccess from "@/components/listings/create/createSuccess/CreateSuccess";
 import ListingDescription from "@/components/listings/create/listingDescription/ListingDescription";
 import ListingDetails from "@/components/listings/create/listingDetails/ListingDetailsLayout";
 import ListingType from "@/components/listings/create/listingType/ListingType";
