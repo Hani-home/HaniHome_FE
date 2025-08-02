@@ -188,3 +188,5 @@ export const useListingStore = create<ListingState>()(set => ({
   setMoveInInfo: value => set({ moveInInfo: value }),
   setLivingConditions: value => set({ livingConditions: value }),
 }));
+
+export type UseListingStoreReturn = ReturnType<typeof useListingStore.getState>;

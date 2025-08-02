@@ -1,20 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
+import {
+  LISTING_DETAILS_IDS,
+  getAnswerText,
+  getAnswerValue,
+  isAllAnswered,
+} from "@/utils/listing/create/answerHelpers";
 import { useDropdownAutoManager } from "@/utils/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownSelector from "@/components/listings/create/DropdownSelector";
 
-import {
-  CAPACITY_RENT_MAP,
-  CAPACITY_SHARE_MAP,
-} from "@/constants/capacity-options";
-import { RENT_TYPE_MAP, SHARE_TYPE_MAP } from "@/constants/housing-options";
-import { CATEGORY_OPTIONS } from "@/constants/propertyCategory";
 import { QUESTION_MAP } from "@/constants/question-map";
 
 import { ListingDetailsOption } from "@/types/createPropertyAnswer";
@@ -36,144 +36,31 @@ interface ListingDetailsProps {
 }
 
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
-  const {
-    rentInternalDetails,
-    shareInternalDetails,
-    rentPropertyType,
-    sharePropertyType,
-    rentCapacityPeople,
-    shareCapacityPeople,
-    optionItemIds,
-    listingType,
-    setRentInternalDetails,
-    setShareInternalDetails,
-    setRentPropertyType,
-    setSharePropertyType,
-    setRentCapacityPeople,
-    setShareCapacityPeople,
-    setOptionItemIds,
-  } = useListingStore();
+  const store = useListingStore();
+  const { listingType, optionItemIds, setOptionItemIds } = store;
 
   const section = "ListingDetails";
-  const questions = listingType ? QUESTION_MAP[listingType][section] : [];
+  const questions = useMemo(() => {
+    return listingType ? QUESTION_MAP[listingType][section] : [];
+  }, [listingType, section]);
 
-  const highlightIds = CATEGORY_OPTIONS[1].items.map(item => item.optionId);
-  const furnitureIds = Object.values(CATEGORY_OPTIONS[2].items)
-    .flat()
-    .map(item => item.optionId);
-  const isBrokeredIds = CATEGORY_OPTIONS[5].items.map(item => item.optionId);
-
-  const getAnswerValue = (id: ListingDetailsOption["type"]) => {
-    switch (id) {
-      case "internalDetails":
-        return listingType === "RENT"
-          ? rentInternalDetails
-          : shareInternalDetails;
-      case "propertyType":
-        return listingType === "RENT" ? rentPropertyType : sharePropertyType;
-      case "capacityPeople":
-        return listingType === "RENT"
-          ? rentCapacityPeople
-          : shareCapacityPeople;
-      case "highlights":
-        return optionItemIds.filter(id =>
-          highlightIds.includes(id as (typeof highlightIds)[number]),
-        );
-      case "furniture":
-        return optionItemIds.filter(id =>
-          furnitureIds.includes(id as (typeof furnitureIds)[number]),
-        );
-      case "isBrokered":
-        return (
-          optionItemIds.find(id =>
-            isBrokeredIds.includes(id as (typeof isBrokeredIds)[number]),
-          ) ?? null
-        );
-      default:
-        return null;
-    }
-  };
-
-  const getAnswerText = (questionId: string): string => {
-    const answer = getAnswerValue(questionId as ListingDetailsOption["type"]);
-
-    if (questionId === "internalDetails") {
-      const val = answer as unknown as Record<string, number>;
-      if (!val) return "";
-
-      const parts = [
-        val["internalArea"] || val["totalArea"] ? "면적" : null,
-        val["totalResidents"] ? "거주인" : null,
-        val["totalBathUser"] ? "욕실 쉐어" : null,
-        val["numberOfRoom"] ? "방 개수" : null,
-        val["numberOfBath"] ? "욕실 개수" : null,
-        val["totalFloors"] || val["propertyFloor"] ? "층수" : null,
-      ].filter(Boolean);
-
-      return Array.from(new Set(parts)).join(", ");
-    }
-
-    switch (questionId) {
-      case "isBrokered":
-        return answer === 54 ? "개인임대" : "부동산 중개";
-      case "highlights": {
-        const highlights = answer as number[] | undefined;
-        const options = CATEGORY_OPTIONS[1]?.items;
-        const matched = options.filter(item =>
-          highlights?.includes(item.optionId),
-        );
-        return matched.length
-          ? `${matched[0].label}${matched.length > 1 ? "···" : ""}`
-          : "";
-      }
-      case "furniture": {
-        const furniture = answer as number[] | undefined;
-        const options = CATEGORY_OPTIONS[2]?.items;
-        const categories = Object.entries(options)
-          .filter(([, items]) =>
-            items.some(i => furniture?.includes(i.optionId)),
-          )
-          .map(([category]) => category);
-        return categories.join(", ");
-      }
-      case "propertyType": {
-        if (typeof answer !== "string") return "";
-        return listingType === "RENT"
-          ? RENT_TYPE_MAP[answer as keyof typeof RENT_TYPE_MAP]
-          : SHARE_TYPE_MAP[answer as keyof typeof SHARE_TYPE_MAP];
-      }
-      case "capacityPeople": {
-        if (typeof answer !== "string") return "";
-        return listingType === "RENT"
-          ? CAPACITY_RENT_MAP[answer as keyof typeof CAPACITY_RENT_MAP]
-          : CAPACITY_SHARE_MAP[answer as keyof typeof CAPACITY_SHARE_MAP];
-      }
-      default:
-        return typeof answer === "string" ? answer : "";
-    }
-  };
+  const { highlightIds, furnitureIds, isBrokeredIds } = LISTING_DETAILS_IDS;
 
   const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
     totalCount: questions.length,
     shouldAutoClose: index => {
       const id = questions[index].id as ListingDetailsOption["type"];
-      const answer = getAnswerValue(id);
+      const answer = getAnswerValue(id, store);
 
       if (id === "highlights" && Array.isArray(answer)) {
-        const highlightOptionIds = CATEGORY_OPTIONS[1]?.items.map(
-          item => item.optionId,
-        ) as readonly number[];
-        const selectedHighlightCount = (answer as number[]).filter(id =>
-          highlightOptionIds.includes(id),
-        ).length;
-        return selectedHighlightCount >= 5;
+        return answer.filter(id => highlightIds.includes(id)).length >= 5;
       }
 
       if (
         id === "internalDetails" &&
         typeof answer === "object" &&
-        !Array.isArray(answer) &&
-        answer !== null
+        answer !== null &&
+        !Array.isArray(answer)
       ) {
         const requiredKeys = [
           ...(listingType === "RENT"
@@ -181,10 +68,11 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
             : ["totalResidents", "totalBathUser"]),
           "internalArea",
         ];
-        return requiredKeys.every(key => {
-          const val = (answer as unknown as Record<string, number>)[key];
-          return typeof val === "number" && !isNaN(val);
-        });
+        return requiredKeys.every(
+          key =>
+            typeof (answer as unknown as Record<string, number>)[key] ===
+            "number",
+        );
       }
 
       return !!answer;
@@ -195,65 +83,29 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     openIndices.forEach(idx => {
       const answer = getAnswerValue(
         questions[idx].id as ListingDetailsOption["type"],
+        store,
       );
       if (autoAdvance && answer) autoAdvance(idx);
     });
-  }, [openIndices, questions, autoAdvance]);
-
-  const allAnswered = questions.every(q => {
-    const answer = getAnswerValue(q.id as ListingDetailsOption["type"]);
-
-    if (q.id === "highlights" && Array.isArray(answer)) {
-      const selected = answer.filter(id =>
-        CATEGORY_OPTIONS[1].items.some(opt => opt.optionId === id),
-      );
-      return selected.length >= 5;
-    }
-
-    if (
-      q.id === "internalDetails" &&
-      typeof answer === "object" &&
-      answer !== null &&
-      !Array.isArray(answer)
-    ) {
-      const requiredKeys = [
-        ...(listingType === "RENT"
-          ? ["numberOfRoom", "numberOfBath"]
-          : ["totalResidents", "totalBathUser"]),
-        "internalArea",
-      ];
-      return requiredKeys.every(
-        key =>
-          typeof (answer as unknown as Record<string, number>)[key] ===
-          "number",
-      );
-    }
-
-    if (q.id === "isBrokered") {
-      return typeof answer === "number";
-    }
-
-    if (Array.isArray(answer)) return answer.length > 0;
-    if (typeof answer === "object" && answer !== null)
-      return Object.keys(answer).length > 0;
-
-    return Boolean(answer);
-  });
+  }, [openIndices, questions, autoAdvance, store]);
 
   return (
     <FunnelLayout>
       {questions.map((item, index) => {
         const answerValue = getAnswerValue(
           item.id as ListingDetailsOption["type"],
+          store,
         );
         if (answerValue === undefined) return null;
-        console.log("QUESTION ID:", item.id, "→ answer:", answerValue);
 
         return (
           <DropdownSelector
             key={item.id}
             label={item.label}
-            answer={getAnswerText(item.id)}
+            answer={getAnswerText(
+              item.id as ListingDetailsOption["type"],
+              store,
+            )}
             isOpen={openIndices.includes(index)}
             onClick={() => toggleIndex(index)}
           >
@@ -266,18 +118,20 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
                 switch (item.id) {
                   case "propertyType":
                     listingType === "RENT"
-                      ? setRentPropertyType(val as RentPropertySubType)
-                      : setSharePropertyType(val as SharePropertySubType);
+                      ? store.setRentPropertyType(val as RentPropertySubType)
+                      : store.setSharePropertyType(val as SharePropertySubType);
                     break;
                   case "capacityPeople":
                     listingType === "RENT"
-                      ? setRentCapacityPeople(val as CapacityRent)
-                      : setShareCapacityPeople(val as CapacityShare);
+                      ? store.setRentCapacityPeople(val as CapacityRent)
+                      : store.setShareCapacityPeople(val as CapacityShare);
                     break;
                   case "internalDetails":
                     listingType === "RENT"
-                      ? setRentInternalDetails(val as RentInternalDetails)
-                      : setShareInternalDetails(val as ShareInternalDetails);
+                      ? store.setRentInternalDetails(val as RentInternalDetails)
+                      : store.setShareInternalDetails(
+                          val as ShareInternalDetails,
+                        );
                     break;
                   case "highlights":
                   case "furniture":
@@ -289,15 +143,21 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
                           ? furnitureIds
                           : isBrokeredIds;
 
-                    const newIds = (Array.isArray(val) ? val : [val]).filter(
+                    const valArray: number[] = (
+                      Array.isArray(val) ? val : [val]
+                    ).filter((v): v is number => typeof v === "number");
+
+                    const newIds = valArray.filter(
                       (v): v is number => typeof v === "number",
                     );
+
                     const updated = Array.from(
                       new Set([
                         ...optionItemIds.filter(id => !targetIds.includes(id)),
                         ...newIds,
                       ]),
                     );
+
                     setOptionItemIds(updated);
                     break;
                   }
@@ -316,23 +176,22 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
             label: "저장",
             onClick: () => {
               console.log("저장된 Zustand 상태", {
-                rentPropertyType,
-                sharePropertyType,
-                rentCapacityPeople,
-                shareCapacityPeople,
-                rentInternalDetails,
-                shareInternalDetails,
+                rentPropertyType: store.rentPropertyType,
+                sharePropertyType: store.sharePropertyType,
+                rentCapacityPeople: store.rentCapacityPeople,
+                shareCapacityPeople: store.shareCapacityPeople,
+                rentInternalDetails: store.rentInternalDetails,
+                shareInternalDetails: store.shareInternalDetails,
                 optionItemIds,
               });
             },
-
             variant: "outline",
           },
           {
             label: "다음",
             onClick: onNext,
             variant: "filled",
-            disabled: !allAnswered,
+            disabled: !isAllAnswered(questions, store),
           },
         ]}
       />
