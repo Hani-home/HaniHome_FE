@@ -73,6 +73,7 @@ const InternalDetailsContent = <
     setWithPropertyOwner(newChecked);
     onChange("withPropertyOwner" as keyof T, newChecked as T[keyof T]);
   };
+  const areaKeys = ["internalArea", "totalArea"] as const;
 
   const handleNumericInputChange = <K extends keyof T>(
     field: K,
@@ -89,7 +90,14 @@ const InternalDetailsContent = <
     const numeric = +newValue;
     if (isNaN(numeric)) return;
 
-    const valueToSave = isSquareMeter ? numeric : toSquareMeter(numeric);
+    let valueToSave: number;
+
+    if (field === "internalArea" || field === "totalArea") {
+      valueToSave = isSquareMeter ? numeric : toSquareMeter(numeric);
+    } else {
+      valueToSave = numeric;
+    }
+
     onChange(field, valueToSave as T[K]);
   };
 
@@ -108,18 +116,20 @@ const InternalDetailsContent = <
   useEffect(() => {
     if (isUserTyping) return;
 
-    const converted: Partial<Record<keyof T, string>> = {};
-    for (const key of areaKeys) {
-      const raw = value[key];
-      if (typeof raw === "number") {
-        converted[key] = (
-          isSquareMeter ? raw : fromSquareMeter(raw)
-        ).toString();
-      }
-    }
+    setLocalInputValues(prev => {
+      const updated = { ...prev };
 
-    setLocalInputValues(converted);
-  }, [isSquareMeter, value, isUserTyping]);
+      for (const key of areaKeys) {
+        const raw = value[key];
+        if (typeof raw === "number") {
+          const converted = isSquareMeter ? raw : fromSquareMeter(raw);
+          updated[key] = converted.toString();
+        }
+      }
+
+      return { ...prev, ...updated };
+    });
+  }, [isSquareMeter]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -142,7 +152,6 @@ const InternalDetailsContent = <
 
   const inputUnitText = isSquareMeter ? "㎡" : "평";
   const buttonUnitText = isSquareMeter ? "평" : "㎡";
-  const areaKeys = ["internalArea", "totalArea"] as const;
   const rentOtherKeys = ["numberOfRoom", "numberOfBath"] as const;
   const shareOtherKeys = ["totalResidents", "totalBathUser"] as const;
   const floorKeys = ["totalFloors", "propertyFloor"] as const;

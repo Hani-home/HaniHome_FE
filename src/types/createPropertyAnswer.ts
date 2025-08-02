@@ -13,19 +13,10 @@ import {
 } from "./listingDetail";
 
 export type MovingConditionsOption =
-  | {
-      type: "genderPreference";
-      value: GenderPreference;
-    }
-  | {
-      type: "moveInInfo";
-      value: MoveInInfo;
-    }
-  | {
-      type: "livingConditions";
-      value: LivingConditions;
-    }
-  | { type: "optionItemIds"; value: number[] };
+  | { type: "genderPreference"; value: GenderPreference | null }
+  | { type: "optionItemIds"; value: number[] }
+  | { type: "moveInInfo"; value: MoveInInfo | null }
+  | { type: "livingConditions"; value: LivingConditions | null };
 
 export type ContractTermsOption =
   | {

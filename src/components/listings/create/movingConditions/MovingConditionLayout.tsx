@@ -70,7 +70,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
         setOptionItemIds(option.value);
         break;
       case "moveInInfo":
-        setMoveInInfo(option.value);
+        if (option.value) setMoveInInfo(option.value);
         break;
       case "livingConditions":
         setLivingConditions(option.value);
@@ -82,8 +82,22 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     switch (item.id) {
       case "genderPreference":
         return !!genderPreference;
-      case "availableOptions":
-        return optionItemIds.length > 0;
+      case "availableOptions": {
+        const additionalInfoItems = CATEGORY_OPTIONS[3].items;
+
+        const requiredGroups = Object.keys(additionalInfoItems);
+
+        const selectedItems = Object.entries(additionalInfoItems).flatMap(
+          ([group, options]) =>
+            options
+              .filter(option => optionItemIds.includes(option.optionId))
+              .map(option => ({ ...option, group })),
+        );
+
+        const selectedGroups = new Set(selectedItems.map(item => item.group));
+
+        return requiredGroups.every(group => selectedGroups.has(group));
+      }
       case "moveInInfo":
         return (
           !!moveInInfo.availableFrom ||
@@ -93,8 +107,8 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       case "livingConditions":
         return (
           !!livingConditions &&
-          (!!livingConditions.noticePeriodWeeks ||
-            !!livingConditions.minimumStayWeeks)
+          !!livingConditions.noticePeriodWeeks &&
+          !!livingConditions.minimumStayWeeks
         );
       default:
         return false;
@@ -159,31 +173,22 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     return "";
   };
 
-  const getValueById = (id: string): MovingConditionsOption | undefined => {
+  const getValueById = (id: string): MovingConditionsOption => {
     switch (id) {
       case "genderPreference":
-        return genderPreference !== null
-          ? { type: "genderPreference", value: genderPreference }
-          : undefined;
+        return { type: "genderPreference", value: genderPreference };
 
       case "availableOptions":
-        return {
-          type: "optionItemIds",
-          value: optionItemIds,
-        };
+        return { type: "optionItemIds", value: optionItemIds };
 
       case "moveInInfo":
-        return moveInInfo !== null
-          ? { type: "moveInInfo", value: moveInInfo }
-          : undefined;
+        return { type: "moveInInfo", value: moveInInfo };
 
       case "livingConditions":
-        return livingConditions !== null
-          ? { type: "livingConditions", value: livingConditions }
-          : undefined;
+        return { type: "livingConditions", value: livingConditions };
 
       default:
-        return undefined;
+        throw new Error("Unknown ID");
     }
   };
 
