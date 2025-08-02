@@ -44,6 +44,23 @@ const DropDownSection = ({
     switch (key) {
       case "region":
         return router.push(`/listings/${id}/edit/addressPhoto?subStep=address`);
+      case "sharePropertySubType":
+      case "rentPropertySubType":
+        return router.push(
+          `/listings/${id}/edit/listingDetails?open=propertyType`,
+        );
+      case "internalDetails":
+      case "capacityPeople":
+      case "furniture":
+      case "highlights":
+      case "isBrokered":
+        return router.push(`/listings/${id}/edit/listingDetails?open=${key}`);
+      case "genderPreference":
+      case "livingConditions":
+      case "availableOptions":
+        return router.push(`/listings/${id}/edit/movingConditions?open=${key}`);
+      case "costDetails":
+        return router.push(`/listings/${id}/edit/contractTerms?open=${key}`);
       default:
         return router.push(`/listings/${id}/edit/${key}`);
     }

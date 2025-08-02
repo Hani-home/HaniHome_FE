@@ -17,12 +17,12 @@ import BottomSheet from "./BottomSheet";
 interface PhotoFieldProps {
   onNext?: () => void;
   onPrev?: () => void;
-  edit: boolean;
+  edit?: boolean;
 }
 
 const MAX_IMAGE_COUNT = 10;
 
-const PhotoField = ({ onNext, edit }: PhotoFieldProps) => {
+const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const router = useRouter();
   const { id } = useParams();
   const { setPhotoUrls: setPhotoData } = useListingStore();

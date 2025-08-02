@@ -50,7 +50,7 @@ const ListingsEdit = () => {
   if (isLoading) return <div>로딩 중...</div>;
   if (error || !originalDetail || !currentDetail)
     return <div>데이터를 불러올 수 없습니다.</div>;
-  // console.log(propertyDetail);
+  console.log(originalDetail);
   // console.log("바뀐값: ", currentDetail);
   return (
     <>
@@ -61,7 +61,7 @@ const ListingsEdit = () => {
           label="추가로 변경해야하는 섹션도 수정해주세요"
         />
         <div
-          className="px-4 cursor-pointer"
+          className="cursor-pointer px-4"
           onClick={() =>
             router.push(`/listings/${id}/edit/addressPhoto?subStep=photo`)
           }

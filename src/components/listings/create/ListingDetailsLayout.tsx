@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
@@ -22,8 +24,8 @@ import FunnelStepMenu from "./FunnelStepMenu";
 import ListingDetailsDropdownContent from "./ListingDetailsDropdownContent";
 
 interface ListingDetailsProps {
-  onNext: () => void;
-  onPrev: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
 }
 
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
@@ -79,13 +81,13 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
 
   useEffect(() => {
     openIndices.forEach(idx => {
-      if (autoAdvance && idx !== -1) {
-        if (
-          questions[idx] &&
-          selectedAnswers[questions[idx].id as ListingDetailsOption["type"]]
-        ) {
-          autoAdvance(idx);
-        }
+      if (
+        autoAdvance &&
+        idx !== -1 &&
+        questions[idx] &&
+        selectedAnswers[questions[idx].id as ListingDetailsOption["type"]]
+      ) {
+        autoAdvance(idx);
       }
     });
   }, [selectedAnswers, openIndices, questions, autoAdvance]);
@@ -269,15 +271,17 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
     <div className="pb-[70px]">
       <BackHeader rightIcon="close" />
       <FunnelStepMenu />
+
       {QUESTION_MAP[listingType].ListingDetails.map((item, index) => {
         const answer = selectedAnswers[item.id as ListingDetailsOption["type"]];
+        const isOpen = openIndices.includes(index);
 
         return (
           <DropdownSelector
             key={item.id}
             label={item.label}
             answer={getAnswerText(item.id)}
-            isOpen={openIndices.includes(index)}
+            isOpen={isOpen}
             onClick={() => toggleIndex(index)}
           >
             <ListingDetailsDropdownContent
@@ -295,7 +299,6 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
           </DropdownSelector>
         );
       })}
-
       <BottomActionBar
         buttons={[
           {
@@ -308,7 +311,9 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
           },
           {
             label: "다음",
-            onClick: onNext,
+            onClick: () => {
+              if (onNext) onNext();
+            },
             variant: "filled",
             disabled: !allAnswered,
           },
