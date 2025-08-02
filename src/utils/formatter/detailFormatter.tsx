@@ -297,8 +297,8 @@ export const formatMoveInDates = (
         <div className="flex items-center justify-end gap-2">
           <span>입주 가능일</span>
           <span className="text-mint">
-            {formatDateToMonthDay(moveInInfo.availableTo)} ~{" "}
-            {formatDateToMonthDay(moveInInfo.availableFrom)}
+            {formatDateToMonthDay(moveInInfo.availableFrom)} ~{" "}
+            {formatDateToMonthDay(moveInInfo.availableTo)}
           </span>
         </div>
       </div>
