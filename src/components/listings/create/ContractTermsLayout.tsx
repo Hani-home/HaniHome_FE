@@ -14,7 +14,7 @@ import { ContractTermsOption } from "@/types/createPropertyAnswer";
 
 import ContractTermsContent from "./ContractTermsContent";
 import DropdownSelector from "./DropdownSelector";
-import FunnelStepMenu from "./FunnelStepMenu";
+import FunnelStepMenu from "./common/FunnelStepMenu";
 
 interface ContractTermsProps {
   onNext: () => void;

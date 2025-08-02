@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 
-import { FunnelSteps } from "@/constants/funnel-step-lists";
+import { FUNNEL_STEPS_LABEL } from "@/constants/funnel-steps";
 
 const FunnelStepMenu = () => {
   const searchParams = useSearchParams();
@@ -10,7 +10,7 @@ const FunnelStepMenu = () => {
 
   return (
     <div className="flex items-center justify-center gap-6 border-b border-gray-200 px-4 py-2">
-      {FunnelSteps.map(({ key, label }) => {
+      {FUNNEL_STEPS_LABEL.map(({ key, label }) => {
         const isActive = currentStep === key;
 
         return (

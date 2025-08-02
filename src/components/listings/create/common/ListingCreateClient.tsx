@@ -7,19 +7,22 @@ import { useListingStore } from "@/stores/useListingStore";
 import { useFunnel } from "@/hooks/common/useFunnel";
 
 import Funnel from "@/components/common/Funnel/Funnel";
-import AddressPhoto from "@/components/listings/create/AddressPhoto";
 import ContractTerms from "@/components/listings/create/ContractTermsLayout";
 import CreateConfirm from "@/components/listings/create/CreateConfirm";
 import CreateSuccess from "@/components/listings/create/CreateSuccess";
 import ListingDescription from "@/components/listings/create/ListingDescription";
 import ListingDetails from "@/components/listings/create/ListingDetailsLayout";
-import ListingType from "@/components/listings/create/ListingType";
 import MovingCondition from "@/components/listings/create/MovingConditionLayout";
+import AddressPhoto from "@/components/listings/create/addressPhoto/AddressPhoto";
+import ListingType from "@/components/listings/create/listingType/ListingType";
 
-import { FUNNEL_STEPS } from "@/constants/funnel-steps";
+import { FUNNEL_FLOW } from "@/constants/funnel-steps";
 
 const ListingCreateClient = () => {
-  const { step, onNextStep, onPrevStep } = useFunnel({ steps: FUNNEL_STEPS });
+  const { step, subStep, onNextStep, onPrevStep } = useFunnel({
+    steps: FUNNEL_FLOW,
+  });
+
   const { setListingType } = useListingStore();
 
   const reset = useListingStore(state => state.reset);
@@ -42,7 +45,11 @@ const ListingCreateClient = () => {
       </Funnel.Step>
 
       <Funnel.Step name="AddressPhoto">
-        <AddressPhoto onNext={onNextStep} onPrev={onPrevStep} />
+        <AddressPhoto
+          subStep={subStep === "address" ? "address" : "photo"}
+          onNext={onNextStep}
+          onPrev={onPrevStep}
+        />
       </Funnel.Step>
 
       <Funnel.Step name="ListingDetails">

@@ -18,8 +18,8 @@ import { QUESTION_MAP } from "@/constants/question-map";
 import { ListingDetailsOption } from "@/types/createPropertyAnswer";
 
 import DropdownSelector from "./DropdownSelector";
-import FunnelStepMenu from "./FunnelStepMenu";
 import ListingDetailsDropdownContent from "./ListingDetailsDropdownContent";
+import FunnelStepMenu from "./common/FunnelStepMenu";
 
 interface ListingDetailsProps {
   onNext: () => void;

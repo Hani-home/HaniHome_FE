@@ -15,8 +15,8 @@ import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 import { MovingConditionsOption } from "@/types/createPropertyAnswer";
 
 import DropdownSelector from "./DropdownSelector";
-import FunnelStepMenu from "./FunnelStepMenu";
 import MovingConditionDropdownContent from "./MovingConditionDropdownContent";
+import FunnelStepMenu from "./common/FunnelStepMenu";
 
 interface MovingConditionProps {
   onNext: () => void;
