@@ -79,7 +79,7 @@ const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
                 )}
               </button>
 
-              <span className="text-gray-500">~</span>
+              <span className="text-body1-med text-gray-700">~</span>
 
               <button
                 key="end"
