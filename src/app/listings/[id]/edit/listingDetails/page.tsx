@@ -15,7 +15,8 @@ import {
   formatHighlights,
   formatIsBrokered,
   formatPropertySubType,
-} from "@/utils/formatDetails";
+} from "@/utils/formatter/detailFormatter";
+
 import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";

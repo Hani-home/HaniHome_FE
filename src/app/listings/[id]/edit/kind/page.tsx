@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useListingStore } from "@/stores/useListingStore";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
-import ListingType from "@/components/listings/create/ListingType";
+import ListingType from "@/components/listings/create/listingType/ListingType";
 
 const EditKind = () => {
   const router = useRouter();

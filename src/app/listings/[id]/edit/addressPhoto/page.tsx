@@ -5,9 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import BackHeader from "@/components/layout/header/BackHeader";
-import AddressField from "@/components/listings/create/AddressField";
-import FunnelStepMenu from "@/components/listings/create/FunnelStepMenu";
-import PhotoField from "@/components/listings/create/PhotoField";
+import AddressField from "@/components/listings/create/addressPhoto/AddressField";
+import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
+import PhotoField from "@/components/listings/create/addressPhoto/PhotoField";
 
 
 const AddressPhotoEdit = () => {

@@ -41,7 +41,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       switch (id) {
         case "genderPreference":
           return !!genderPreference;
-        case "availableOptions":
+        case "additionalInfo":
           return optionItemIds.length > 0;
         case "moveInInfo":
           return (
@@ -82,7 +82,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     switch (item.id) {
       case "genderPreference":
         return !!genderPreference;
-      case "availableOptions": {
+      case "additionalInfo": {
         const additionalInfoItems = CATEGORY_OPTIONS[3].items;
         const requiredGroups = Object.keys(additionalInfoItems);
 
@@ -127,7 +127,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       return genderPreference ? GENDER_PREFERENCE_MAP[genderPreference] : "";
     }
 
-    if (itemId === "availableOptions") {
+    if (itemId === "additionalInfo") {
       const selectedIds = optionItemIds;
       const additionalInfoItems = CATEGORY_OPTIONS[3].items;
 
@@ -177,7 +177,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       case "genderPreference":
         return { type: "genderPreference", value: genderPreference };
 
-      case "availableOptions":
+      case "additionalInfo":
         return { type: "optionItemIds", value: optionItemIds };
 
       case "moveInInfo":
