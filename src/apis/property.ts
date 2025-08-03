@@ -1,5 +1,7 @@
 import { serializePropertyFilters } from "@/utils/filter/serializePropertyFilters";
 
+import { PropertyDetail as PropertyDetailGet } from "@/types/listingDetailGet";
+import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost";
 import {
   MyPropertiesParams,
   Property,
@@ -9,7 +11,6 @@ import {
 import { FilteredPropertyParams } from "@/types/property";
 
 import { axiosInstance } from "./axios";
-import { PropertyDetail } from "@/types/listingDetailGet";
 
 // 매물 목록 조회
 export const fetchPropertyList = async <T extends PropertyViewType>(
@@ -30,7 +31,7 @@ export const fetchPropertyDetailList = async (
 //내놓은 매물 상세 조회
 export const fetchPropertyDetaiEditlList = async (
   propertyId: string,
-): Promise<PropertyDetail> => {
+): Promise<PropertyDetailGet> => {
   const res = await axiosInstance.get(`/api/v1/properties/${propertyId}`);
   return res.data.data;
 };
@@ -133,4 +134,10 @@ export const getMyDeals = async (
     params: { dealerType },
   });
   return res.data.data;
+};
+
+//매물 등록
+export const postProperty = async (payload: PropertyDetailPost) => {
+  const { data } = await axiosInstance.post("/api/v1/properties", payload);
+  return data;
 };
