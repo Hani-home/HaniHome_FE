@@ -1,15 +1,15 @@
 export const FUNNEL_FLOW = [
-  { step: "ListingType" },
+  { step: "listingType" },
   {
-    step: "AddressPhoto",
+    step: "addressPhoto",
     subSteps: ["address", "photo"],
   },
-  { step: "ListingDetails" },
-  { step: "MovingConditions" },
-  { step: "ContractTerms" },
-  { step: "ListingDescription" },
-  { step: "CreateConfirm" },
-  { step: "CreateSuccess" },
+  { step: "listingDetails" },
+  { step: "movingConditions" },
+  { step: "contractTerms" },
+  { step: "listingDescription" },
+  { step: "createConfirm" },
+  { step: "createSuccess" },
 ] as const;
 
 export const FUNNEL_STEPS_LABEL = [
