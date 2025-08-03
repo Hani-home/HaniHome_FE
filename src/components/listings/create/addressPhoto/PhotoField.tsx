@@ -4,7 +4,7 @@ import { useListingStore } from "@/stores/useListingStore";
 
 import { getPropertyPresignedUrl } from "@/apis/s3Upload";
 
-import useImageUpload from "@/hooks/common/useImageUpload";
+import useMultipleImageUpload from "@/hooks/common/useMultipleImageUpload";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -34,15 +34,14 @@ const PhotoField = ({ onNext }: PhotoFieldProps) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { handleFileChange, alertMessage: uploadAlertMessage } = useImageUpload(
-    {
+  const { handleFileChange, alertMessage: uploadAlertMessage } =
+    useMultipleImageUpload({
       maxImageCount: MAX_IMAGE_COUNT,
       setPreviewUrls,
       setUploadedFiles, // File 객체 저장
       getPresignedUrls: getPropertyPresignedUrl,
       setShowErrorModal,
-    },
-  );
+    });
 
   const handleClickUpload = useCallback(() => {
     fileInputRef.current?.click();
