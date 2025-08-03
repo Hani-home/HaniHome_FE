@@ -32,8 +32,7 @@ export const useSingleImageUpload = ({
     try {
       const ext = IMAGE_MIME_TO_EXT[file.type] || "jpg";
       const { presignedUrl, fileUrl } = await getPresignedUrl(ext);
-
-      await uploadFilesToPresignedUrls([file], [{ presignedUrl }]);
+      await uploadFilesToPresignedUrls([file], [{ presignedUrl, fileUrl }]);
       onUploadSuccess(fileUrl);
     } catch (e) {
       console.error("단일 이미지 업로드 실패:", e);
