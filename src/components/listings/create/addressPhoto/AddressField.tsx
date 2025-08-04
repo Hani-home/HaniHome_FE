@@ -57,7 +57,6 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
-
   useEffect(() => {
     if (edit && data) {
       const parsed = toPostPropertyDetail(data);
@@ -101,6 +100,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
   const handleSelectSuggestion = async (placeId: string, text: string) => {
     setSearchKeyword(text);
     setSuggestions([]);
+    setIsFocused(false);
 
     const details = await fetchPlaceDetails(placeId);
     if (!details) return;
@@ -207,7 +207,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
             </div>
           )}
         </div>
-        
+
         {isSearchClicked && selectedAddress && (
           <div className="h-[343px] w-[343px] py-3">
             <GoogleMap
