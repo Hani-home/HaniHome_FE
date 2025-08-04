@@ -105,7 +105,6 @@ export const formatInternalDetails = (
 
     const formatted = value.toFixed(1);
 
-    // 최대 길이 5자리로 자르기 (예: "123.4", "12.34" 등)
     if (formatted.length > 5) {
       return formatted.slice(0, 5);
     }
