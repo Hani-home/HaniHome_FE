@@ -3,6 +3,7 @@
 import { VerificationDetail } from "@/types/admin/verification";
 import Image from "next/image";
 import { useState } from "react";
+import { axiosInstance } from "@/apis/axios";
 
 
 interface Props {
@@ -14,18 +15,32 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [showRejectionField, setShowRejectionField] = useState(false);
 
-  const handleApprove = () => {
-    console.log("승인됨", data.id);
-    alert("승인됨");
+  const handleApprove = async () => {
+    try {
+      await axiosInstance.patch(`/api/v1/verifications/admin/${data.id}/approve`);
+      alert("승인됨");
+      onClose();
+    } catch (error) {
+      console.error("Failed to approve verification:", error);
+      alert("승인 실패");
+    }
   };
 
   const handleReject = () => {
     setShowRejectionField(true);
   };
 
-  const handleRejectSubmit = () => {
-    console.log("거부됨", data.id, rejectionReason);
-    alert("거부됨");
+  const handleRejectSubmit = async () => {
+    try {
+      await axiosInstance.patch(`/api/v1/verifications/admin/${data.id}/reject`, {
+        reason: rejectionReason,
+      });
+      alert("거부됨");
+      onClose();
+    } catch (error) {
+      console.error("Failed to reject verification:", error);
+      alert("거부 실패");
+    }
   };
 
   return (
