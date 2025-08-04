@@ -120,7 +120,6 @@ export interface RentProperty extends BaseProperty {
   internalDetails: InternalDetailsForRent;
   capacityRent: string;
   isRealEstateIntervention: string;
-  exposure: string;
 }
 
 // 전체 매물 유니언 타입
@@ -182,4 +181,16 @@ export interface MyPropertiesParams {
   view: "SUMMARY" | "DEFAULT";
   tradeStatus?: "BEFORE" | "IN_PROGRESS" | "COMPLETED";
   displayStatus?: "ACTIVE" | "INACTIVE";
+}
+
+// 매물 상세 에러 처리
+export interface PropertyErrorResponse {
+  serviceCode: string;
+  message: string;
+  data: {
+    statusCode: number;
+    message: string;
+    codeName: string;
+  };
+  success: boolean;
 }

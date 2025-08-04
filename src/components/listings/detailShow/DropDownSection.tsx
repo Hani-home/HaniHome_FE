@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
-import { convertOptionIdsToStructuredData } from "@/utils/convertOptionIdToStructureData";
+import { useState } from "react";
 
 import Divider from "@/components/common/Divider";
 
@@ -17,7 +17,7 @@ import {
   PropertyDetail,
   RentPropertyDetail,
   SharePropertyDetail,
-} from "@/types/listingDetail";
+} from "@/types/listingDetailPost";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
@@ -25,13 +25,46 @@ import CategoryContent from "./CategoryContent";
 
 interface DropDownSectionProps {
   listingData: PropertyDetail;
+  originalData?: PropertyDetail; //edit모드에서 사용되는 변경되는 값
+  setListingData?: (next: PropertyDetail) => void;
+  edit?: boolean;
 }
 
-const DropDownSection = ({ listingData }: DropDownSectionProps) => {
-  const [openCategoryKeys, setOpenCategoryKeys] = useState<Set<string>>(new Set());
-  const structuredData = convertOptionIdsToStructuredData(
-    listingData.optionItemIds,
+const DropDownSection = ({
+  listingData,
+  edit = false,
+}: DropDownSectionProps) => {
+  const [openCategoryKeys, setOpenCategoryKeys] = useState<Set<string>>(
+    new Set(),
   );
+  const router = useRouter();
+  const { id } = useParams();
+
+  const handleItemClick = (key: string) => {
+    switch (key) {
+      case "region":
+        return router.push(`/listings/${id}/edit/addressPhoto?subStep=address`);
+      case "sharePropertySubType":
+      case "rentPropertySubType":
+        return router.push(
+          `/listings/${id}/edit/listingDetails?open=propertyType`,
+        );
+      case "internalDetails":
+      case "capacityPeople":
+      case "furniture":
+      case "highlights":
+      case "isBrokered":
+        return router.push(`/listings/${id}/edit/listingDetails?open=${key}`);
+      case "genderPreference":
+      case "livingConditions":
+      case "additionalInfo":
+        return router.push(`/listings/${id}/edit/movingConditions?open=${key}`);
+      case "costDetails":
+        return router.push(`/listings/${id}/edit/contractTerms?open=${key}`);
+      default:
+        return router.push(`/listings/${id}/edit/${key}`);
+    }
+  };
 
   const handleToggle = (key: string) => {
     setOpenCategoryKeys(prev => {
@@ -70,25 +103,25 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
       );
     }
   }
-  
+
   return (
     <div className="py-3">
       {filteredCategories.map((item, index) => {
         const itemKeyStr = String(item.key);
         let value;
         if (itemKeyStr === "highlights") {
-          value = structuredData.highlights;
+          value = listingData.optionItemIds;
         } else if (itemKeyStr === "furniture") {
-          value = structuredData.furniture;
+          value = listingData.optionItemIds;
         } else if (itemKeyStr === "isBrokered") {
-          value = structuredData.isBrokered;
+          value = listingData.optionItemIds;
         } else if (itemKeyStr === "costDetails") {
           value = {
             costDetails: listingData.costDetails,
-            includedItems: structuredData.includedItems,
+            includedItems: listingData.optionItemIds,
           };
         } else if (itemKeyStr === "additionalInfo") {
-          value = structuredData.additionalInfo;
+          value = listingData.optionItemIds;
         } else if (itemKeyStr === "capacityPeople") {
           if (listingData.kind === "RENT") {
             value = (listingData as RentPropertyDetail).capacityRent;
@@ -102,7 +135,12 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
         }
 
         return (
-          <div key={index} onClick={() => handleToggle(itemKeyStr)}>
+          <div
+            key={index}
+            onClick={() => {
+              handleToggle(itemKeyStr);
+            }}
+          >
             <div className="px-4">
               <div className="flex cursor-pointer justify-between px-1 py-2">
                 <span className="text-body2-med text-gray-900">
@@ -113,7 +151,12 @@ const DropDownSection = ({ listingData }: DropDownSectionProps) => {
                 />
               </div>
               {openCategoryKeys.has(itemKeyStr) && (
-                <div className="border-t px-3 py-2 text-gray-100">
+                <div
+                  className={`border-t px-3 py-2 text-gray-100 ${edit ? "cursor-pointer" : ""}`}
+                  onClick={() => {
+                    if (edit) handleItemClick(itemKeyStr);
+                  }}
+                >
                   <CategoryContent
                     keyName={itemKeyStr}
                     value={value}

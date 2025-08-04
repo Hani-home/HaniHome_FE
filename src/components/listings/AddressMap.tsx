@@ -1,10 +1,10 @@
 "use client";
 
-import { formatAddress } from "@/utils/formatAddress";
+import { formatAddress } from "@/utils/formatter/addressFormatter";
 
 import GoogleMap from "@/components/common/GoogleMap";
 
-import { PropertyRegion } from "@/types/listingDetail";
+import { PropertyRegion } from "@/types/listingDetailPost";
 
 interface AddressMapProps {
   region: PropertyRegion;

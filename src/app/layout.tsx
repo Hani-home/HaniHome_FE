@@ -17,6 +17,7 @@ const suit = localFont({
 export const metadata: Metadata = {
   title: "하니홈",
   description: "해외 거주 한인을 위한 숙소 매칭 플랫폼",
+  manifest: "/manifest.json",
   keywords: [
     "호주",
     "한인",
@@ -42,6 +43,14 @@ export const metadata: Metadata = {
     siteName: "하니홈",
     type: "website",
     url: "https://www.hanihome.app",
+    images: [
+      {
+        url: "/images/open-graph.png",
+        width: 1200,
+        height: 630,
+        alt: "하니홈 오픈그래프 이미지",
+      },
+    ],
   },
   creator: "HaniHome",
   publisher: "HaniHome",
