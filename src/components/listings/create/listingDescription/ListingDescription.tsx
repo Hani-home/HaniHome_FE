@@ -1,3 +1,7 @@
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
+
 import { useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
@@ -7,10 +11,17 @@ import TextareaField from "@/components/common/TextareaField";
 import BackHeader from "@/components/layout/header/BackHeader";
 
 interface ListingDescriptionProps {
-  onNext: () => void;
-  onPrev: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  edit?: boolean;
 }
-const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
+const ListingDescription = ({
+  onNext,
+  edit = false,
+}: ListingDescriptionProps) => {
+  const router = useRouter();
+  const { id } = useParams();
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { description, setDescription } = useListingStore();
   const [text, setText] = useState(description || "");
@@ -50,27 +61,36 @@ const ListingDescription = ({ onNext }: ListingDescriptionProps) => {
         placeholder="주변 인프라, 편리한 교통, 깔끔한 집 등 다양하게 매물을 홍보해요"
         gap="gap-2"
       />
-      <BottomActionBar
-        buttons={[
-          {
-            label: "저장",
-            onClick: () => {
-              setDescription(text);
-              console.log("저장");
+      {!edit ? (
+        <BottomActionBar
+          buttons={[
+            {
+              label: "저장",
+              onClick: () => {
+                setDescription(text);
+                console.log("저장");
+              },
+              variant: "outline",
             },
-            variant: "outline",
-          },
-          {
-            label: "다음",
-            onClick: () => {
-              setDescription(text);
-              onNext();
+            {
+              label: "다음",
+              onClick: () => {
+                setDescription(text);
+                if (onNext) onNext();
+              },
+              variant: "filled",
+              disabled: !text,
             },
-            variant: "filled",
-            disabled: !text,
-          },
-        ]}
-      />
+          ]}
+        />
+      ) : (
+        <BottomActionBar
+          label="저장"
+          onClick={() => {
+            router.push(`/listings/${id}/edit`);
+          }}
+        />
+      )}
     </>
   );
 };
