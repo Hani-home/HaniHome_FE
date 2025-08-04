@@ -100,8 +100,17 @@ export const formatInternalDetails = (
 ) => {
   if (!details) return <div>N/A</div>;
 
-  const displayValue = (value: number | undefined | null) =>
-    value === null || value === undefined ? "(-)" : value;
+  const displayValue = (value: number | undefined | null) => {
+    if (value === null || value === undefined) return "(-)";
+
+    const formatted = value.toFixed(1);
+
+    // 최대 길이 5자리로 자르기 (예: "123.4", "12.34" 등)
+    if (formatted.length > 5) {
+      return formatted.slice(0, 5);
+    }
+    return formatted;
+  };
 
   return (
     <div className="flex flex-col divide-y divide-gray-100">
