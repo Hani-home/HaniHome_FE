@@ -2,9 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
+
+import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+
+import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import TextareaField from "@/components/common/TextareaField";
@@ -20,11 +24,24 @@ const ListingDescription = ({
   edit = false,
 }: ListingDescriptionProps) => {
   const router = useRouter();
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id as string;
+  const { data } = usePropertyDetailEditList(id ?? "");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { description, setDescription } = useListingStore();
   const [text, setText] = useState(description || "");
+
+  useEffect(() => {
+    if (edit && data) {
+      const parsed = toPostPropertyDetail(data);
+      const fetchedDescription = parsed.description || "";
+      setText(fetchedDescription);
+      setDescription(fetchedDescription);
+    } else if (!edit) {
+      setText(description || "");
+    }
+  }, [edit, data]);
 
   const handleResize = () => {
     const textarea = textareaRef.current;

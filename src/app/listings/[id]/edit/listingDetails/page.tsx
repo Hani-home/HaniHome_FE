@@ -207,7 +207,7 @@ const ListingDetailsEdit = () => {
           }
 
           default: {
-            value = "답변내용1";
+            value = "답변내용";
             break;
           }
         }
