@@ -11,8 +11,6 @@ import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
 
 import {
   formatCapcityPeople,
-  formatFurniture,
-  formatHighlights,
   formatIsBrokered,
   formatPropertySubType,
 } from "@/utils/formatter/detailFormatter";
@@ -25,6 +23,7 @@ import BackHeader from "@/components/layout/header/BackHeader";
 import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
 import ListingDetailsDropdownContent from "@/components/listings/create/listingDetails/ListingDetailsDropdownContent";
 
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { QUESTION_MAP } from "@/constants/question-map";
 
 import { ListingDetailsOption } from "@/types/createPropertyAnswer";
@@ -134,12 +133,24 @@ const ListingDetailsEdit = () => {
           }
 
           case "furniture": {
-            value = formatFurniture(optionItemIds);
+            const options = CATEGORY_OPTIONS[2].items;
+            const categories = Object.entries(options)
+              .filter(([, items]) =>
+                items.some(i => optionItemIds?.includes(i.optionId)),
+              )
+              .map(([category]) => category);
+            value = categories.join(", ");
             break;
           }
 
           case "highlights": {
-            value = formatHighlights(optionItemIds);
+            const options = CATEGORY_OPTIONS[1].items;
+            const matched = options.filter(i =>
+              optionItemIds?.includes(i.optionId),
+            );
+            value = matched.length
+              ? `${matched[0].label}${matched.length > 1 ? "···" : ""}`
+              : "";
             break;
           }
 

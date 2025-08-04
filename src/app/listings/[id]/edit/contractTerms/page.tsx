@@ -88,7 +88,7 @@ const ContractTermsEdit = () => {
     const jsonDiscriminator = data?.kind;
 
     const payload = {
-      jsonDiscriminator: jsonDiscriminator,
+      jsonDiscriminator,
       costDetails,
       optionItemIds: finalOptionItemIds,
     };

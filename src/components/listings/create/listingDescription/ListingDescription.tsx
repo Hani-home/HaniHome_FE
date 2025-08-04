@@ -67,7 +67,7 @@ const ListingDescription = ({
   const handleSave = () => {
     const jsonDiscriminator = data?.kind;
     const payload = {
-      jsonDiscriminator: jsonDiscriminator,
+      jsonDiscriminator,
       description,
     };
     patchProperty(payload, {
