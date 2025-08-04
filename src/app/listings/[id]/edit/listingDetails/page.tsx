@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -16,7 +16,6 @@ import {
   formatIsBrokered,
   formatPropertySubType,
 } from "@/utils/formatter/detailFormatter";
-
 import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";
@@ -49,7 +48,7 @@ const ListingDetailsEdit = () => {
     setShareInternalDetails,
     setOptionItemIds,
   } = useListingStore();
-
+  const router = useRouter();
   const params = useParams();
   const id = params.id as string;
   const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
@@ -147,7 +146,7 @@ const ListingDetailsEdit = () => {
             break;
           }
 
-          case "isbrokered": {
+          case "isBrokered": {
             value = formatIsBrokered(optionItemIds);
             break;
           }
@@ -208,7 +207,7 @@ const ListingDetailsEdit = () => {
           }
 
           default: {
-            value = "답변내용";
+            value = "답변내용1";
             break;
           }
         }
@@ -251,7 +250,12 @@ const ListingDetailsEdit = () => {
           className="bottom-[70px]"
         />
       )}
-      <BottomActionBar label="저장" />
+      <BottomActionBar
+        label="저장"
+        onClick={() => {
+          router.push(`/listings/${id}/edit`);
+        }}
+      />
     </>
   );
 };
