@@ -67,7 +67,6 @@ const ContractTermsEdit = () => {
   const router = useRouter();
 
   const INCLUDED_OPTION_IDS = CATEGORY_OPTIONS[4];
-  console.log("잘나옴?", INCLUDED_OPTION_IDS);
 
   const { mutate: patchProperty } = usePatchProperty(Number(id));
 
@@ -87,14 +86,12 @@ const ContractTermsEdit = () => {
       ...optionItemIds.filter(id => includedOptionIds.has(id)),
     ];
     const jsonDiscriminator = data?.kind;
-    console.log(jsonDiscriminator);
+
     const payload = {
       jsonDiscriminator: jsonDiscriminator,
       costDetails,
       optionItemIds: finalOptionItemIds,
     };
-
-    console.log("PATCH payload", payload);
 
     patchProperty(payload, {
       onSuccess: () => {
