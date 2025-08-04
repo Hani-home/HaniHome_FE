@@ -4,8 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
-import { usePatchProperty } from "@/hooks/property/useProperty";
+import { usePropertyDetailEditList, usePatchProperty } from "@/hooks/property/useProperty";
 
 import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
@@ -26,7 +25,7 @@ const ContractTermsEdit = () => {
 
   const params = useParams();
   const id = params.id as string;
-  const { data } = usePropertyDetailEditList(id ?? ""); // ← 서버 데이터 가져오기
+  const { data } = usePropertyDetailEditList(id ?? "");
 
   const [costDetails, setCostDetails] = useState<CostDetails>({
     weeklyCost: 0,

@@ -7,7 +7,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
 
-import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+import {
+  usePatchProperty,
+  usePropertyDetailEditList,
+} from "@/hooks/property/useProperty";
 
 import {
   formatCapcityPeople,
@@ -31,6 +34,7 @@ import {
   RentInternalDetails,
   ShareInternalDetails,
 } from "@/types/listingDetailPost";
+import { PatchPayload } from "@/types/patchPayload";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
@@ -60,7 +64,7 @@ const ListingDetailsEdit = () => {
   const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
   const searchParams = useSearchParams();
   const open = searchParams.get("open");
-
+  const { mutate: patchProperty } = usePatchProperty(Number(id));
   const listing = useMemo(() => {
     if (!data) return null;
     return toPostPropertyDetail(data);
@@ -100,6 +104,120 @@ const ListingDetailsEdit = () => {
 
   const handleItemClick = () => {
     setShowAlert(true);
+  };
+
+
+  const handleSave = () => {
+    if (!data || !open) return;
+
+    const jsonDiscriminator = data.kind as "RENT" | "SHARE";
+    let payload: PatchPayload | null = null;
+
+    const includedOptionIds = new Set<number>();
+
+    Object.values(CATEGORY_OPTIONS).forEach(category => {
+      switch (category.key) {
+        case "highlights":
+        case "isBrokered":
+        case "furniture":
+          Object.values(category.items).forEach(item => {
+            includedOptionIds.add(item.optionId);
+          });
+          break;
+      }
+    });
+
+    const filteredOptionItemIds = optionItemIds.filter(
+      id => !includedOptionIds.has(id),
+    );
+
+    const selectedIncludedOptionIds = optionItemIds.filter(id =>
+      includedOptionIds.has(id),
+    );
+
+    const finalOptionItemIds = [
+      ...filteredOptionItemIds,
+      ...selectedIncludedOptionIds,
+    ];
+
+    if (jsonDiscriminator === "RENT") {
+      switch (open) {
+        case "propertyType":
+          payload = {
+            jsonDiscriminator: "RENT",
+            rentPropertySubType: rentPropertyType ?? undefined,
+          };
+          break;
+
+        case "capacityPeople":
+          payload = {
+            jsonDiscriminator: "RENT",
+            capacityRent: rentCapacityPeople ?? undefined,
+          };
+          break;
+
+        case "internalDetail":
+          payload = {
+            jsonDiscriminator: "RENT",
+            internalDetails: rentInternalDetails ?? undefined,
+          };
+          break;
+
+        case "furniture":
+        case "highlights":
+          payload = {
+            jsonDiscriminator: "RENT",
+            optionItemIds: finalOptionItemIds,
+          };
+          break;
+
+        case "isBrokered":
+          payload = {
+            jsonDiscriminator: "RENT",
+            optionItemIds: finalOptionItemIds,
+          };
+          break;
+      }
+    } else if (jsonDiscriminator === "SHARE") {
+      switch (open) {
+        case "propertyType":
+          payload = {
+            jsonDiscriminator: "SHARE",
+            sharePropertySubType: sharePropertyType ?? undefined,
+          };
+          break;
+
+        case "capacityPeople":
+          payload = {
+            jsonDiscriminator: "SHARE",
+            capacityShare: shareCapacityPeople ?? undefined,
+          };
+          break;
+
+        case "internalDetail":
+          payload = {
+            jsonDiscriminator: "SHARE",
+            internalDetails: shareInternalDetails ?? undefined,
+          };
+          break;
+
+        case "furniture":
+        case "highlights":
+          payload = {
+            jsonDiscriminator: "SHARE",
+            optionItemIds: finalOptionItemIds,
+          };
+          break;
+      }
+    }
+
+    if (payload) {
+      patchProperty(payload, {
+        onSuccess: () => {
+          router.push(`/listings/${id}/edit`);
+        },
+      });
+    }
   };
 
   return (
@@ -268,12 +386,7 @@ const ListingDetailsEdit = () => {
           className="bottom-[70px]"
         />
       )}
-      <BottomActionBar
-        label="저장"
-        onClick={() => {
-          router.push(`/listings/${id}/edit`);
-        }}
-      />
+      <BottomActionBar label="저장" onClick={handleSave} />
     </>
   );
 };

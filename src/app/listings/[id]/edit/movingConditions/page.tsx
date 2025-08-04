@@ -26,11 +26,8 @@ import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 
 import { MovingConditionsOption } from "@/types/createPropertyAnswer";
-import {
-  GenderPreference,
-  LivingConditions,
-  MoveInInfo,
-} from "@/types/listingDetailPost";
+
+import { PatchPayload } from "@/types/patchPayload";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
@@ -194,23 +191,6 @@ const MovingConditionsEdit = () => {
   };
 
   const { mutate: patchProperty } = usePatchProperty(Number(id));
-  type PatchPayload =
-    | {
-        jsonDiscriminator: "SHARE";
-        genderPreference: GenderPreference;
-        lgbtAvailable: boolean;
-      }
-    | { jsonDiscriminator: "SHARE"; livingConditions: LivingConditions }
-    | { jsonDiscriminator: "SHARE"; moveInInfo: MoveInInfo }
-    | { jsonDiscriminator: "SHARE"; optionItemIds: number[] }
-    | {
-        jsonDiscriminator: "RENT";
-        genderPreference: GenderPreference;
-        lgbtAvailable: boolean;
-      }
-    | { jsonDiscriminator: "RENT"; livingConditions: LivingConditions }
-    | { jsonDiscriminator: "RENT"; moveInInfo: MoveInInfo }
-    | { jsonDiscriminator: "RENT"; optionItemIds: number[] };
 
   const handleSave = () => {
     if (!data || !open) return;
