@@ -9,7 +9,7 @@ import { useViewingAvailableDates } from "@/hooks/viewing/useViewing";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 
-import { MyViewingDates } from "@/types/viewing";
+import { MyViewingDates } from "@/types/viewing.type";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

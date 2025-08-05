@@ -21,7 +21,7 @@ import TitleHeader from "@/components/layout/header/TitleHeader";
 import DropDownMenu from "@/components/wishlist/dropDownMenu";
 import RoomList from "@/components/wishlist/roomList";
 
-import { WishListSortType } from "@/types/wishlist";
+import { WishListSortType } from "@/types/wishlist.type";
 
 import ListIcon from "@/public/svgs/header/list-icon.svg";
 

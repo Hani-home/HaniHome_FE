@@ -18,7 +18,7 @@ import ProfileImageUploader from "@/components/signup/profile/ProfileImageUpload
 
 import { GENDER_OPTIONS } from "@/constants/dropdown-options";
 
-import { Gender } from "@/types/member";
+import { Gender } from "@/types/member.type";
 
 import Arrow from "@/public/svgs/common/left-arrow.svg";
 import GoogleIcon from "@/public/svgs/mypage/google-icon.svg";

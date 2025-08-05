@@ -25,7 +25,7 @@ import VerfiyKindAlertModal from "@/components/signup/profile/VerifyKindAlertMod
 
 import { VERIFICATION_OPTIONS } from "@/constants/dropdown-options";
 
-import { VerificationType } from "@/types/auth";
+import { VerificationType } from "@/types/auth.type";
 
 import EmptyCheck from "@/public/svgs/common/empty-check.svg";
 import FilledCheck from "@/public/svgs/common/filled-check.svg";

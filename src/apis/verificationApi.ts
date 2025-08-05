@@ -1,4 +1,4 @@
-import { VerificationType } from "@/types/auth";
+import { VerificationType } from "@/types/auth.type";
 
 import { axiosInstance } from "./axios";
 

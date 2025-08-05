@@ -1,14 +1,14 @@
-import { NearestStation } from "./property";
+import { NearestStation } from "./property.type";
 
 export interface ListingCardProps {
   id: number;
-  kind:string;
+  kind: string;
   thumbnailUrl: string | null;
   weeklyCost: number;
   tradeStatus: string;
   internalArea?: number;
   totalFloors?: number;
-  nearestStation:NearestStation;
+  nearestStation: NearestStation;
   billIncluded: boolean;
   suburb: string;
   createdAt: string;

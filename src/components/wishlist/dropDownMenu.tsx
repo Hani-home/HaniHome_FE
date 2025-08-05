@@ -4,7 +4,7 @@ import { useClickOutside } from "@/hooks/common/useClickOutside";
 
 import Divider from "@/components/common/Divider";
 
-import { WishListSortType } from "@/types/wishlist";
+import { WishListSortType } from "@/types/wishlist.type";
 
 interface DropDownMenuProps {
   onSelect: (order: WishListSortType) => void;

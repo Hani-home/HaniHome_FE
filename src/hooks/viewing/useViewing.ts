@@ -14,7 +14,7 @@ import {
   putViewingPropertyNotes,
 } from "@/apis/viewingApi";
 
-import { ViewingStatus, ViewingViewType } from "@/types/viewing";
+import { ViewingStatus, ViewingViewType } from "@/types/viewing.type";
 
 interface UseMyViewingListOptions {
   view?: ViewingViewType;

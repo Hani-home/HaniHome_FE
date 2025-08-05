@@ -13,7 +13,7 @@ import {
   removeWish,
 } from "@/apis/wishlistApi";
 
-import { WishListSortType } from "@/types/wishlist";
+import { WishListSortType } from "@/types/wishlist.type";
 
 export const useWishList = () => {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn);

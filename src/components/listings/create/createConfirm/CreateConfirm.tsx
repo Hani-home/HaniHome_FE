@@ -11,7 +11,7 @@ import TitleSection from "@/components/listings/detailShow/TitleSection";
 
 import { propertyInfo } from "@/constants/mock/listing-detail-dummies";
 
-import { PropertyDetail } from "@/types/listingDetailPost";
+import { PropertyDetail } from "@/types/listingDetailPost.type";
 
 interface CreateConfirmProps {
   onNext: () => void;

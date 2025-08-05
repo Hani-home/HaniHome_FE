@@ -1,5 +1,5 @@
 // 회원가입 시 전달할 데이터
-import { Gender } from "./member";
+import { Gender } from "./member.type";
 
 export interface Consent {
   type: string;

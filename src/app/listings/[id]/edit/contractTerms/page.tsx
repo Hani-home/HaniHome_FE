@@ -15,7 +15,7 @@ import CostDetailField from "@/components/listings/create/contractTerms/CostDeta
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 
-import { CostDetails } from "@/types/listingDetailPost";
+import { CostDetails } from "@/types/listingDetailPost.type";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 

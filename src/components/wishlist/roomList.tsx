@@ -14,7 +14,7 @@ import {
   getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
-import { ListingCardProps } from "@/types/listingCard";
+import { ListingCardProps } from "@/types/listingCard.type";
 
 import FilledHeart from "@/public/svgs/common/heart-filled-icon.svg";
 import EmptyHeart from "@/public/svgs/common/heart-outline-icon.svg";

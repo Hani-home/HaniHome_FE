@@ -22,15 +22,15 @@ import {
   postProperty,
 } from "@/apis/propertyApi";
 
-import { PropertyDetail } from "@/types/listingDetailGet";
-import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost";
+import { PropertyDetail } from "@/types/listingDetailGet.type";
+import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost.type";
 import {
   MyPropertiesParams,
   Property,
   PropertyErrorResponse,
   PropertyViewType,
   SummaryProperty,
-} from "@/types/property";
+} from "@/types/property.type";
 
 export const usePropertyList = <T extends PropertyViewType>(params: {
   view: T;

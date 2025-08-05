@@ -11,7 +11,7 @@ import SelectTab from "@/components/common/SelectTab";
 import ListingCard from "@/components/home/ListingCard";
 import BackHeader from "@/components/layout/header/BackHeader";
 
-import { SummaryProperty } from "@/types/property";
+import { SummaryProperty } from "@/types/property.type";
 
 const TABS = [
   { label: "거래중", key: "active" },

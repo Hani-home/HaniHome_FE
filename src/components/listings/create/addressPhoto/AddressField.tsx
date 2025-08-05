@@ -15,7 +15,7 @@ import {
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";
 
-import { PropertyRegion } from "@/types/listingDetailPost";
+import { PropertyRegion } from "@/types/listingDetailPost.type";
 
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 

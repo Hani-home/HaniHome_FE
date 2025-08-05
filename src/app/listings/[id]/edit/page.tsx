@@ -17,7 +17,7 @@ import TitleSection from "@/components/listings/detailShow/TitleSection";
 import {
   RentPropertyDetail,
   SharePropertyDetail,
-} from "@/types/listingDetailPost";
+} from "@/types/listingDetailPost.type";
 
 const ListingsEdit = () => {
   const router = useRouter();

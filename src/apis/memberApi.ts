@@ -1,5 +1,5 @@
-import { UpdateUserPayload } from "@/types/auth";
-import { Member } from "@/types/member";
+import { UpdateUserPayload } from "@/types/auth.type";
+import { Member } from "@/types/member.type";
 
 import { axiosInstance } from "./axios";
 

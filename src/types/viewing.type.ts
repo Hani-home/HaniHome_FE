@@ -1,4 +1,4 @@
-import { SummaryProperty } from "./property";
+import { SummaryProperty } from "./property.type";
 
 // 뷰잉 상태
 export type ViewingStatus = "REQUESTED" | "CANCELLED" | "COMPLETED";

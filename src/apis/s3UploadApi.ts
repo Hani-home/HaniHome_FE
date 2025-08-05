@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/apis/axios";
 
-import { VerificationType } from "@/types/auth";
+import { VerificationType } from "@/types/auth.type";
 
 export interface PresignedUrlResponse {
   presignedUrl: string;

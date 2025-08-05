@@ -17,7 +17,7 @@ import ViewingConfirmedSection from "@/components/viewings/ViewingConfirmedSecti
 
 import { viewingTabs } from "@/constants/viewing-tabs";
 
-import { ViewingPropertyItem, ViewingStatus } from "@/types/viewing";
+import { ViewingPropertyItem, ViewingStatus } from "@/types/viewing.type";
 
 const Viewing = () => {
   const { isLoggedIn } = useAuthStore();

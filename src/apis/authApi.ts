@@ -1,4 +1,4 @@
-import { LoginPayload, LoginResponse, SignupPayload } from "@/types/auth";
+import { LoginPayload, LoginResponse, SignupPayload } from "@/types/auth.type";
 
 import { axiosInstance } from "./axios";
 

@@ -20,7 +20,7 @@ import ProfileImageUploader from "@/components/signup/profile/ProfileImageUpload
 
 import { GENDER_OPTIONS } from "@/constants/dropdown-options";
 
-import { SignupPayload } from "@/types/auth";
+import { SignupPayload } from "@/types/auth.type";
 
 const SignupProfilePage = () => {
   const {

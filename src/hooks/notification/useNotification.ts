@@ -10,7 +10,10 @@ import {
   patchNotificationRead,
 } from "@/apis/notificationApi";
 
-import { NOTIFICATION_TYPES, NotificationItem } from "@/types/notification";
+import {
+  NOTIFICATION_TYPES,
+  NotificationItem,
+} from "@/types/notification.type";
 
 export const useMyNotifications = (read?: boolean) => {
   return useQuery<NotificationItem[]>({

@@ -14,7 +14,7 @@ import {
 
 import Dot from "@/components/common/Dot";
 
-import { ListingCardProps } from "@/types/listingCard";
+import { ListingCardProps } from "@/types/listingCard.type";
 
 import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";
 import HeartOutlineIcon from "@/public/svgs/common/heart-outline-icon.svg";

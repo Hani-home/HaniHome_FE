@@ -1,5 +1,8 @@
-import { GooglePlacesAPIResponse, PlacePrediction } from "@/types/googlePlaces";
-import { PropertyRegion } from "@/types/listingDetailPost";
+import {
+  GooglePlacesAPIResponse,
+  PlacePrediction,
+} from "@/types/googlePlaces.type";
+import { PropertyRegion } from "@/types/listingDetailPost.type";
 
 export const fetchPlaceSuggestions = async (
   input: string,
@@ -77,7 +80,9 @@ export const getCoordsFromRegion = async (region: PropertyRegion) => {
 export const fetchPlaceDetails = async (placeId: string) => {
   if (!placeId) return null;
 
-  const res = await fetch(`/api/placeDetails?placeId=${encodeURIComponent(placeId)}`);
+  const res = await fetch(
+    `/api/placeDetails?placeId=${encodeURIComponent(placeId)}`,
+  );
 
   if (!res.ok) {
     console.error("Place details fetch failed");

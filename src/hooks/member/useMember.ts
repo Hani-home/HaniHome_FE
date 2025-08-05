@@ -10,7 +10,7 @@ import {
   updateUser,
 } from "@/apis/memberApi";
 
-import { UpdateUserPayload } from "@/types/auth";
+import { UpdateUserPayload } from "@/types/auth.type";
 
 // 내 정보 조회
 export const useMyInfo = () => {

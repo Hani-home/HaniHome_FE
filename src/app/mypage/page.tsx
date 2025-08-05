@@ -18,7 +18,7 @@ import WithdrawAlertModal from "@/components/mypage/WithdrawAlertModal";
 
 import { getSections } from "@/constants/mypage-section";
 
-import { SectionData } from "@/types/mypageSection";
+import { SectionData } from "@/types/mypageSection.type";
 
 import CertificateBadge from "@/public/svgs/common/certificated-icon.svg";
 import Arrow from "@/public/svgs/common/left-arrow.svg";

@@ -26,7 +26,7 @@ import ListingDeleteModal from "@/components/mypage/ListingDeleteModal";
 import ListingHideModal from "@/components/mypage/ListingHideModal";
 import ListingDetailLoadingSkeleton from "@/components/skeleton/listingsDetail/ListingDetailLoadingSkeleton";
 
-import { PropertyErrorResponse } from "@/types/property";
+import { PropertyErrorResponse } from "@/types/property.type";
 
 import CertificatedIcon from "@/public/svgs/common/certificated-icon.svg";
 import HeartFilledIcon from "@/public/svgs/common/heart-filled-icon.svg";

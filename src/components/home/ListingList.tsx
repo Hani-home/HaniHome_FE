@@ -20,7 +20,7 @@ import { buildQueryParams } from "@/utils/filter/buildQueryParams";
 
 import { FALLBACK_SUBURB } from "@/constants/default-region";
 
-import { SummaryProperty } from "@/types/property";
+import { SummaryProperty } from "@/types/property.type";
 
 import ListingListSkeleton from "../skeleton/home/ListingListSkeleton";
 import ListingCard from "./ListingCard";

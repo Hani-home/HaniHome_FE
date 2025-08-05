@@ -3,8 +3,8 @@ import { RENT_TYPE_MAP, SHARE_TYPE_MAP } from "@/constants/housing-options";
 import {
   RentPropertySubType,
   SharePropertySubType,
-} from "@/types/listingDetailPost";
-import { FilteredPropertyParams } from "@/types/property";
+} from "@/types/listingDetailPost.type";
+import { FilteredPropertyParams } from "@/types/property.type";
 
 interface ParamsInput {
   selectedTypes: ("쉐어" | "렌트")[];

@@ -1,14 +1,14 @@
 import { serializePropertyFilters } from "@/utils/filter/serializePropertyFilters";
 
-import { PropertyDetail as PropertyDetailGet } from "@/types/listingDetailGet";
-import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost";
+import { PropertyDetail as PropertyDetailGet } from "@/types/listingDetailGet.type";
+import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost.type";
 import {
   MyPropertiesParams,
   Property,
   PropertyViewType,
   SummaryProperty,
-} from "@/types/property";
-import { FilteredPropertyParams } from "@/types/property";
+} from "@/types/property.type";
+import { FilteredPropertyParams } from "@/types/property.type";
 
 import { axiosInstance } from "./axios";
 

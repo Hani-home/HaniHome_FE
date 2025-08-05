@@ -1,4 +1,4 @@
-import { MetroStop } from "@/types/metro";
+import { MetroStop } from "@/types/metro.type";
 
 import { axiosInstance } from "./axios";
 

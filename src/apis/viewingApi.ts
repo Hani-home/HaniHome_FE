@@ -7,7 +7,7 @@ import {
   ViewingStatus,
   ViewingTime,
   ViewingViewType,
-} from "@/types/viewing";
+} from "@/types/viewing.type";
 
 // 내 뷰잉 리스트 조회
 export const getMyViewingList = async <T>(

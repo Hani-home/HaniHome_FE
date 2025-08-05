@@ -2,11 +2,11 @@ import {
   PropertyDetail,
   RentProperty,
   ShareProperty,
-} from "@/types/listingDetailGet";
+} from "@/types/listingDetailGet.type";
 import {
   RentPropertyDetail,
   SharePropertyDetail,
-} from "@/types/listingDetailPost";
+} from "@/types/listingDetailPost.type";
 
 export default function toPostPropertyDetail(
   getProperty: PropertyDetail,

@@ -9,7 +9,7 @@ import { useMyViewingList } from "@/hooks/viewing/useViewing";
 
 import ViewingBox from "@/components/home/ViewingBox";
 
-import { MyViewingDateProfile } from "@/types/viewing";
+import { MyViewingDateProfile } from "@/types/viewing.type";
 
 import ViewingSectionSkeleton from "../skeleton/home/ViewingSectionSkeleton";
 

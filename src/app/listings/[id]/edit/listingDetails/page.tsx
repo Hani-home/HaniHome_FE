@@ -16,7 +16,6 @@ import {
   formatIsBrokered,
   formatPropertySubType,
 } from "@/utils/formatter/detailFormatter";
-
 import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";
@@ -32,7 +31,7 @@ import {
   RentPropertyDetail,
   ShareInternalDetails,
   SharePropertyDetail,
-} from "@/types/listingDetailPost";
+} from "@/types/listingDetailPost.type";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 

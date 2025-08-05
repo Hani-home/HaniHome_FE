@@ -1,5 +1,5 @@
-import { SummaryProperty } from "@/types/property";
-import { WishListSortType } from "@/types/wishlist";
+import { SummaryProperty } from "@/types/property.type";
+import { WishListSortType } from "@/types/wishlist.type";
 
 import { axiosInstance } from "./axios";
 

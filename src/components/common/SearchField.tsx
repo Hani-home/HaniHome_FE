@@ -9,7 +9,7 @@ import { fetchPlaceSuggestions } from "@/apis/googlePlacesApi";
 
 import useKeyboardNavigation from "@/hooks/common/useKeyboardNavigation";
 
-import { PlacePrediction } from "@/types/googlePlaces";
+import { PlacePrediction } from "@/types/googlePlaces.type";
 
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 

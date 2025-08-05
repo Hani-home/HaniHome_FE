@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { login, logout, refreshToken, signup } from "@/apis/authApi";
 
-import { LoginResponse, SignupPayload } from "@/types/auth";
+import { LoginResponse, SignupPayload } from "@/types/auth.type";
 
 export const useAuth = () => {
   const router = useRouter();

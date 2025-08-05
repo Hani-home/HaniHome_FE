@@ -9,7 +9,7 @@ import { calculateDday } from "@/utils/formatter/dateFormatter";
 import AlertModal from "@/components/common/AlertModal";
 import ContentWrapper from "@/components/layout/ContentWrapper";
 
-import { ViewingPropertyItem } from "@/types/viewing";
+import { ViewingPropertyItem } from "@/types/viewing.type";
 
 import CancelModal from "./CancelModal";
 import DdayBadge from "./DdayBadge";
