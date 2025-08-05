@@ -100,8 +100,15 @@ export const formatInternalDetails = (
 ) => {
   if (!details) return <div>N/A</div>;
 
-  const displayValue = (value: number | undefined | null) =>
-    value === null || value === undefined ? "(-)" : value;
+  const displayValue = (value: number | undefined | null) => {
+    if (value === null || value === undefined) return "(-)";
+
+    const formatted = Number.isInteger(value)
+      ? value.toString()
+      : value.toFixed(1);
+
+    return formatted.length > 5 ? formatted.slice(0, 5) + ".." : formatted;
+  };
 
   return (
     <div className="flex flex-col divide-y divide-gray-100">
