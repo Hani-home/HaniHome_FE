@@ -12,6 +12,13 @@ import {
   fetchPlaceSuggestions,
 } from "@/apis/googlePlacesApi";
 
+import {
+  usePatchProperty,
+  usePropertyDetailEditList,
+} from "@/hooks/property/usePropertyApi";
+
+import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
+
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";
 
@@ -49,10 +56,33 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
   const [suggestions, setSuggestions] = useState<
     { placeId: string; text: string }[]
   >([]);
+
   const router = useRouter();
   const { id } = useParams();
+  const { data } = usePropertyDetailEditList(id as string);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (edit && data) {
+      const parsed = toPostPropertyDetail(data);
+      if (parsed.region) {
+        setAddressData(parsed.region);
+        setSearchKeyword(
+          [
+            parsed.region.streetNumber,
+            parsed.region.streetName,
+            parsed.region.suburb,
+            parsed.region.state,
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+        setIsSearchClicked(true);
+        setSelectedAddress(parsed.region);
+      }
+    }
+  }, [edit, data, setAddressData, setSearchKeyword]);
 
   useEffect(() => {
     if (!searchKeyword.trim()) {
@@ -76,6 +106,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
   const handleSelectSuggestion = async (placeId: string, text: string) => {
     setSearchKeyword(text);
     setSuggestions([]);
+    setIsFocused(false);
 
     const details = await fetchPlaceDetails(placeId);
     if (!details) return;
@@ -122,7 +153,20 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
     return isFocused ? "border-gray-900" : "border-gray-600";
   };
 
-  console.log(addressData);
+  const { mutate: patchProperty } = usePatchProperty(Number(id));
+
+  const handleSave = () => {
+    if (!data) return null;
+    const jsonDiscriminator = data.kind;
+    const payload = { jsonDiscriminator, region: addressData };
+
+    patchProperty(payload, {
+      onSuccess: () => {
+        router.push(`/listings/${id}/edit`);
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="text-heading3 px-4 py-4 text-gray-900">
@@ -181,6 +225,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
             </div>
           )}
         </div>
+
         {isSearchClicked && selectedAddress && (
           <div className="h-[343px] w-[343px] py-3">
             <GoogleMap
@@ -280,10 +325,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
           {!edit ? (
             <BottomActionBar label="다음" variant="outline" onClick={onNext} />
           ) : (
-            <BottomActionBar
-              label="저장"
-              onClick={() => router.push(`/listings/${id}/edit`)}
-            />
+            <BottomActionBar label="저장" onClick={handleSave} />
           )}
         </>
       )}
