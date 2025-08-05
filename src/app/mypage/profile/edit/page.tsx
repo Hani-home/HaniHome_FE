@@ -136,7 +136,7 @@ const ProfileEditPage = () => {
 
               <div
                 className="flex cursor-pointer flex-row items-center justify-between py-5"
-                onClick={() => router.push("/profile/verifications")}
+                onClick={() => router.push("/mypage/profile/verifications")}
               >
                 <div className="flex flex-col items-start gap-1">
                   <div className="text-body1-sb text-gray-800">인증 강화</div>

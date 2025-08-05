@@ -51,7 +51,7 @@ const Mypage = () => {
         <div
           className="flex h-22 items-center justify-between px-4 py-2"
           onClick={() => {
-            if (isLoggedIn) router.push("profile/edit");
+            if (isLoggedIn) router.push("/mypage/profile/edit");
           }}
         >
           <div className="flex gap-[24px]">
