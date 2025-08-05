@@ -27,7 +27,7 @@ const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
     scrollTarget,
   } = useTimeSlotField(value, onChange);
 
-  const getDisplayTime = (time: string, isActive: boolean) => {
+  const getDisplayTime = (time: string | null, isActive: boolean) => {
     const [hour, minute] = (displayTime(time) || "00:00").split(":");
     return isActive ? (
       <span>nn : nn</span>
@@ -40,11 +40,10 @@ const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
     );
   };
 
-  const getButtonClass = (time: string, isActive: boolean) => {
+  const getButtonClass = (time: string | null, isActive: boolean) => {
     if (isActive) return "bg-mint-contrast border-mint-contrast text-white";
-    if (!time || time === "00:00")
-      return "bg-gray-0 border-gray-300 text-gray-300";
-    if (time === "24:00") return "text-mint bg-white border-gray-400";
+    if (!time) return "bg-gray-0 border-gray-300 text-gray-300";
+    if (time === "00:00") return "text-mint bg-white border-gray-400";
     return "text-mint border-gray-400";
   };
 

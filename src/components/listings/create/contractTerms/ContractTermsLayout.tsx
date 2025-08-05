@@ -170,12 +170,25 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       case "timeSlots": {
         const parts = [];
         for (const slot of timeSlots) {
-          if (slot.timeFrom === "00:00" && slot.timeTo === "00:00") continue;
+          if (
+            (slot.timeFrom === "00:00" || slot.timeFrom === null) &&
+            (slot.timeTo === "00:00" || slot.timeTo === null)
+          )
+            continue;
+
+          if (!slot.timeFrom) continue;
 
           const hour = parseInt(slot.timeFrom.split(":")[0]);
-          if (hour < 12) parts.push("아침");
-          else if (hour < 18) parts.push("점심");
-          else parts.push("저녁");
+          
+          if (hour === 0) {
+            parts.push("저녁");
+          } else if (hour < 12) {
+            parts.push("아침");
+          } else if (hour < 18) {
+            parts.push("점심");
+          } else {
+            parts.push("저녁");
+          }
         }
 
         return [...new Set(parts)].join(", ");
@@ -213,7 +226,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
             label: "저장",
             onClick: () => {
               //Todo: 저장 로직 추가
-              console.log(selectedAnswers);
+              console.log(timeSlots);
             },
             variant: "outline",
           },

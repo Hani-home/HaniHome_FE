@@ -78,7 +78,7 @@ export const useTimeSlotField = (
       const idx = PERIODS.indexOf(period);
       const updatedSlots = [...slots];
       const saveTime =
-        type === "end" && tempTime === "00:00" ? "24:00" : tempTime;
+        type === "end" && tempTime === "24:00" ? "00:00" : tempTime;
 
       updatedSlots[idx] = {
         ...updatedSlots[idx],
@@ -96,8 +96,8 @@ export const useTimeSlotField = (
       const isCurrent = PERIODS[idx] === period;
       return (
         !isCurrent &&
-        (slot.timeFrom === "00:00" || slot.timeFrom === "") !==
-          (slot.timeTo === "00:00" || slot.timeTo === "")
+        (slot.timeFrom === null || slot.timeFrom === null) !==
+          (slot.timeTo === null || slot.timeTo === null)
       );
     });
 
@@ -114,11 +114,13 @@ export const useTimeSlotField = (
       setActiveSpinner({ period, type });
       const idx = PERIODS.indexOf(period);
       const currentTime =
-        slots[idx]?.[type === "start" ? "timeFrom" : "timeTo"] || "00:00";
+        slots[idx]?.[type === "start" ? "timeFrom" : "timeTo"] || null;
       setTempTime(currentTime);
 
-      const [hour, minute] = currentTime.split(":").map(Number);
-      setScrollTarget({ hour, minute });
+      if (currentTime) {
+        const [hour, minute] = currentTime.split(":").map(Number);
+        setScrollTarget({ hour, minute });
+      }
     }
   };
 
