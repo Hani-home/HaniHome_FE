@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { OptionItem, getOptionItemsByCategory } from "@/apis/optionItem";
+import { OptionItem, getOptionItemsByCategory } from "@/apis/optionItemApi";
 
 export const useOptionItems = (categoryCode: string) => {
   return useQuery<OptionItem[]>({

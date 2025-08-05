@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { fetchPropertySearch } from "@/apis/property";
+import { fetchPropertySearch } from "@/apis/propertyApi";
 
 import { FilteredPropertyParams } from "@/types/property";
 

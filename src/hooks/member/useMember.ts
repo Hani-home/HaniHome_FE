@@ -3,7 +3,12 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { deleteUser, getMyInfo, getUserInfo, updateUser } from "@/apis/member";
+import {
+  deleteUser,
+  getMyInfo,
+  getUserInfo,
+  updateUser,
+} from "@/apis/memberApi";
 
 import { UpdateUserPayload } from "@/types/auth";
 

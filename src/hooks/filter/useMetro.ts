@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { fetchMetroStops } from "@/apis/metro";
+import { fetchMetroStops } from "@/apis/metroApi";
 
 export const useMetroStops = () => {
   return useQuery({

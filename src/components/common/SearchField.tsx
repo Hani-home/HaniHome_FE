@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMetroStore } from "@/stores/useMetroStore";
 import clsx from "clsx";
 
-import { fetchPlaceSuggestions } from "@/apis/googlePlaces";
+import { fetchPlaceSuggestions } from "@/apis/googlePlacesApi";
 
 import useKeyboardNavigation from "@/hooks/common/useKeyboardNavigation";
 

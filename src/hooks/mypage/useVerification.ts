@@ -4,7 +4,7 @@ import {
   SubmitVerificationRequest,
   getVerifications,
   postVerification,
-} from "@/apis/verification";
+} from "@/apis/verificationApi";
 
 export const useVerificationsQuery = () => {
   return useQuery({

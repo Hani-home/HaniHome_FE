@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { getVerificationPresignedUrl } from "@/apis/s3Upload";
+import { getVerificationPresignedUrl } from "@/apis/s3UploadApi";
 
 import {
   useSubmitVerificationMutation,

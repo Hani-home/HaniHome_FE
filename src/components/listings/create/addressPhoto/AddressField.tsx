@@ -7,7 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
 
-import { fetchPlaceDetails, fetchPlaceSuggestions } from "@/apis/googlePlaces";
+import {
+  fetchPlaceDetails,
+  fetchPlaceSuggestions,
+} from "@/apis/googlePlacesApi";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";

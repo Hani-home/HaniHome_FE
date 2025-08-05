@@ -8,7 +8,7 @@ import {
   deleteNotification,
   getMyNotifications,
   patchNotificationRead,
-} from "@/apis/notification";
+} from "@/apis/notificationApi";
 
 import { NOTIFICATION_TYPES, NotificationItem } from "@/types/notification";
 

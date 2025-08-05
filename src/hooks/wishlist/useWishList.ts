@@ -11,7 +11,7 @@ import {
   getMyWishList,
   getWishedProperties,
   removeWish,
-} from "@/apis/wishlist";
+} from "@/apis/wishlistApi";
 
 import { WishListSortType } from "@/types/wishlist";
 

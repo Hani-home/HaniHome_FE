@@ -12,7 +12,7 @@ import {
   getViewingDetail,
   putViewingChecklists,
   putViewingPropertyNotes,
-} from "@/apis/viewing";
+} from "@/apis/viewingApi";
 
 import { ViewingStatus, ViewingViewType } from "@/types/viewing";
 

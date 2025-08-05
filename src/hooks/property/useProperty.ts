@@ -20,7 +20,7 @@ import {
   patchDisplayStatus,
   patchProperty,
   postProperty,
-} from "@/apis/property";
+} from "@/apis/propertyApi";
 
 import { PropertyDetail } from "@/types/listingDetailGet";
 import { PropertyDetail as PropertyDetailPost } from "@/types/listingDetailPost";

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { getPropertyPresignedUrl } from "@/apis/s3Upload";
+import { getPropertyPresignedUrl } from "@/apis/s3UploadApi";
 
 import useMultipleImageUpload from "@/hooks/common/useMultipleImageUpload";
 
@@ -135,7 +135,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
                 console.log("저장");
               },
               variant: "outline",
-
             },
             {
               label: "다음",

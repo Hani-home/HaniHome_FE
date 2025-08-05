@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useSignupStore } from "@/stores/useSignupStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { login, logout, refreshToken, signup } from "@/apis/auth";
+import { login, logout, refreshToken, signup } from "@/apis/authApi";
 
 import { LoginResponse, SignupPayload } from "@/types/auth";
 
