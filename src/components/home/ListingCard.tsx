@@ -9,6 +9,7 @@ import {
   getDisplayStatus,
   getDisplayType,
   getDistanceInKm,
+  getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
 import Dot from "@/components/common/Dot";
@@ -72,7 +73,8 @@ const ListingCard = ({
           <p className="text-cap1-med mt-2 flex items-center gap-1 text-gray-600">
             {internalArea !== undefined && (
               <>
-                {internalArea}㎡{(totalFloors !== undefined || kind) && <Dot />}
+                {getInternalArea(internalArea)}
+                {(totalFloors !== undefined || kind) && <Dot />}
               </>
             )}
 

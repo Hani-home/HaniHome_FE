@@ -3,6 +3,7 @@ import Image from "next/image";
 import {
   getDisplayType,
   getDistanceInKm,
+  getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
 import Dot from "@/components/common/Dot";
@@ -55,7 +56,7 @@ export const ViewingPostCard = ({
             <p className="text-cap1-med flex items-center gap-1 text-gray-600">
               {internalArea !== undefined && (
                 <>
-                  {internalArea}㎡
+                  {getInternalArea(internalArea)}
                   {(totalFloors !== undefined || kind) && <Dot />}
                 </>
               )}
