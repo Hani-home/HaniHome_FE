@@ -14,11 +14,13 @@ import { UpdateUserPayload } from "@/types/auth.type";
 
 // 내 정보 조회
 export const useMyInfo = () => {
+  const { isLoggedIn } = useAuthStore();
   return useQuery({
     queryKey: ["myInfo"],
     queryFn: getMyInfo,
     staleTime: 1000 * 60 * 1,
     retry: 1,
+    enabled: isLoggedIn,
   });
 };
 
