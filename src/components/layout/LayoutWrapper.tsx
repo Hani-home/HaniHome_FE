@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { useEffect } from "react";
 
@@ -10,6 +10,8 @@ import { useToastQueue } from "@/hooks/notification/useToastQueue";
 import TabBar from "@/components/layout/TabBar";
 import NotificationToast from "@/components/notification/NotificationToast";
 
+import { ScrollHandler } from "./ScrollHandler";
+
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const notifications = useNotificationStream();
@@ -18,10 +20,6 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const showBottomNavbarPaths = ["/home", "/wishlist", "/viewing", "/mypage"];
   const showNavbar = showBottomNavbarPaths.includes(pathname);
   const isAdmin = pathname.startsWith("/admin");
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [usePathname(), useSearchParams().toString()]);
 
   useEffect(() => {
     if (notifications.length === 0) return;
@@ -41,9 +39,9 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
           : "scrollbar-hide mx-auto h-screen max-w-[480px] min-w-[375px] overflow-y-auto"
       }
     >
+      <ScrollHandler />
       {children}
       {!isAdmin && showNavbar && <TabBar />}
-
       <div className="fixed top-[47.85px] left-1/2 z-[999] flex w-full -translate-x-1/2 flex-col items-center gap-2">
         {queue.map(toast => (
           <NotificationToast
