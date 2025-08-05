@@ -119,7 +119,6 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
     return isFocused ? "border-gray-900" : "border-gray-600";
   };
 
-  console.log(addressData);
   return (
     <div className="flex flex-col gap-2">
       <div className="text-heading3 px-4 py-4 text-gray-900">
