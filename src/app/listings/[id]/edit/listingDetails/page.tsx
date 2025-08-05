@@ -32,7 +32,9 @@ import { QUESTION_MAP } from "@/constants/question-map";
 import { ListingDetailsOption } from "@/types/createPropertyAnswer";
 import {
   RentInternalDetails,
+  RentPropertyDetail,
   ShareInternalDetails,
+  SharePropertyDetail,
 } from "@/types/listingDetailPost";
 import { PatchPayload } from "@/types/patchPayload";
 
@@ -61,60 +63,47 @@ const ListingDetailsEdit = () => {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
   const searchParams = useSearchParams();
   const open = searchParams.get("open");
+
+  const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
   const { mutate: patchProperty } = usePatchProperty(Number(id));
+
+  const [showAlert, setShowAlert] = useState(false);
+
   const listing = useMemo(() => {
     if (!data) return null;
     return toPostPropertyDetail(data);
   }, [data]);
 
-  const [showAlert, setShowAlert] = useState(false);
-
   useEffect(() => {
     if (!listing) return;
+
     setOptionItemIds(listing.optionItemIds);
-    if (listing.jsonDiscriminator === "SHARE") {
+
+    if (listingType === "SHARE") {
+      const share = listing as SharePropertyDetail;
       setListingType("SHARE");
-      setSharePropertyType(listing.sharePropertySubType);
-      setShareCapacityPeople(listing.capacityShare);
-      setShareInternalDetails(listing.internalDetails);
-    } else if (listing.jsonDiscriminator === "RENT") {
+      setSharePropertyType(share.sharePropertySubType);
+      setShareCapacityPeople(share.capacityShare);
+      setShareInternalDetails(share.internalDetails);
+    } else {
+      const rent = listing as RentPropertyDetail;
       setListingType("RENT");
-      setRentPropertyType(listing.rentPropertySubType);
-      setRentCapacityPeople(listing.capacityRent);
-      setRentInternalDetails(listing.internalDetails);
+      setRentPropertyType(rent.rentPropertySubType);
+      setRentCapacityPeople(rent.capacityRent);
+      setRentInternalDetails(rent.internalDetails);
     }
-  }, [
-    listing,
-    setListingType,
-    setSharePropertyType,
-    setShareCapacityPeople,
-    setShareInternalDetails,
-    setRentPropertyType,
-    setRentCapacityPeople,
-    setRentInternalDetails,
-    setOptionItemIds,
-  ]);
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error || !data) return <div>데이터를 불러올 수 없습니다.</div>;
-  if (!listingType) return null;
-  if (!listing) return null;
+  }, [listing]);
 
   const handleItemClick = () => {
     setShowAlert(true);
   };
 
-
   const handleSave = () => {
     if (!data || !open) return;
 
-    const jsonDiscriminator = data.kind as "RENT" | "SHARE";
-    let payload: PatchPayload | null = null;
-
     const includedOptionIds = new Set<number>();
-
     Object.values(CATEGORY_OPTIONS).forEach(category => {
       switch (category.key) {
         case "highlights":
@@ -130,88 +119,100 @@ const ListingDetailsEdit = () => {
     const filteredOptionItemIds = optionItemIds.filter(
       id => !includedOptionIds.has(id),
     );
-
     const selectedIncludedOptionIds = optionItemIds.filter(id =>
       includedOptionIds.has(id),
     );
-
     const finalOptionItemIds = [
       ...filteredOptionItemIds,
       ...selectedIncludedOptionIds,
     ];
 
-    if (jsonDiscriminator === "RENT") {
+    const basePayload = {
+      optionItemIds: finalOptionItemIds,
+    };
+
+    let payload: PatchPayload | null = null;
+
+    if (listingType === "RENT") {
       switch (open) {
         case "propertyType":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "RENT",
             rentPropertySubType: rentPropertyType ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
         case "capacityPeople":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "RENT",
             capacityRent: rentCapacityPeople ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
-        case "internalDetail":
+        case "internalDetails":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "RENT",
             internalDetails: rentInternalDetails ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
         case "furniture":
         case "highlights":
-          payload = {
-            jsonDiscriminator: "RENT",
-            optionItemIds: finalOptionItemIds,
-          };
-          break;
-
         case "isBrokered":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "RENT",
-            optionItemIds: finalOptionItemIds,
-          };
+          } satisfies PatchPayload;
+          break;
+
+        default:
           break;
       }
-    } else if (jsonDiscriminator === "SHARE") {
+    } else if (listingType === "SHARE") {
       switch (open) {
         case "propertyType":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "SHARE",
             sharePropertySubType: sharePropertyType ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
         case "capacityPeople":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "SHARE",
             capacityShare: shareCapacityPeople ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
-        case "internalDetail":
+        case "internalDetails":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "SHARE",
             internalDetails: shareInternalDetails ?? undefined,
-          };
+          } satisfies PatchPayload;
           break;
 
         case "furniture":
         case "highlights":
+        case "isBrokered":
           payload = {
+            ...basePayload,
             jsonDiscriminator: "SHARE",
-            optionItemIds: finalOptionItemIds,
-          };
+          } satisfies PatchPayload;
+          break;
+
+        default:
           break;
       }
     }
 
     if (payload) {
+      console.log(payload);
       patchProperty(payload, {
         onSuccess: () => {
           router.push(`/listings/${id}/edit`);
@@ -219,6 +220,10 @@ const ListingDetailsEdit = () => {
       });
     }
   };
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (error || !data) return <div>데이터를 불러올 수 없습니다.</div>;
+  if (!listingType || !listing) return null;
 
   return (
     <>
@@ -228,27 +233,27 @@ const ListingDetailsEdit = () => {
         let value: React.ReactNode = "N/A";
 
         switch (item.id) {
-          case "propertyType": {
-            if (listingType === "SHARE" && sharePropertyType) {
-              value = formatPropertySubType(sharePropertyType, listingType);
-            } else if (listingType === "RENT" && rentPropertyType) {
-              value = formatPropertySubType(rentPropertyType, listingType);
-            } else {
-              value = "N/A";
-            }
+          case "propertyType":
+            value =
+              listingType === "RENT"
+                ? rentPropertyType
+                  ? formatPropertySubType(rentPropertyType, "RENT")
+                  : "N/A"
+                : sharePropertyType
+                  ? formatPropertySubType(sharePropertyType, "SHARE")
+                  : "N/A";
             break;
-          }
 
-          case "capacityPeople": {
-            if (listingType === "SHARE" && shareCapacityPeople !== null) {
-              value = formatCapcityPeople(shareCapacityPeople, "SHARE");
-            } else if (listingType === "RENT" && rentCapacityPeople !== null) {
-              value = formatCapcityPeople(rentCapacityPeople, "RENT");
-            } else {
-              value = "N/A";
-            }
+          case "capacityPeople":
+            value =
+              listingType === "RENT"
+                ? rentCapacityPeople !== null
+                  ? formatCapcityPeople(rentCapacityPeople, "RENT")
+                  : "N/A"
+                : shareCapacityPeople !== null
+                  ? formatCapcityPeople(shareCapacityPeople, "SHARE")
+                  : "N/A";
             break;
-          }
 
           case "furniture": {
             const options = CATEGORY_OPTIONS[2].items;
@@ -272,10 +277,9 @@ const ListingDetailsEdit = () => {
             break;
           }
 
-          case "isBrokered": {
+          case "isBrokered":
             value = formatIsBrokered(optionItemIds);
             break;
-          }
 
           case "internalDetails": {
             const val =
@@ -306,7 +310,7 @@ const ListingDetailsEdit = () => {
               bathrooms = shareVal.totalBathUser ? "욕실 쉐어" : "";
               rooms = shareVal.totalResidents ? "거주인" : "";
               withOwner = shareVal.withPropertyOwner ? "집주인 거주" : "";
-            } else if (listingType === "RENT") {
+            } else {
               const rentVal = val as RentInternalDetails;
               rooms = rentVal.numberOfRoom ? "방 개수" : "";
               bathrooms = rentVal.numberOfBath ? "욕실 개수" : "";
@@ -332,15 +336,12 @@ const ListingDetailsEdit = () => {
             ].filter(Boolean);
 
             const uniqueParts = Array.from(new Set(parts));
-
             value = uniqueParts.join(", ") || "답변내용";
             break;
           }
 
-          default: {
+          default:
             value = "답변내용";
-            break;
-          }
         }
 
         return (
@@ -365,7 +366,11 @@ const ListingDetailsEdit = () => {
               </div>
               <div>
                 <DownArrow
-                  className={`h-6 w-6 cursor-pointer ${open === item.id ? "rotate-180 text-gray-900" : "text-gray-500"}`}
+                  className={`h-6 w-6 cursor-pointer ${
+                    open === item.id
+                      ? "rotate-180 text-gray-900"
+                      : "text-gray-500"
+                  }`}
                 />
               </div>
             </div>

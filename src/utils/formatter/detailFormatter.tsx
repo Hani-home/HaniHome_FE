@@ -58,7 +58,7 @@ export const formatPropertySubType = (
   subType: SharePropertySubType | RentPropertySubType,
   kind: "SHARE" | "RENT",
 ) => {
-  if (!subType) return "N/A";
+  if (!subType) return "(-)";
   return kind === "SHARE"
     ? SHARE_TYPE_MAP[subType as SharePropertySubType]
     : RENT_TYPE_MAP[subType as RentPropertySubType];
@@ -68,7 +68,7 @@ export const formatCapcityPeople = (
   capcityPeople: CapacityRent | CapacityShare,
   kind: "RENT" | "SHARE",
 ) => {
-  if (!capcityPeople) return "N/A";
+  if (!capcityPeople) return "(-)";
 
   return kind === "RENT"
     ? CAPACITY_RENT_MAP[capcityPeople as CapacityRent]
@@ -98,16 +98,20 @@ export const formatInternalDetails = (
   details: ShareInternalDetails | RentInternalDetails | null | undefined,
   kind: "SHARE" | "RENT",
 ) => {
-  if (!details) return <div>N/A</div>;
+  if (!details) return <div>(-)</div>;
 
-  const displayValue = (value: number | undefined | null) => {
+  const displayValue = (
+    value: number | undefined | null,
+    type: "decimal" | "integer" = "integer",
+  ) => {
     if (value === null || value === undefined) return "(-)";
-
-    const formatted = value.toFixed(1);
-    if (formatted.length > 5) {
-      return formatted.slice(0, 5);
+    
+    if (type === "decimal") {
+      const formatted = value.toFixed(1);
+      return formatted.length > 5 ? formatted.slice(0, 5) : formatted;
     }
-    return formatted;
+
+    return Math.floor(value).toString();
   };
 
   return (
