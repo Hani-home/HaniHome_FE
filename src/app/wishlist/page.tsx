@@ -108,28 +108,34 @@ const Wishlist = () => {
       {/* 목록 */}
       {isLoggedIn ? (
         <>
-          {/* 매물 리스트 */}
-          {filteredListings.map(item => (
-            <div
-              key={item.id}
-              onClick={() => handleRoomClick(item.id)}
-              className={`cursor-pointer transition ${
-                selectedId === item.id ? "bg-mint-light" : ""
-              }`}
-            >
-              <RoomList
-                {...item}
-                isLiked={item.metaInfo?.wished ?? false}
-                wishCount={item.wishCount}
-                onToggleLike={() =>
-                  toggleWish({
-                    id: item.id,
-                    isLiked: item.metaInfo?.wished ?? false,
-                  })
-                }
-              />
+          {/* 매물 없음 처리 */}
+          {filteredListings.length === 0 ? (
+            <div className="text-body1-med flex flex-1 items-center justify-center text-gray-400">
+              즐겨찾기 내역이 없어요
             </div>
-          ))}
+          ) : (
+            filteredListings.map(item => (
+              <div
+                key={item.id}
+                onClick={() => handleRoomClick(item.id)}
+                className={`cursor-pointer transition ${
+                  selectedId === item.id ? "bg-mint-light" : ""
+                }`}
+              >
+                <RoomList
+                  {...item}
+                  isLiked={item.metaInfo?.wished ?? false}
+                  wishCount={item.wishCount}
+                  onToggleLike={() =>
+                    toggleWish({
+                      id: item.id,
+                      isLiked: item.metaInfo?.wished ?? false,
+                    })
+                  }
+                />
+              </div>
+            ))
+          )}
         </>
       ) : (
         <GuestLoginGuide
