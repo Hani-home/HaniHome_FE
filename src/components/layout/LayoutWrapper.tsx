@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { useEffect } from "react";
 
@@ -21,7 +21,7 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [usePathname(), useSearchParams().toString()]);
 
   useEffect(() => {
     if (notifications.length === 0) return;
