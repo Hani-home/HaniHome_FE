@@ -6,6 +6,6 @@ export const getDisplayType = (kind: string) =>
 
 export const getDistanceInKm = (distance: number) => distance.toFixed(1);
 
-export const getInternalArea = (area: number): string => {
+export const getArea = (area: number): string => {
   return `${area.toFixed(1)}㎡`;
 };

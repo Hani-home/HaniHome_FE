@@ -8,10 +8,10 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import { formatRelativeTime } from "@/utils/formatter/dateFormatter";
 import {
+  getArea,
   getDisplayStatus,
   getDisplayType,
   getDistanceInKm,
-  getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
 import { ListingCardProps } from "@/types/listingCard.type";
@@ -82,7 +82,7 @@ const RoomList = ({
               <div className="flex flex-wrap items-center gap-1">
                 {internalArea !== undefined && (
                   <>
-                    {getInternalArea(internalArea)}
+                    {getArea(internalArea)}
                     {(totalFloors !== undefined || kind) && <Dot />}
                   </>
                 )}

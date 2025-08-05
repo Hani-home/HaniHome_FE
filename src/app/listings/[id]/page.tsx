@@ -15,6 +15,8 @@ import {
 import { useViewingGuests } from "@/hooks/viewing/useViewingApi";
 import { useToggleWish } from "@/hooks/wishlist/useWishListApi";
 
+import { getArea } from "@/utils/formatter/propertyFormatter";
+
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
 import AddressMap from "@/components/listings/AddressMap";
@@ -257,11 +259,14 @@ const ListingDetailPage = () => {
             )}
             <div className="flex flex-col items-end gap-1">
               <span>
-                (Internal Area) {data.internalDetails?.internalArea ?? "-"}㎡
+                (Internal Area){" "}
+                {getArea(data.internalDetails?.internalArea ?? "(-)")}
               </span>
-              <span className="text-gray-500">
-                (Total Area) {data.internalDetails?.totalArea ?? "-"}㎡
-              </span>
+              {data.internalDetails.totalArea && (
+                <span className="text-gray-500">
+                  (Total Area) {getArea(data.internalDetails?.totalArea)}
+                </span>
+              )}
             </div>
           </div>
         </div>

@@ -6,10 +6,10 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import { formatRelativeTime } from "@/utils/formatter/dateFormatter";
 import {
+  getArea,
   getDisplayStatus,
   getDisplayType,
   getDistanceInKm,
-  getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
 import Dot from "@/components/common/Dot";
@@ -73,7 +73,7 @@ const ListingCard = ({
           <p className="text-cap1-med mt-2 flex items-center gap-1 text-gray-600">
             {internalArea !== undefined && (
               <>
-                {getInternalArea(internalArea)}
+                {getArea(internalArea)}
                 {(totalFloors !== undefined || kind) && <Dot />}
               </>
             )}
