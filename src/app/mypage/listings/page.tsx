@@ -54,11 +54,15 @@ const Listings = () => {
   return (
     <div>
       <BackHeader />
-      <SelectTab
-        tabs={TABS}
-        activeTab={activeTab}
-        onChange={tab => setActiveTab(tab as "active" | "completed" | "hidden")}
-      />
+      <div className="sticky top-12 z-10 bg-white">
+        <SelectTab
+          tabs={TABS}
+          activeTab={activeTab}
+          onChange={tab =>
+            setActiveTab(tab as "active" | "completed" | "hidden")
+          }
+        />
+      </div>
 
       {isLoading ? (
         <div className="flex h-screen items-center justify-center">
