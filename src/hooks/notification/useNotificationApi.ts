@@ -84,6 +84,13 @@ export const useNotificationStream = () => {
     });
 
     es.onerror = err => {
+      if (
+        err instanceof ErrorEvent &&
+        err.message?.includes("No activity within")
+      ) {
+        return;
+      }
+
       console.error("SSE 연결 오류:", err);
       es.close();
     };
