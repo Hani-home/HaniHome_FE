@@ -30,7 +30,8 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const router = useRouter();
   const { id } = useParams();
 
-  const { photoUrls, setPhotoUrls } = useListingStore();
+  const { listingType, photoUrls, setPhotoUrls } = useListingStore();
+
   const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrls); // 이미지 URL 미리보기
   const [, setUploadedFiles] = useState<File[]>([]); // 실제 파일 객체
 
@@ -131,11 +132,9 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
             {
               label: "저장",
               onClick: () => {
-                //Todo: 저장 로직 추가
-                console.log("저장");
+                console.log(listingType, photoUrls, previewUrls);
               },
               variant: "outline",
-
             },
             {
               label: "다음",
