@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
 
-import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+import { usePropertyDetailEditList } from "@/hooks/property/usePropertyApi";
 
 import {
   formatCapcityPeople,

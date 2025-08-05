@@ -9,8 +9,8 @@ import { useMetroStore } from "@/stores/useMetroStore";
 
 import { useCountUp } from "@/hooks/filter/useCountup";
 import { useDebouncedValue } from "@/hooks/filter/useDebouncedValue";
-import { usePropertySearch } from "@/hooks/filter/useFilter";
-import { useMetroStops } from "@/hooks/filter/useMetro";
+import { usePropertySearch } from "@/hooks/filter/useFilterApi";
+import { useMetroStops } from "@/hooks/filter/useMetroApi";
 
 import { buildQueryParams } from "@/utils/filter/buildQueryParams";
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { useVerificationsQuery } from "@/hooks/mypage/useVerification";
+import { useVerificationsQuery } from "@/hooks/mypage/useVerificationApi";
 
 import {
   ALLOWED_IMAGE_TYPES,

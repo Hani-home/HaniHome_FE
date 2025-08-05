@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { useSignupStore } from "@/stores/useSignupStore";
 
-import { useAuth } from "@/hooks/auth/useAuth";
+import { useAuth } from "@/hooks/auth/useAuthApi";
 import { useNickname } from "@/hooks/signup/useNickname";
 
 import { formatConsents } from "@/utils/formatter/consentTypeFormatter";

@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { useAuth } from "@/hooks/auth/useAuth";
-import { useMyInfo } from "@/hooks/member/useMember";
+import { useAuth } from "@/hooks/auth/useAuthApi";
+import { useMyInfo } from "@/hooks/member/useMemberApi";
 
 import Divider from "@/components/common/Divider";
 import TitleHeader from "@/components/layout/header/TitleHeader";

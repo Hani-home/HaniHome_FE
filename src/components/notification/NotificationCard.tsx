@@ -1,4 +1,4 @@
-import { usePatchNotificationRead } from "@/hooks/notification/useNotification";
+import { usePatchNotificationRead } from "@/hooks/notification/useNotificationApi";
 
 import { NotificationItem } from "@/types/notification.type";
 

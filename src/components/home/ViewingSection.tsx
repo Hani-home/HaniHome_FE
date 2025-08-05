@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
-import { useMyViewingList } from "@/hooks/viewing/useViewing";
+import { useMyViewingList } from "@/hooks/viewing/useViewingApi";
 
 import ViewingBox from "@/components/home/ViewingBox";
 

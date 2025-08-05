@@ -10,7 +10,7 @@ import { useLoginModalStore } from "@/stores/useLoginModalStore";
 import {
   useToggleWish,
   useWishedProperties,
-} from "@/hooks/wishlist/useWishList";
+} from "@/hooks/wishlist/useWishListApi";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GuestLoginGuide from "@/components/common/GuestLoginGuide";

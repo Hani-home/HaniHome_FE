@@ -13,8 +13,8 @@ import "dayjs/locale/ko";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 
-import { usePropertySearch } from "@/hooks/filter/useFilter";
-import { useToggleWish } from "@/hooks/wishlist/useWishList";
+import { usePropertySearch } from "@/hooks/filter/useFilterApi";
+import { useToggleWish } from "@/hooks/wishlist/useWishListApi";
 
 import { buildQueryParams } from "@/utils/filter/buildQueryParams";
 

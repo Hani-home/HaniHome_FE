@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useAuthStore } from "@/stores/useAuthStore";
 
-import { useMyViewingList } from "@/hooks/viewing/useViewing";
+import { useMyViewingList } from "@/hooks/viewing/useViewingApi";
 
 import GuestLoginGuide from "@/components/common/GuestLoginGuide";
 import LoadingLottie from "@/components/common/LoadingLottie";

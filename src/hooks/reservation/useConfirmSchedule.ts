@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 
-import { useViewingAvailableDates } from "@/hooks/viewing/useViewing";
+import { useViewingAvailableDates } from "@/hooks/viewing/useViewingApi";
 
 import { TIME_OPTIONS, TimeLabel } from "@/constants/time-options";
 

@@ -11,9 +11,9 @@ import { AxiosError } from "axios";
 import {
   usePatchDisplayStatus,
   usePropertyDetailList,
-} from "@/hooks/property/useProperty";
-import { useViewingGuests } from "@/hooks/viewing/useViewing";
-import { useToggleWish } from "@/hooks/wishlist/useWishList";
+} from "@/hooks/property/usePropertyApi";
+import { useViewingGuests } from "@/hooks/viewing/useViewingApi";
+import { useToggleWish } from "@/hooks/wishlist/useWishListApi";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";

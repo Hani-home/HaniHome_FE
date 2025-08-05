@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+import { usePropertyDetailEditList } from "@/hooks/property/usePropertyApi";
 
 import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
 

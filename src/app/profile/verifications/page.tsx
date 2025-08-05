@@ -7,7 +7,7 @@ import { getVerificationPresignedUrl } from "@/apis/s3UploadApi";
 import {
   useSubmitVerificationMutation,
   useVerificationsQuery,
-} from "@/hooks/mypage/useVerification";
+} from "@/hooks/mypage/useVerificationApi";
 import useVerificationUpload from "@/hooks/mypage/useVerificationUpload";
 
 import { uploadFilesToPresignedUrls } from "@/utils/images/uploadFilesToPresignedUrls";

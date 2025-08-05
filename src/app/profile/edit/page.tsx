@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import { useMyInfo, useUpdateUser } from "@/hooks/member/useMember";
+import { useMyInfo, useUpdateUser } from "@/hooks/member/useMemberApi";
 import { useNickname } from "@/hooks/signup/useNickname";
 
 import AlertMessage from "@/components/common/AlertMessage";

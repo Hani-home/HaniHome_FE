@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 import { useEffect } from "react";
 
-import { useNotificationStream } from "@/hooks/notification/useNotification";
+import { useNotificationStream } from "@/hooks/notification/useNotificationApi";
 import { useToastQueue } from "@/hooks/notification/useToastQueue";
 
 import TabBar from "@/components/layout/TabBar";

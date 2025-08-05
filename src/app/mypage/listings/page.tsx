@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { useMemo, useState } from "react";
 
-import { useMyProperties } from "@/hooks/property/useProperty";
+import { useMyProperties } from "@/hooks/property/usePropertyApi";
 
 import LoadingLottie from "@/components/common/LoadingLottie";
 import SelectTab from "@/components/common/SelectTab";

@@ -1,7 +1,7 @@
 import { useListingStore } from "@/stores/useListingStore";
 
-import { useMyInfo } from "@/hooks/member/useMember";
-import { usePostProperty } from "@/hooks/property/useProperty";
+import { useMyInfo } from "@/hooks/member/useMemberApi";
+import { usePostProperty } from "@/hooks/property/usePropertyApi";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";
