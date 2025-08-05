@@ -20,6 +20,10 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   const isAdmin = pathname.startsWith("/admin");
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  useEffect(() => {
     if (notifications.length === 0) return;
     const latest = notifications[0];
 
