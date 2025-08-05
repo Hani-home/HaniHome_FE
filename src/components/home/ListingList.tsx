@@ -52,24 +52,14 @@ const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
 
   const finalSuburb = suburb || fallbackSuburb || FALLBACK_SUBURB;
 
-  const params = useMemo(
-    () =>
-      buildQueryParams({
-        selectedTypes,
-        selectedRoomTypes,
-        billIncluded,
-        availableFrom,
-        availableTo,
-        immediate,
-        negotiable,
-        minWeeklyCost,
-        maxWeeklyCost,
-        radiusKm,
+  const params = useMemo(() => {
+    if (!isLoggedIn) {
+      return buildQueryParams({
         suburb: finalSuburb,
-        metroStopLatitude: selectedMetroStop?.latitude ?? null,
-        metroStopLongitude: selectedMetroStop?.longitude ?? null,
-      }),
-    [
+      });
+    }
+
+    return buildQueryParams({
       selectedTypes,
       selectedRoomTypes,
       billIncluded,
@@ -80,11 +70,26 @@ const ListingList = ({ fallbackSuburb }: { fallbackSuburb: string | null }) => {
       minWeeklyCost,
       maxWeeklyCost,
       radiusKm,
-      finalSuburb,
-      selectedMetroStop?.latitude,
-      selectedMetroStop?.longitude,
-    ],
-  );
+      suburb: finalSuburb,
+      metroStopLatitude: selectedMetroStop?.latitude ?? null,
+      metroStopLongitude: selectedMetroStop?.longitude ?? null,
+    });
+  }, [
+    isLoggedIn,
+    selectedTypes,
+    selectedRoomTypes,
+    billIncluded,
+    availableFrom,
+    availableTo,
+    immediate,
+    negotiable,
+    minWeeklyCost,
+    maxWeeklyCost,
+    radiusKm,
+    finalSuburb,
+    selectedMetroStop?.latitude,
+    selectedMetroStop?.longitude,
+  ]);
 
   const { data: searchData, isLoading } = usePropertySearch(params, {
     enabled: isAuthInitialized && !!(finalSuburb && finalSuburb.trim()),
