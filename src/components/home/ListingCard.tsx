@@ -71,14 +71,14 @@ const ListingCard = ({
           </div>
 
           <p className="text-cap1-med mt-2 flex items-center gap-1 text-gray-600">
-            {internalArea !== undefined && (
+            {internalArea != null && (
               <>
                 {getArea(internalArea)}
                 {(totalFloors !== undefined || kind) && <Dot />}
               </>
             )}
 
-            {totalFloors !== undefined && (
+            {totalFloors !== null && (
               <>
                 전체 {totalFloors}층 {kind && <Dot />}
               </>
