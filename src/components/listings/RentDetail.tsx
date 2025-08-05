@@ -25,19 +25,19 @@ const RentDetail = ({
   const infoList = [
     {
       label: "방 개수",
-      value: `${data.internalDetails.numberOfRoom ?? "-"}개`,
+      value: `${data.internalDetails.numberOfRoom ?? "(-) "}개`,
     },
     {
       label: "욕실 개수",
-      value: `${data.internalDetails.numberOfBath ?? "-"}개`,
+      value: `${data.internalDetails.numberOfBath ?? "(-) "}개`,
     },
     {
       label: "건물 전체 층",
-      value: `${data.internalDetails.totalFloors ?? "-"}층`,
+      value: `${data.internalDetails.totalFloors ?? "(-) "}층`,
     },
     {
       label: "해당 층",
-      value: `${data.internalDetails.propertyFloors ?? "-"}층`,
+      value: `${data.internalDetails.propertyFloors ?? "(-) "}층`,
     },
   ];
 

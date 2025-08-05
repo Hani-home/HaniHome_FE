@@ -225,17 +225,21 @@ const ListingDetailPage = () => {
               <span className="text-heading1">
                 <span className="text-gray-900">주 / </span>
                 <span className="text-mint">
-                  {data.costDetails?.weeklyCost?.toLocaleString() ?? "-"}$
+                  {data.costDetails?.weeklyCost?.toLocaleString() ?? "(-)"}$
                 </span>
               </span>
               <span className="text-body2-med flex h-fit items-center justify-center rounded-[100px] border border-gray-300 px-[10px] py-1 text-gray-700">
                 {data.tradeStatus === "COMPLETED" ? "거래 완료" : "거래중"}
               </span>
             </div>
-            <div className="text-body1-sb flex gap-3 text-gray-700">
-              <span>{data.region?.state ?? "region"}</span>
+            <div className="text-body1-sb flex items-center gap-3 text-gray-700">
+              <span className="line-clamp-2 max-h-[44px] max-w-[89px]">
+                {data.region?.state ?? "region"}
+              </span>
               <span>|</span>
-              <span>{data.region?.suburb ?? "suburb"}</span>
+              <span className="line-clamp-2 max-h-[44px] max-w-[87px]">
+                {data.region?.suburb ?? "suburb"}
+              </span>
             </div>
           </div>
 
