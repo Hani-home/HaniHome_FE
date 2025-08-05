@@ -168,7 +168,11 @@ const DropDownSection = ({
                     listingData={listingData}
                   />
                   {alertMsg && (
-                    <AlertMessage message={alertMsg} onDone={closeAlert} className="bottom-[70px]"/>
+                    <AlertMessage
+                      message={alertMsg}
+                      onDone={closeAlert}
+                      className="bottom-[70px]"
+                    />
                   )}
                 </div>
               )}
