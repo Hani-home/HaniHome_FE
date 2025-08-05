@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { usePropertyDetailEditList } from "@/hooks/property/usePropertyApi";
 
-import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
+import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import BackHeader from "@/components/layout/header/BackHeader";

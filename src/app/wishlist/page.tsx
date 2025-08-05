@@ -18,8 +18,8 @@ import LoadingLottie from "@/components/common/LoadingLottie";
 import LoginAlertModal from "@/components/common/LoginAlertModal";
 import ContentWrapper from "@/components/layout/ContentWrapper";
 import TitleHeader from "@/components/layout/header/TitleHeader";
-import DropDownMenu from "@/components/wishlist/dropDownMenu";
-import RoomList from "@/components/wishlist/roomList";
+import DropDownMenu from "@/components/wishlist/DropDownMenu";
+import RoomList from "@/components/wishlist/RoomList";
 
 import { WishListSortType } from "@/types/wishlist.type";
 

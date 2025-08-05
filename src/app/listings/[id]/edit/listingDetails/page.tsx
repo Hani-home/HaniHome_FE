@@ -16,7 +16,7 @@ import {
   formatIsBrokered,
   formatPropertySubType,
 } from "@/utils/formatter/detailFormatter";
-import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
+import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
