@@ -11,12 +11,15 @@ import {
   getDisplayStatus,
   getDisplayType,
   getDistanceInKm,
+  getInternalArea,
 } from "@/utils/formatter/propertyFormatter";
 
 import { ListingCardProps } from "@/types/listingCard";
 
 import FilledHeart from "@/public/svgs/common/heart-filled-icon.svg";
 import EmptyHeart from "@/public/svgs/common/heart-outline-icon.svg";
+
+import Dot from "../common/Dot";
 
 dayjs.extend(relativeTime);
 
@@ -51,44 +54,54 @@ const RoomList = ({
         width={108}
         height={108}
         unoptimized
-        className="self-center rounded-[4px]"
+        className="flex shrink-0 self-center rounded-[4px]"
         style={{ width: "108px", height: "108px", objectFit: "cover" }}
       />
 
-      <div className="flex w-full items-end justify-between py-2">
-        <div className="flex flex-col">
-          {/* 가격 + 상태 */}
-          <div className="flex flex-row gap-[6px] pb-2">
-            <div className="text-body1-sb text-gray-900">
-              주/ {weeklyCost.toLocaleString()}$
+      <div className="flex w-full items-end justify-between py-[6px]">
+        <div className="flex h-full flex-col justify-between">
+          <div className="flex flex-col gap-2">
+            {/* 가격 + 상태 */}
+            <div className="flex flex-row gap-[6px]">
+              <div className="text-body1-sb text-gray-900">
+                주/ {weeklyCost.toLocaleString()}$
+              </div>
+              <div
+                className={clsx(
+                  "text-cap1-med flex h-5 items-center justify-center rounded-[100px] border",
+                  tradeStatus === "BEFORE"
+                    ? "border-violet bg-violet-ultralight text-violet w-[50px]"
+                    : "w-[58px] border-gray-300 text-gray-700",
+                )}
+              >
+                {getDisplayStatus(tradeStatus)}
+              </div>
             </div>
-            <div
-              className={clsx(
-                "text-cap1-med flex h-5 items-center justify-center rounded-[100px] border",
-                tradeStatus === "BEFORE"
-                  ? "border-violet bg-violet-ultralight text-violet w-[50px]"
-                  : "w-[58px] border-gray-300 text-gray-700",
-              )}
-            >
-              {getDisplayStatus(tradeStatus)}
+            {/* 정보 */}
+            <div className="text-cap1-med flex flex-col gap-[2px] text-gray-600">
+              <div className="flex flex-wrap items-center gap-1">
+                {internalArea !== undefined && (
+                  <>
+                    {getInternalArea(internalArea)}
+                    {(totalFloors !== undefined || kind) && <Dot />}
+                  </>
+                )}
+
+                {totalFloors !== undefined && (
+                  <>
+                    전체 {totalFloors}층{kind && <Dot />}
+                  </>
+                )}
+
+                {getDisplayType(kind)}
+              </div>
+
+              <div className="flex items-center gap-1">
+                {billIncluded ? "빌 포함" : "빌 미포함"} <Dot />
+                역까지 {getDistanceInKm(nearestStation.distanceFromStation)}km
+              </div>
             </div>
           </div>
-
-          {/* 정보 */}
-          <div className="text-cap1-med flex flex-row gap-1 pb-[2px] text-gray-600">
-            <div>{internalArea}㎡</div>
-            <div className="text-gray-300">•</div>
-            <div>전체 {totalFloors}층</div>
-            <div className="text-gray-300">•</div>
-            <div> {getDisplayType(kind)}</div>
-          </div>
-
-          <div className="text-cap1-med flex flex-row gap-1 pb-4 text-gray-600">
-            <div>{billIncluded ? "빌 포함" : "빌 미포함"}</div>
-            <div className="text-gray-300">•</div>
-            <div> {getDistanceInKm(nearestStation.distanceFromStation)}km</div>
-          </div>
-
           <div className="text-cap1-med text-gray-500">
             {suburb.toLowerCase()}
           </div>
