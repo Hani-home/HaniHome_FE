@@ -4,7 +4,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 import { useEffect } from "react";
 
-export const ScrollHandler = () => {
+const ScrollHandler = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const key = `${pathname}?${searchParams.toString()}`;
@@ -15,3 +15,5 @@ export const ScrollHandler = () => {
 
   return null;
 };
+
+export default ScrollHandler;
