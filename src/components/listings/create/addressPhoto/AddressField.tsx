@@ -242,7 +242,7 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
         )}
       </div>
 
-      {!isSearchClicked && (
+      { !selectedAddress && (
         <>
           <div className="flex items-center gap-2 px-4 py-3">
             <div className="text-body2-med text-gray-700">
