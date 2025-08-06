@@ -37,58 +37,63 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     state => state.viewingAlwaysAvailable,
   );
 
-  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
-    totalCount: COMMON_CONTRACT_TERMS.length,
-    shouldAutoClose: index => {
-      const id = COMMON_CONTRACT_TERMS[index].id;
-      if (id === "costDetails") {
-        const { weeklyCost, deposit } = costDetails;
-        return !!(weeklyCost && deposit);
-      }
-      if (id === "meetingTime") {
-        return !!((meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable);
-      }
-      if (id === "timeSlots") {
-        return timeSlots.length > 0;
-      }
-      return !!selectedAnswers[id];
-    },
-  });
-
-  useEffect(() => {
-    const timers: NodeJS.Timeout[] = [];
-
-    openIndices.forEach(idx => {
-      const id = COMMON_CONTRACT_TERMS[idx].id;
-
-      if (!autoAdvance || idx === -1) return;
-
-      if (id === "costDetails") {
-        const { weeklyCost, deposit } = costDetails;
-
-        if (weeklyCost && deposit) {
-          const timer = setTimeout(() => {
-            autoAdvance(idx);
-          }, 4000);
-          timers.push(timer);
+  const { openIndices, visibleIndices, toggleIndex, autoAdvance } =
+    useDropdownAutoManager({
+      totalCount: COMMON_CONTRACT_TERMS.length,
+      shouldAutoClose: index => {
+        const id = COMMON_CONTRACT_TERMS[index].id;
+        if (id === "costDetails") {
+          const { weeklyCost, deposit } = costDetails;
+          return !!(weeklyCost && deposit);
         }
-      } else if (id === "meetingTime") {
-        if ((meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable) {
-          const timer = setTimeout(() => {
-            autoAdvance(idx);
-          }, 4000);
-          timers.push(timer);
+        if (id === "meetingTime") {
+          return !!(
+            (meetingDateFrom && meetingDateTo) ||
+            viewingAlwaysAvailable
+          );
         }
-      } else {
-        const answer = selectedAnswers[id];
-        if (answer) {
-          autoAdvance(idx);
+        if (id === "timeSlots") {
+          return timeSlots.length > 0;
         }
-      }
+        return !!selectedAnswers[id];
+      },
     });
 
+  useEffect(() => {
+    const currentIndex = openIndices[0]; // 단일 드롭다운 처리
+    if (currentIndex === undefined || currentIndex === -1) return;
+
+    const id = COMMON_CONTRACT_TERMS[currentIndex].id;
+    let timer: NodeJS.Timeout | null = null;
+
+    if (id === "costDetails") {
+      const { weeklyCost, deposit } = costDetails;
+      if (weeklyCost && deposit) {
+        timer = setTimeout(() => {
+          autoAdvance(currentIndex);
+        }, 4000);
+      }
+    } else if (id === "meetingTime") {
+      if ((meetingDateFrom && meetingDateTo) || viewingAlwaysAvailable) {
+        timer = setTimeout(() => {
+          autoAdvance(currentIndex);
+        }, 4000);
+      }
+    } else if (id === "timeSlots") {
+      if (timeSlots.length > 0) {
+        timer = setTimeout(() => {
+          autoAdvance(currentIndex);
+        }, 4000);
+      }
+    } else {
+      const answer = selectedAnswers[id];
+      if (answer) {
+        autoAdvance(currentIndex);
+      }
+    }
+
     return () => {
-      timers.forEach(clearTimeout);
+      if (timer) clearTimeout(timer);
     };
   }, [
     selectedAnswers,
@@ -98,6 +103,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     meetingDateFrom,
     meetingDateTo,
     viewingAlwaysAvailable,
+    timeSlots,
   ]);
 
   const handleSelect = (id: string, value: ContractTermsOption) => {
@@ -127,7 +133,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       return (
         timeSlots.length > 0 &&
         timeSlots.some(
-          slot => !(slot.timeFrom === "00:00" || slot.timeTo === "00:00"),
+          slot => !(slot.timeFrom === null || slot.timeTo === null),
         )
       );
     }
@@ -211,6 +217,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           label={item.label}
           answer={getAnswerText(item.id)}
           isOpen={openIndices.includes(index)}
+          isVisible={visibleIndices.includes(index)}
           onClick={() => toggleIndex(index)}
         >
           {item.options && (
@@ -229,7 +236,6 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           {
             label: "저장",
             onClick: () => {
-              //Todo: 저장 로직 추가
               console.log(timeSlots);
             },
             variant: "outline",
@@ -245,4 +251,5 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     </FunnelLayout>
   );
 };
+
 export default ContractTerms;

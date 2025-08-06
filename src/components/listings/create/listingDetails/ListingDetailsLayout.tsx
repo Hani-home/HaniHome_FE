@@ -46,38 +46,39 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
 
   const { highlightIds, furnitureIds, isBrokeredIds } = LISTING_DETAILS_IDS;
 
-  const { openIndices, toggleIndex, autoAdvance } = useDropdownAutoManager({
-    totalCount: questions.length,
-    shouldAutoClose: index => {
-      const id = questions[index].id as ListingDetailsOption["type"];
-      const answer = getAnswerValue(id, store);
+  const { openIndices, visibleIndices, toggleIndex, autoAdvance } =
+    useDropdownAutoManager({
+      totalCount: questions.length,
+      shouldAutoClose: index => {
+        const id = questions[index].id as ListingDetailsOption["type"];
+        const answer = getAnswerValue(id, store);
 
-      if (id === "highlights" && Array.isArray(answer)) {
-        return answer.filter(id => highlightIds.includes(id)).length >= 5;
-      }
+        if (id === "highlights" && Array.isArray(answer)) {
+          return answer.filter(id => highlightIds.includes(id)).length >= 5;
+        }
 
-      if (
-        id === "internalDetails" &&
-        typeof answer === "object" &&
-        answer !== null &&
-        !Array.isArray(answer)
-      ) {
-        const requiredKeys = [
-          ...(listingType === "RENT"
-            ? ["numberOfRoom", "numberOfBath"]
-            : ["totalResidents", "totalBathUser"]),
-          "internalArea",
-        ];
-        return requiredKeys.every(
-          key =>
-            typeof (answer as unknown as Record<string, number>)[key] ===
-            "number",
-        );
-      }
+        if (
+          id === "internalDetails" &&
+          typeof answer === "object" &&
+          answer !== null &&
+          !Array.isArray(answer)
+        ) {
+          const requiredKeys = [
+            ...(listingType === "RENT"
+              ? ["numberOfRoom", "numberOfBath"]
+              : ["totalResidents", "totalBathUser"]),
+            "internalArea",
+          ];
+          return requiredKeys.every(
+            key =>
+              typeof (answer as unknown as Record<string, number>)[key] ===
+              "number",
+          );
+        }
 
-      return !!answer;
-    },
-  });
+        return !!answer;
+      },
+    });
 
   useEffect(() => {
     openIndices.forEach(idx => {
@@ -108,6 +109,7 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
             )}
             isOpen={openIndices.includes(index)}
             onClick={() => toggleIndex(index)}
+            isVisible={visibleIndices.includes(index)}
           >
             <ListingDetailsDropdownContent
               id={item.id as ListingDetailsOption["type"]}

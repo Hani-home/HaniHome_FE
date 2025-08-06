@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useListingStore } from "@/stores/useListingStore";
 
 import { formatMeetingDay } from "@/utils/formatter/dateFormatter";
@@ -34,32 +36,91 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     setOptionItemIds,
   } = useListingStore();
 
-  const { openIndices, toggleIndex } = useDropdownAutoManager({
-    totalCount: COMMON_MOVING_CONDITIONS.length,
-    shouldAutoClose: index => {
-      const id = COMMON_MOVING_CONDITIONS[index].id;
-      switch (id) {
-        case "genderPreference":
-          return !!genderPreference;
-        case "additionalInfo":
-          return optionItemIds.length > 0;
-        case "moveInInfo":
-          return (
-            !!moveInInfo.availableFrom ||
-            !!moveInInfo.immediate ||
-            !!moveInInfo.negotiable
-          );
-        case "livingConditions":
-          return (
-            !!livingConditions &&
-            (!!livingConditions.noticePeriodWeeks ||
-              !!livingConditions.minimumStayWeeks)
-          );
-        default:
-          return false;
-      }
-    },
-  });
+  const { openIndices, visibleIndices, toggleIndex, autoAdvance } =
+    useDropdownAutoManager({
+      totalCount: COMMON_MOVING_CONDITIONS.length,
+      shouldAutoClose: index => {
+        const id = COMMON_MOVING_CONDITIONS[index].id;
+        switch (id) {
+          case "genderPreference":
+            return !!genderPreference;
+          case "additionalInfo":
+            return optionItemIds.length > 0;
+          case "moveInInfo":
+            return (
+              !!moveInInfo.availableFrom ||
+              !!moveInInfo.immediate ||
+              !!moveInInfo.negotiable
+            );
+          case "livingConditions":
+            return (
+              !!livingConditions &&
+              (!!livingConditions.noticePeriodWeeks ||
+                !!livingConditions.minimumStayWeeks)
+            );
+          default:
+            return false;
+        }
+      },
+    });
+
+  useEffect(() => {
+    const currentIndex = openIndices[0]; // 단일 드롭다운 처리
+    if (currentIndex === undefined || currentIndex === -1) return;
+
+    const id = COMMON_MOVING_CONDITIONS[currentIndex].id;
+    let timer: NodeJS.Timeout | null = null;
+
+    switch (id) {
+      case "genderPreference":
+        if (genderPreference) {
+          timer = setTimeout(() => {
+            autoAdvance(currentIndex);
+          }, 4000);
+        }
+        break;
+      case "additionalInfo":
+        if (optionItemIds.length > 0) {
+          timer = setTimeout(() => {
+            autoAdvance(currentIndex);
+          }, 4000);
+        }
+        break;
+      case "moveInInfo":
+        if (
+          moveInInfo.availableFrom ||
+          moveInInfo.immediate ||
+          moveInInfo.negotiable
+        ) {
+          timer = setTimeout(() => {
+            autoAdvance(currentIndex);
+          }, 4000);
+        }
+        break;
+      case "livingConditions":
+        if (
+          livingConditions &&
+          (livingConditions.noticePeriodWeeks ||
+            livingConditions.minimumStayWeeks)
+        ) {
+          timer = setTimeout(() => {
+            autoAdvance(currentIndex);
+          }, 4000);
+        }
+        break;
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [
+    openIndices,
+    autoAdvance,
+    genderPreference,
+    optionItemIds,
+    moveInInfo,
+    livingConditions,
+  ]);
 
   const handleSelect = (id: string, option: MovingConditionsOption) => {
     switch (option.type) {
@@ -202,6 +263,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
             label={item.label}
             answer={getAnswerText(item.id)}
             isOpen={openIndices.includes(index)}
+            isVisible={visibleIndices.includes(index)}
             onClick={() => toggleIndex(index)}
           >
             <MovingConditionDropdownContent
