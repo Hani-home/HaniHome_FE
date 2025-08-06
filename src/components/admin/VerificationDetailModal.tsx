@@ -3,8 +3,7 @@
 import { VerificationDetail } from "@/types/admin/verification";
 import Image from "next/image";
 import { useState } from "react";
-import { axiosInstance } from "@/apis/axios";
-
+import { approveVerification, rejectVerification } from "@/apis/admin/verification/adminVerificationApi";
 
 interface Props {
   data: VerificationDetail; //상세 조회 대상 데이터 
@@ -17,11 +16,10 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
 
   const handleApprove = async () => {
     try {
-      await axiosInstance.patch(`/api/v1/verifications/admin/${data.id}/approve`);
+      await approveVerification(data.id);
       alert("승인됨");
       onClose();
-    } catch (error) {
-      console.error("Failed to approve verification:", error);
+    } catch {
       alert("승인 실패");
     }
   };
@@ -32,13 +30,10 @@ const VerificationDetailModal = ({ data, onClose }: Props) => {
 
   const handleRejectSubmit = async () => {
     try {
-      await axiosInstance.patch(`/api/v1/verifications/admin/${data.id}/reject`, {
-        reason: rejectionReason,
-      });
+      await rejectVerification(data.id, rejectionReason);
       alert("거부됨");
       onClose();
-    } catch (error) {
-      console.error("Failed to reject verification:", error);
+    } catch {
       alert("거부 실패");
     }
   };
