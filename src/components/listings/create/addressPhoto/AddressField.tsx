@@ -10,19 +10,19 @@ import clsx from "clsx";
 import {
   fetchPlaceDetailSuggestions,
   fetchPlaceDetails,
-} from "@/apis/googlePlaces";
+} from "@/apis/googlePlacesApi";
 
 import {
   usePatchProperty,
   usePropertyDetailEditList,
-} from "@/hooks/property/useProperty";
+} from "@/hooks/property/usePropertyApi";
 
-import toPostPropertyDetail from "@/utils/toPostPropertyDetail";
+import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
 import GoogleMap from "@/components/common/GoogleMap";
 
-import { PropertyRegion } from "@/types/listingDetailPost";
+import { PropertyRegion } from "@/types/listingDetailPost.type";
 
 import SearchIcon from "@/public/svgs/common/search-icon.svg";
 
