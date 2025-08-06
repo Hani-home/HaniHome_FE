@@ -9,6 +9,7 @@ import {
   SummaryProperty,
 } from "@/types/property.type";
 import { FilteredPropertyParams } from "@/types/property.type";
+import { TemporaryProperty } from "@/types/temporaryProperty.type";
 
 import { axiosInstance } from "./axios";
 
@@ -160,4 +161,13 @@ export const fetchTemporaryPropertyData = async (
     `/api/v1/temporary-properties/${temporaryPropertyId}`,
   );
   return res.data.data;
+};
+
+//임시저장 매물 등록
+export const postTemporaryPropertyData = async (payload: TemporaryProperty) => {
+  const { data } = await axiosInstance.post(
+    "/api/v1/temporary-properties",
+    payload,
+  );
+  return data;
 };
