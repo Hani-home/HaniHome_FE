@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { formatMeetingDay } from "@/utils/formatter/dateFormatter";
+import {
+  convertUtcStringToLocalTime,
+  formatMeetingDay,
+} from "@/utils/formatter/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/listing/create/useDropdownAutoManager";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -178,8 +181,9 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
 
           if (!slot.timeFrom) continue;
 
-          const hour = parseInt(slot.timeFrom.split(":")[0]);
-          
+          const localTime = convertUtcStringToLocalTime(slot.timeFrom);
+          const hour = parseInt(localTime.split(":")[0]);
+
           if (hour === 0) {
             parts.push("저녁");
           } else if (hour < 12) {

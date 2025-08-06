@@ -1,6 +1,6 @@
 import { useTimeSlotField } from "@/hooks/property/useTimeSlotField";
 
-import { displayTime } from "@/utils/listing/create/timeslotUtils";
+import { convertUtcStringToLocalTime } from "@/utils/formatter/dateFormatter";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import TimeSpinner from "@/components/common/calendar/TimeSpinner";
@@ -28,10 +28,13 @@ const TimeSlotField = ({ value, onChange }: TimeSlotFieldProps) => {
   } = useTimeSlotField(value, onChange);
 
   const getDisplayTime = (time: string | null, isActive: boolean) => {
-    const [hour, minute] = (displayTime(time) || "00:00").split(":");
-    return isActive ? (
-      <span>nn : nn</span>
-    ) : (
+    if (!time) {
+      return isActive ? <span>nn : nn</span> : <span>00 : 00</span>;
+    }
+
+    const localTime = convertUtcStringToLocalTime(time);
+    const [hour, minute] = (localTime || "00:00").split(":");
+    return (
       <span className="flex items-center gap-[2px]">
         <span>{hour}</span>
         <span>:</span>
