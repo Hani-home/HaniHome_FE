@@ -3,7 +3,7 @@ import { useListingStore } from "@/stores/useListingStore";
 import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
 
-import { MovingConditionsOption } from "@/types/createPropertyAnswer";
+import { MovingConditionsOption } from "@/types/createPropertyAnswer.type";
 
 import AdditionalInfoContent from "./AdditionalInfoContent";
 import GenderPreferenceContent from "./GenderPreferenceContent";
@@ -12,7 +12,7 @@ import MoveInfoContent from "./MoveInfoContent";
 
 interface MovingConditionDropdownContentProps {
   id: string;
-  value: MovingConditionsOption;
+  value: MovingConditionsOption | undefined;
   onSelect: (value: MovingConditionsOption) => void;
 }
 

@@ -11,7 +11,7 @@ import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 
-import { ContractTermsOption } from "@/types/createPropertyAnswer";
+import { ContractTermsOption } from "@/types/createPropertyAnswer.type";
 
 import ContractTermsContent from "./ContractTermsContent";
 
@@ -213,7 +213,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
             label: "저장",
             onClick: () => {
               //Todo: 저장 로직 추가
-              console.log("저장");
+              console.log(selectedAnswers);
             },
             variant: "outline",
           },

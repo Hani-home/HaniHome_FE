@@ -1,64 +1,236 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
 
-// import { usePropertyDetailEditList } from "@/hooks/property/useProperty";
+import {
+  usePatchProperty,
+  usePropertyDetailEditList,
+} from "@/hooks/property/usePropertyApi";
+
+import { formatMeetingDay } from "@/utils/formatter/dateFormatter";
+import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
 import BackHeader from "@/components/layout/header/BackHeader";
 import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
+import MovingConditionDropdownContent from "@/components/listings/create/movingConditions/MovingConditionDropdownContent";
 
+import { CATEGORY_OPTIONS } from "@/constants/property-category";
 import { COMMON_MOVING_CONDITIONS } from "@/constants/question-map";
+
+import { MovingConditionsOption } from "@/types/createPropertyAnswer.type";
+import { PatchPayload } from "@/types/patchPayload";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
 
 const MovingConditionsEdit = () => {
   const fixedKey = "movingConditions";
-  const [showAlert, setShowAlert] = useState(false);
-  // const params = useParams();
-  // // const id = params.id as string;
 
-  // const { data, isLoading, error } = usePropertyDetailEditList(id ?? "");
+  const [showAlert, setShowAlert] = useState(false);
+
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const open = searchParams.get("open");
 
-  const { genderPreference, livingConditions, moveInInfo } = useListingStore();
+  const { data } = usePropertyDetailEditList(id ?? "");
+
+  const {
+    genderPreference,
+    livingConditions,
+    moveInInfo,
+    optionItemIds,
+    lgbtAvailable,
+    setGenderPreference,
+    setLivingConditions,
+    setMoveInInfo,
+    setOptionItemIds,
+    setLgbtAvailable,
+  } = useListingStore();
+
+  const listing = useMemo(() => {
+    if (!data) return null;
+    return toPostPropertyDetail(data);
+  }, [data]);
+
+  useEffect(() => {
+    if (!listing) return;
+    setOptionItemIds(listing.optionItemIds);
+    setMoveInInfo(listing.moveInInfo);
+    setLivingConditions(listing.livingConditions);
+    setGenderPreference(listing.genderPreference);
+    setLgbtAvailable(listing.lgbtAvailable);
+  }, [listing]);
 
   const handleItemClick = () => {
     setShowAlert(true);
   };
 
   const getConditionValue = (id: string) => {
+    const AVAILABLE_KEY_LABEL_MAP: Record<string, string> = {
+      흡연자: "흡연자",
+      반려동물: "반려동물",
+      "외부인 방문": "외부인",
+      주차: "주차",
+      "주방 사용": "주방",
+    };
+
     switch (id) {
-      case "genderPreference":
-        return genderPreference === "ANY"
-          ? "무관"
-          : genderPreference === "MALE_ONLY"
-            ? "남자만"
-            : genderPreference === "FEMALE_ONLY"
-              ? "여자만"
-              : "커플 가능";
-      case "livingConditions":
-        return `${livingConditions?.minimumStayWeeks || ""} / ${livingConditions?.noticePeriodWeeks || ""}`;
-      case "moveInInfo":
-        return moveInInfo?.immediate
-          ? "즉시 입주 가능"
-          : `${moveInInfo?.availableFrom} ~ ${moveInInfo?.availableTo}`;
+      case "genderPreference": {
+        let base =
+          genderPreference === "ANY"
+            ? "무관"
+            : genderPreference === "MALE_ONLY"
+              ? "남자만"
+              : genderPreference === "FEMALE_ONLY"
+                ? "여자만"
+                : "커플 가능";
+
+        if (lgbtAvailable) {
+          base += " (LGBTQ 가능)";
+        }
+
+        return base;
+      }
+
+      case "livingConditions": {
+        const parts = [];
+        if (livingConditions?.noticePeriodWeeks)
+          parts.push(`노티스 ${livingConditions?.noticePeriodWeeks}주`);
+        if (livingConditions?.minimumStayWeeks)
+          parts.push(`최소 ${livingConditions?.minimumStayWeeks}주`);
+        if (livingConditions?.contractTerms) parts.push("계약 형태");
+        return parts.join(", ");
+      }
+      case "moveInInfo": {
+        const { availableFrom, availableTo, immediate, negotiable } =
+          moveInInfo;
+
+        const moveInParts = [];
+
+        const from = availableFrom
+          ? formatMeetingDay(availableFrom).date
+          : null;
+        const to = availableTo ? formatMeetingDay(availableTo).date : null;
+
+        if (from && to) moveInParts.push(`${from} ~ ${to}`);
+        else moveInParts.push("날짜 미정");
+
+        if (immediate) moveInParts.push("즉시 입주");
+        if (negotiable) moveInParts.push("협의 가능");
+
+        return moveInParts.join(", ");
+      }
+      case "additionalInfo": {
+        const selectedIds = optionItemIds;
+        const additionalInfoItems = CATEGORY_OPTIONS[3].items;
+
+        const selectedCategories = Object.entries(additionalInfoItems)
+          .filter(([, options]) =>
+            options.some(option => selectedIds.includes(option.optionId)),
+          )
+          .map(([category]) => AVAILABLE_KEY_LABEL_MAP[category] ?? category);
+
+        return selectedCategories.join(", ");
+      }
       default:
         return "-";
     }
   };
 
+  const getConditionValueForDropdown = (
+    id: string,
+  ): MovingConditionsOption | undefined => {
+    switch (id) {
+      case "genderPreference":
+        return { type: "genderPreference", value: genderPreference };
+      case "livingConditions":
+        return { type: "livingConditions", value: livingConditions };
+      case "moveInInfo":
+        return { type: "moveInInfo", value: moveInInfo };
+      case "additionalInfo":
+        return { type: "optionItemIds", value: optionItemIds };
+      default:
+        return undefined;
+    }
+  };
+
+  const handleSelect = (id: string, selected: MovingConditionsOption) => {
+    switch (id) {
+      case "genderPreference":
+        if (selected.type === "genderPreference") {
+          setGenderPreference(selected.value);
+        }
+        break;
+      case "livingConditions":
+        if (selected.type === "livingConditions") {
+          setLivingConditions(selected.value);
+        }
+        break;
+      case "moveInInfo":
+        if (selected.type === "moveInInfo" && selected.value != null) {
+          setMoveInInfo(selected.value);
+        }
+        break;
+      case "additionalInfo":
+        if (selected.type === "optionItemIds") {
+          setOptionItemIds(selected.value);
+        }
+        break;
+    }
+  };
+
+  const { mutate: patchProperty } = usePatchProperty(Number(id));
+
+  const handleSave = () => {
+    if (!data || !open) return;
+
+    const jsonDiscriminator = data.kind as "SHARE" | "RENT";
+
+    let payload: PatchPayload | null = null;
+
+    if (open === "genderPreference" && genderPreference) {
+      payload =
+        jsonDiscriminator === "SHARE"
+          ? { jsonDiscriminator: "SHARE", genderPreference, lgbtAvailable }
+          : { jsonDiscriminator: "RENT", genderPreference, lgbtAvailable };
+    } else if (open === "livingConditions" && livingConditions) {
+      payload =
+        jsonDiscriminator === "SHARE"
+          ? { jsonDiscriminator: "SHARE", livingConditions }
+          : { jsonDiscriminator: "RENT", livingConditions };
+    } else if (open === "moveInInfo") {
+      payload =
+        jsonDiscriminator === "SHARE"
+          ? { jsonDiscriminator: "SHARE", moveInInfo }
+          : { jsonDiscriminator: "RENT", moveInInfo };
+    } else if (open === "additionalInfo") {
+      payload =
+        jsonDiscriminator === "SHARE"
+          ? { jsonDiscriminator: "SHARE", optionItemIds }
+          : { jsonDiscriminator: "RENT", optionItemIds };
+    }
+
+    if (payload) {
+      patchProperty(payload, {
+        onSuccess: () => {
+          router.push(`/listings/${id}/edit`);
+        },
+      });
+    }
+  };
+
   return (
-    <div>
+    <div className="pb-[70px]">
       <BackHeader />
       <FunnelStepMenu fixedKey={fixedKey} />
       {COMMON_MOVING_CONDITIONS.map((item, index, array) => {
@@ -91,6 +263,16 @@ const MovingConditionsEdit = () => {
               </div>
             </div>
 
+            {open === item.id && (
+              <div>
+                <MovingConditionDropdownContent
+                  id={item.id}
+                  value={getConditionValueForDropdown(item.id)}
+                  onSelect={value => handleSelect(item.id, value)}
+                />
+              </div>
+            )}
+
             {index < array.length - 1 && <Divider className="my-1" />}
           </div>
         );
@@ -102,7 +284,7 @@ const MovingConditionsEdit = () => {
           className="bottom-[70px]"
         />
       )}
-      <BottomActionBar label="저장" />
+      <BottomActionBar label="저장" onClick={handleSave} />
     </div>
   );
 };

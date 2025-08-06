@@ -4,9 +4,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
 
-import { getPropertyPresignedUrl } from "@/apis/s3Upload";
+import { getPropertyPresignedUrl } from "@/apis/s3UploadApi";
 
 import useMultipleImageUpload from "@/hooks/common/useMultipleImageUpload";
+import {
+  usePatchProperty,
+  usePropertyDetailEditList,
+} from "@/hooks/property/usePropertyApi";
+
+import toPostPropertyDetail from "@/utils/listing//toPostPropertyDetail";
 
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
@@ -29,6 +35,7 @@ interface PhotoFieldProps {
 const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const router = useRouter();
   const { id } = useParams();
+  const { data } = usePropertyDetailEditList(id as string);
 
   const { photoUrls, setPhotoUrls } = useListingStore();
   const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrls); // 이미지 URL 미리보기
@@ -47,6 +54,7 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
       setUploadedFiles, // File 객체 저장
       getPresignedUrls: getPropertyPresignedUrl,
       setShowErrorModal,
+      onUploadedUrls: setPhotoUrls,
     });
 
   const handleClickUpload = useCallback(() => {
@@ -55,8 +63,17 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
 
   const handleRemoveImage = useCallback((index: number) => {
     setPreviewUrls(prev => prev.filter((_, i) => i !== index));
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index)); // 실제 파일 객체도 삭제
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
   }, []);
+
+  useEffect(() => {
+    if (edit && data) {
+      const parsed = toPostPropertyDetail(data);
+      if (Array.isArray(parsed.photoUrls)) {
+        setPhotoUrls(parsed.photoUrls);
+      }
+    }
+  }, [edit, data, setPhotoUrls]);
 
   useEffect(() => {
     if (photoUrls.length > 0) {
@@ -64,14 +81,25 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
     }
   }, [photoUrls]);
 
-  useEffect(() => {
-    if (previewUrls.length > 0) {
-      setPhotoUrls(previewUrls); // 이미지 URL을 업데이트
-    }
-  }, [previewUrls]);
+  const { mutate: patchProperty } = usePatchProperty(Number(id));
+
+  const handleSave = () => {
+    if (!data) return null;
+    const jsonDiscriminator = data.kind;
+    const payload = {
+      jsonDiscriminator,
+      photoUrls,
+    };
+    console.log(payload);
+    patchProperty(payload, {
+      onSuccess: () => {
+        router.push(`/listings/${id}/edit`);
+      },
+    });
+  };
 
   return (
-    <div className="max-w-[375px]">
+    <div className="max-w-[375px] pb-[70px]">
       <div className="flex flex-col gap-2">
         <div className="text-heading3 p-4 text-gray-900">
           직접 촬영한 매물 사진을 올려주세요
@@ -135,7 +163,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
                 console.log("저장");
               },
               variant: "outline",
-
             },
             {
               label: "다음",
@@ -148,10 +175,7 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
           ]}
         />
       ) : (
-        <BottomActionBar
-          label="저장"
-          onClick={() => router.push(`/listings/${id}/edit`)}
-        />
+        <BottomActionBar label="저장" onClick={handleSave} />
       )}
 
       {showErrorModal && (
