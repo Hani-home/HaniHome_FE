@@ -7,7 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { useListingStore } from "@/stores/useListingStore";
 import clsx from "clsx";
 
-import { fetchPlaceDetails, fetchPlaceSuggestions } from "@/apis/googlePlaces";
+import {
+  fetchPlaceDetailSuggestions,
+  fetchPlaceDetails,
+} from "@/apis/googlePlaces";
 
 import {
   usePatchProperty,
@@ -91,9 +94,11 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    fetchPlaceSuggestions(searchKeyword, controller.signal).then(results => {
-      setSuggestions(results);
-    });
+    fetchPlaceDetailSuggestions(searchKeyword, controller.signal).then(
+      results => {
+        setSuggestions(results);
+      },
+    );
 
     return () => {
       controller.abort();
@@ -201,10 +206,10 @@ const AddressField = ({ onNext, edit }: AddressFieldProps) => {
           {isFocused && suggestions.length > 0 && (
             <div className="relative z-10 mt-[-12px] w-full rounded-sm rounded-t-none border border-gray-500 bg-white">
               <ul className="flex flex-col">
-                {suggestions.map((item) => (
+                {suggestions.map(item => (
                   <li
                     key={item.placeId}
-                    className="text-body1-med cursor-pointer truncate px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="text-cap1-med cursor-pointer truncate max-w-[343px] px-4 py-2 text-gray-700 hover:bg-gray-100"
                     onMouseDown={e => {
                       e.preventDefault(); // prevent input blur
                       handleSelectSuggestion(item.placeId, item.text);
