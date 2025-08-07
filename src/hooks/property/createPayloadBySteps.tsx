@@ -17,7 +17,7 @@ export function createPayloadByStep(
 ): Partial<TemporaryPropertyPost> {
   const base = {
     ...draftData,
-    stats: step,
+    status: step,
     kind: store.listingType ?? "RENT",
     jsonDiscriminator: store.listingType ?? "RENT",
   };
@@ -39,6 +39,7 @@ export function createPayloadByStep(
       if (store.listingType === "RENT") {
         return {
           ...basePayload,
+          status: step,
           rentPropertySubType: store.rentPropertyType,
           capacityRent: store.rentCapacityPeople,
           internalDetails: store.rentInternalDetails,
@@ -50,6 +51,7 @@ export function createPayloadByStep(
       } else if (store.listingType === "SHARE") {
         return {
           ...basePayload,
+          status: step,
           sharePropertySubType: store.sharePropertyType,
           capacityShare: store.shareCapacityPeople,
           internalDetails: store.shareInternalDetails,
@@ -65,7 +67,9 @@ export function createPayloadByStep(
     case "MOVING_CONDITIONS":
       return {
         ...createPayloadByStep("LISTING_DETAILS", store, draftData),
+        status: step,
         moveInInfo: store.moveInInfo,
+        genderPreference: store.genderPreference,
         livingConditions: store.livingConditions,
         optionItemIds: store.optionItemIds,
       };

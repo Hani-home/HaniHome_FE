@@ -51,6 +51,7 @@ const CreateConfirm = ({ onNext }: CreateConfirmProps) => {
     if (
       !myInfo ||
       !listingType ||
+      !moveInInfo ||
       (!viewingAlwaysAvailable && (!meetingDateFrom || !meetingDateTo)) ||
       !genderPreference ||
       !livingConditions
