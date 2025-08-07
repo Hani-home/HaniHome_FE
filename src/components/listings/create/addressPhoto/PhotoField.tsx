@@ -23,7 +23,8 @@ import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
 import ImageSlider from "@/components/listings/detailShow/ImageSlider";
 import ImageAlertModal from "@/components/signup/profile/ImageAlertModal";
-import { TemporaryProperty } from "@/types/temporaryProperty.type";
+
+import { TemporaryPropertyPost } from "@/types/temporaryProperty.type";
 
 import QuestionMarkIcon from "@/public/svgs/listings/question-mark-icon.svg";
 
@@ -44,7 +45,7 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const searchParams = useSearchParams();
   const draftId = searchParams.get("draftId");
 
-  const { photoUrls, setPhotoUrls } = useListingStore();
+  const { listingType, region, photoUrls, setPhotoUrls } = useListingStore();
 
   const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrls); // 이미지 URL 미리보기
   const [, setUploadedFiles] = useState<File[]>([]); // 실제 파일 객체
@@ -53,7 +54,9 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [, setAlertMessage] = useState<string | null>(null);
 
-  const [draftData, setDraftData] = useState<TemporaryProperty | null>(null);
+  const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(
+    null,
+  );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -114,20 +117,29 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   }, [draftId, edit]);
 
   const handleTemporarySave = async () => {
-    if (!draftData) return;
+    let payload;
 
-    const payload = {
-      jsonDiscriminator: draftData.kind,
-      ...draftData,
-      photoUrls,
-    };
+    if (draftData) {
+      payload = {
+        ...draftData,
+        kind: listingType ?? draftData.kind,
+        jsonDiscriminator: listingType ?? draftData.kind,
+        region,
+        photoUrls,
+      };
+    } else {
+      payload = {
+        kind: listingType ?? undefined,
+        jsonDiscriminator: listingType ?? undefined,
+        region,
+        photoUrls,
+      };
+    }
 
     try {
       await postTemporaryPropertyData(payload);
-      console.log(payload)
-      router.push(
-        `/listings/create?step=addressPhoto&draftId=${draftId}&subStep=photo`,
-      );
+      console.log(payload);
+      router.push(`/home`);
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }
