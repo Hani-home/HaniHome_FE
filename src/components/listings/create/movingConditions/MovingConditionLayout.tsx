@@ -43,7 +43,6 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     moveInInfo,
     livingConditions,
     optionItemIds,
-    setLgbtAvailable,
     setGenderPreference,
     setMoveInInfo,
     setLivingConditions,
@@ -145,13 +144,13 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
         const draftData = await fetchTemporaryPropertyData(Number(draftId));
         setDraftData(draftData);
         if (draftData) {
-          if (draftData.moveInInfo) setMoveInInfo(draftData.moveInInfo);
+          if (draftData.moveInInfo) store.setMoveInInfo(draftData.moveInInfo);
           if (draftData.genderPreference)
-            setGenderPreference(draftData.genderPreference);
+            store.setGenderPreference(draftData.genderPreference);
           if (draftData.lgbtAvailable)
-            setLgbtAvailable(draftData.lgbtAvailable);
+            store.setLgbtAvailable(draftData.lgbtAvailable);
           if (draftData.livingConditions)
-            setLivingConditions(draftData.livingConditions);
+            store.setLivingConditions(draftData.livingConditions);
           if (draftData.optionItems) {
             const optionItemIds = draftData.optionItems.map(
               (item: OptionItem) => item.optionItemId,
@@ -301,6 +300,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
       console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
+      console.log("moving", payload)
       console.error("임시 저장 실패:", e);
     }
   };

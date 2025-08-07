@@ -50,10 +50,6 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     meetingDateTo,
     optionItemIds,
     viewingAlwaysAvailable,
-    setAllCostDetails,
-    setMeetingDateRange,
-    setViewingAlwaysAvailable,
-    setTimeSlots,
   } = store;
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -139,15 +135,15 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
         setDraftData(draftData);
 
         if (draftData) {
-          if (draftData.costDetails) setAllCostDetails(draftData.costDetails);
+          if (draftData.costDetails) store.setAllCostDetails(draftData.costDetails);
           if (draftData.meetingDateFrom && draftData.meetingDateTo)
-            setMeetingDateRange(
+            store.setMeetingDateRange(
               draftData.meetingDateFrom,
               draftData.meetingDateTo,
             );
           if (draftData.viewingAlwaysAvailable)
-            setViewingAlwaysAvailable(draftData.viewingAlwaysAvailable);
-          if (draftData.timeSlots) setTimeSlots(draftData.timeSlots);
+            store.setViewingAlwaysAvailable(draftData.viewingAlwaysAvailable);
+          if (draftData.timeSlots) store.setTimeSlots(draftData.timeSlots);
           if (draftData.optionItems) {
             const optionItemIds = draftData.optionItems.map(
               (item: OptionItem) => item.optionItemId,
@@ -275,6 +271,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
+      console.log(payload);
       console.error("임시 저장 실패:", e);
     }
   };
