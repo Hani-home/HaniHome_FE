@@ -35,14 +35,14 @@ const DropdownSelector = ({
     <>
       {isVisible && (
         <>
-          <div
-            className={clsx(
-              "flex h-19 w-[375px] cursor-pointer items-start justify-between p-4",
-              isOpen && "mb-1",
-            )}
-            onClick={onClick}
-          >
-            <div className="flex flex-col gap-1">
+      <div
+        className={clsx(
+          "flex h-19 w-full max-w-[430px] cursor-pointer items-start justify-between p-4",
+          isOpen && "mb-1",
+        )}
+        onClick={onClick}
+      >
+        <div className="flex flex-col gap-1">
               <div
                 className={clsx(
                   "text-heading3",
