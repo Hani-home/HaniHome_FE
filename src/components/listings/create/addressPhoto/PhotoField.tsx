@@ -105,7 +105,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
       try {
         const draftData = await fetchTemporaryPropertyData(Number(draftId));
         setDraftData(draftData);
-        console.log(draftData);
         if (Array.isArray(draftData.photoUrls)) {
           setPhotoUrls(draftData.photoUrls); // Zustand store에 저장
           setPreviewUrls(draftData.photoUrls); // 미리보기에도 반영
@@ -123,7 +122,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
 
     try {
       await postTemporaryPropertyData(payload);
-      console.log(payload);
       router.push(`/home`);
     } catch (e) {
       console.error("임시 저장 실패:", e);
@@ -139,7 +137,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
       jsonDiscriminator,
       photoUrls,
     };
-    console.log(payload);
     patchProperty(payload, {
       onSuccess: () => {
         router.push(`/listings/${id}/edit`);

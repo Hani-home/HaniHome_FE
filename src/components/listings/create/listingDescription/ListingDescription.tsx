@@ -71,7 +71,6 @@ const ListingDescription = ({
         if (draftData.description) {
           store.setDescription(draftData.description);
         }
-        console.log("임시저장get:", draftData);
       } catch (error) {
         console.error("임시 저장 데이터 가져오기 실패", error);
       }
@@ -118,10 +117,8 @@ const ListingDescription = ({
     );
     try {
       await postTemporaryPropertyData(payload);
-      console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
-      console.log(payload);
       console.error("임시 저장 실패:", e);
     }
   };

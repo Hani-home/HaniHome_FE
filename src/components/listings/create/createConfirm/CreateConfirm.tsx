@@ -226,7 +226,6 @@ const CreateConfirm = ({ onNext }: CreateConfirmProps) => {
     const payload = createPayloadByStep("CREATE_CONFIRM", store, draftData);
     try {
       await postTemporaryPropertyData(payload);
-      console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
       console.error("임시 저장 실패:", e);

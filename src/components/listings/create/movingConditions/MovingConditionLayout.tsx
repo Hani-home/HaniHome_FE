@@ -157,7 +157,6 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
             );
             store.setOptionItemIds(optionItemIds);
           }
-          console.log("movingget", draftData);
         }
       } catch (error) {
         console.error("임시 저장 데이터 가져오기 실패", error);
@@ -297,10 +296,8 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     const payload = createPayloadByStep("MOVING_CONDITIONS", store, draftData);
     try {
       await postTemporaryPropertyData(payload);
-      console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
-      console.log("moving", payload)
       console.error("임시 저장 실패:", e);
     }
   };

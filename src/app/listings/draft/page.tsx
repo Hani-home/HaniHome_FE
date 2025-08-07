@@ -24,7 +24,6 @@ const ListingDraft = () => {
       try {
         const data = await getTemporaryPropertyId();
         setTemporaryProperties(data); // 성공 시 상태 저장
-        console.log(data);
       } catch (error) {
         console.error("임시 저장 매물 조회 실패:", error);
       }

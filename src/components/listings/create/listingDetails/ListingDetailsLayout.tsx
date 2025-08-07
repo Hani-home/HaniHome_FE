@@ -110,7 +110,6 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
           if (draftData.kind === "RENT") store.setListingType("RENT");
           else if (draftData.kind === "SHARE") store.setListingType("SHARE");
         }
-        console.log("임시저장get:", draftData);
       } catch (error) {
         console.error("임시 저장 데이터 가져오기 실패", error);
       }
@@ -169,7 +168,6 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
 
     try {
       await postTemporaryPropertyData(payload);
-      console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
       console.error("임시 저장 실패:", e);

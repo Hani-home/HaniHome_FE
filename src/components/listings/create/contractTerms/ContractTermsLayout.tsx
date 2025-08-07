@@ -150,7 +150,6 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
             );
             store.setOptionItemIds(optionItemIds);
           }
-          console.log("contract", draftData);
         }
       } catch (error) {
         console.error("임시 저장 데이터 가져오기 실패", error);
@@ -268,10 +267,8 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     const payload = createPayloadByStep("CONTRACT_TERMS", store, draftData);
     try {
       await postTemporaryPropertyData(payload);
-      console.log("임시저장post:", payload);
       router.push(`/home`);
     } catch (e) {
-      console.log(payload);
       console.error("임시 저장 실패:", e);
     }
   };
