@@ -17,15 +17,15 @@ export function createPayloadByStep(
 ): Partial<TemporaryPropertyPost> {
   const base = {
     ...draftData,
-    status: step,
     kind: store.listingType ?? "RENT",
     jsonDiscriminator: store.listingType ?? "RENT",
+    region: store.region,
   };
   switch (step) {
     case "ADDRESS_PHOTO":
       return {
         ...base,
-        region: store.region,
+        status: step,
         photoUrls: store.photoUrls,
       };
 
@@ -77,10 +77,12 @@ export function createPayloadByStep(
     case "CONTRACT_TERMS":
       return {
         ...createPayloadByStep("MOVING_CONDITIONS", store, draftData),
+        status: step,
         costDetails: store.costDetails,
         meetingDateFrom: store.meetingDateFrom,
         meetingDateTo: store.meetingDateTo,
         viewingAlwaysAvailable: store.viewingAlwaysAvailable,
+        optionItemIds: store.optionItemIds,
         timeSlots:
           store.timeSlots?.map(slot => ({
             timeFrom: slot.timeFrom ?? "",
@@ -90,10 +92,15 @@ export function createPayloadByStep(
     case "LISTING_DESCRIPTION":
       return {
         ...createPayloadByStep("CONTRACT_TERMS", store, draftData),
+        status: step,
         description: store.description,
       };
     case "CREATE_CONFIRM":
-      return createPayloadByStep("LISTING_DESCRIPTION", store, draftData);
+      return {
+        ...createPayloadByStep("LISTING_DESCRIPTION", store, draftData),
+        status: step,
+      };
+
     default:
       return draftData ?? {};
   }
