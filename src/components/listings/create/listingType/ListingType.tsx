@@ -108,7 +108,7 @@ const ListingType = ({
           {temporaryProperties.map(property => {
             const formatted = formatMeetingDay(property.createdAt);
             const lastStepItem = FUNNEL_STEPS_MAP.find(
-              step => step.key === property.lastStep,
+              step => step.key === property.status,
             );
             const lastStep = lastStepItem?.label ?? "addressPhoto";
             return (
