@@ -8,6 +8,7 @@ import {
 } from "@/utils/formatter/dateFormatter";
 import { useDropdownAutoManager } from "@/utils/listing/create/useDropdownAutoManager";
 
+import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import DropdownSelector from "@/components/listings/create/common/DropdownSelector";
 import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
@@ -27,7 +28,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
   const [selectedAnswers, setSelectedAnswers] = useState<
     Record<string, ContractTermsOption>
   >({});
-
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const costDetails = useListingStore(state => state.costDetails);
   const timeSlots = useListingStore(state => state.timeSlots);
   const meetingDateFrom = useListingStore(state => state.meetingDateFrom);
@@ -231,23 +232,40 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           )}
         </DropdownSelector>
       ))}
-      <BottomActionBar
-        buttons={[
-          {
-            label: "저장",
-            onClick: () => {
-              console.log(timeSlots);
+      {allAnswered && (
+        <BottomActionBar
+          buttons={[
+            {
+              label: "저장",
+              onClick: () => {
+                console.log(
+                  costDetails,
+                  meetingDateFrom,
+                  meetingDateTo,
+                  viewingAlwaysAvailable,
+                  timeSlots,
+                );
+              },
+              variant: "outline",
+              disabled: !allAnswered,
             },
-            variant: "outline",
-          },
-          {
-            label: "다음",
-            onClick: onNext,
-            variant: "filled",
-            disabled: !allAnswered || !isBillIncludedSelected,
-          },
-        ]}
-      />
+            {
+              label: "다음",
+              onClick: onNext,
+              variant: "filled",
+              disabled: !allAnswered || !isBillIncludedSelected,
+            },
+          ]}
+        />
+      )}
+
+      {alertMessage && (
+        <AlertMessage
+          message={alertMessage}
+          className="bottom-17"
+          onDone={() => setAlertMessage(null)}
+        />
+      )}
     </FunnelLayout>
   );
 };

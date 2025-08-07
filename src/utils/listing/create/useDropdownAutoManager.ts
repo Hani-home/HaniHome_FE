@@ -11,7 +11,7 @@ interface UseDropdownAutoManagerParams {
  */
 export function useDropdownAutoManager({
   totalCount,
-  autoCloseDelay = 4000,
+  autoCloseDelay =1500,
   shouldAutoClose,
 }: UseDropdownAutoManagerParams) {
   const [openIndices, setOpenIndices] = useState<number[]>([0]); // 첫 번째 드롭다운 열려 있음

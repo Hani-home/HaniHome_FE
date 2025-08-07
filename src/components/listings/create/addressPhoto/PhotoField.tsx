@@ -44,7 +44,7 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
-  const [, setAlertMessage] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -160,6 +160,10 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
             {
               label: "저장",
               onClick: () => {
+                if (previewUrls.length < 3) {
+                  setAlertMessage("모든 단계 완료 후 저장해주세요");
+                  return;
+                }
                 console.log(listingType, photoUrls, previewUrls);
               },
               variant: "outline",
@@ -185,6 +189,13 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
       {uploadAlertMessage && (
         <AlertMessage
           message={uploadAlertMessage}
+          className="bottom-17"
+          onDone={() => setAlertMessage(null)}
+        />
+      )}
+      {alertMessage && (
+        <AlertMessage
+          message={alertMessage}
           className="bottom-17"
           onDone={() => setAlertMessage(null)}
         />

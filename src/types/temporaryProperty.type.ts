@@ -1,4 +1,21 @@
-export interface TemporaryPropertyId{
+import { OptionItem } from "./listingDetailGet.type";
+import {
+  GenderPreference,
+  PropertyRegion,
+  PropertySuperType,
+  RentInternalDetails,
+  ShareInternalDetails,
+} from "./listingDetailPost.type";
+
+export type FunnelSteps =
+  | "ADDRESS_PHOTO "
+  | "LISTING_DETAILS"
+  | "MOVING_CONDITIONS"
+  | "CONTRACT_TERMS"
+  | "LISTING_DESCRIPTION"
+  | "CREATE_SUCCESS";
+
+export interface TemporaryPropertyId {
   temporaryPropertyId: number;
   createdAt: string;
 }
@@ -8,15 +25,15 @@ export interface TemporaryCostDetails {
   costDescription: string;
   deposit: number;
   keyDeposit: number;
-  isBillIncluded: boolean; // 주의: API 응답은 isBillIncluded
-  isDepositAdjustable: boolean; // 주의: API 응답은 isDepositAdjustable
+  billIncluded: boolean;
+  depositAdjustable: boolean;
 }
 
 export interface TemporaryLivingConditions {
   noticePeriodWeeks: number;
   minimumStayWeeks: number;
   contractTerms: string;
-  isContractExtendable: boolean; // 주의: API 응답은 isContractExtendable
+  contractExtendable: boolean;
 }
 
 export interface TemporaryMoveInInfo {
@@ -54,8 +71,8 @@ export interface TemporaryProperty {
   optionItems: OptionItem[];
   livingConditions: TemporaryLivingConditions;
   moveInInfo: TemporaryMoveInInfo;
-  meetingDateFrom: string; // "2025-08-06"
-  meetingDateTo: string; // "2025-08-06"
+  meetingDateFrom: string; //isoDate
+  meetingDateTo: string; // isoDate
   timeSlots: TemporaryTimeSlot[];
   viewingAvailableDateTimes: ViewingAvailableDateTime[];
   viewingAlwaysAvailable: boolean;
@@ -65,6 +82,3 @@ export interface TemporaryProperty {
   shareInternalDetails?: ShareInternalDetails;
   rentInternalDetails?: RentInternalDetails;
 }
-import { ShareInternalDetails, RentInternalDetails,PropertySuperType, GenderPreference, PropertyRegion } from "./listingDetailPost.type";
-import { OptionItem } from "./listingDetailGet.type";
-
