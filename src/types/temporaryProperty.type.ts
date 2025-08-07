@@ -1,10 +1,13 @@
-import { OptionItem } from "./listingDetailGet.type";
 import {
+  CapacityRent,
+  CapacityShare,
   GenderPreference,
   PropertyRegion,
   PropertySuperType,
   RentInternalDetails,
+  RentPropertySubType,
   ShareInternalDetails,
+  SharePropertySubType,
 } from "./listingDetailPost.type";
 
 export type FunnelSteps =
@@ -61,7 +64,8 @@ export interface ViewingAvailableDateTime {
   reserved: boolean;
 }
 
-export interface TemporaryProperty {
+interface TemporaryPropertyBase {
+  jsonDiscriminator: PropertySuperType;
   id: number;
   kind: PropertySuperType; // "RENT" | "SHARE"
   genderPreference: GenderPreference | null;
@@ -69,7 +73,7 @@ export interface TemporaryProperty {
   region: PropertyRegion | null;
   photoUrls: string[] | null;
   costDetails: TemporaryCostDetails | null;
-  optionItems: OptionItem[] | null;
+  optionItemIds: number[] | null;
   livingConditions: TemporaryLivingConditions | null;
   moveInInfo: TemporaryMoveInInfo | null;
   meetingDateFrom: string | null; //isoDate
@@ -79,7 +83,20 @@ export interface TemporaryProperty {
   viewingAlwaysAvailable: boolean | null;
   description: string | null;
   createdAt: string | null; // ISO date
-  // 내부 구조는 kind에 따라 아래 둘 중 하나만 존재:
-  shareInternalDetails?: ShareInternalDetails | null;
-  rentInternalDetails?: RentInternalDetails | null;
 }
+
+export interface ShareTemporaryProperty extends TemporaryPropertyBase {
+  internalDetails: ShareInternalDetails | null;
+  sharePropertySubType?: SharePropertySubType | null;
+  capacityShare?: CapacityShare | null;
+}
+
+export interface RentTemporaryProperty extends TemporaryPropertyBase {
+  internalDetails: RentInternalDetails | null;
+  rentPropertySubType?: RentPropertySubType | null;
+  capacityRent?: CapacityRent | null;
+}
+
+export type TemporaryPropertyPost =
+  | ShareTemporaryProperty
+  | RentTemporaryProperty;
