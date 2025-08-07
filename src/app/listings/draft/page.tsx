@@ -9,6 +9,7 @@ import { getTemporaryPropertyId } from "@/apis/propertyApi";
 import { formatMeetingDay } from "@/utils/formatter/dateFormatter";
 
 import BackHeader from "@/components/layout/header/BackHeader";
+import { FUNNEL_STEPS_MAP } from "@/constants/funnel-steps";
 
 import { TemporaryPropertyId } from "@/types/temporaryProperty.type";
 
@@ -33,8 +34,12 @@ const ListingDraft = () => {
   }, []);
 
   const handleClick = (property: TemporaryPropertyId) => {
+    const lastStepItem = FUNNEL_STEPS_MAP.find(
+      step => step.key === property.status,
+    );
+    const lastStep = lastStepItem?.label ?? "addressPhoto";
     router.push(
-      `/listings/create?step=listingType&draftId=${property.temporaryPropertyId}`,
+      `/listings/create?step=${lastStep}&draftId=${property.temporaryPropertyId}`,
     );
   };
 
