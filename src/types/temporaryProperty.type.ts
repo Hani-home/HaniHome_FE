@@ -11,7 +11,7 @@ import {
 } from "./listingDetailPost.type";
 
 export type FunnelSteps =
-  | "ADDRESS_PHOTO "
+  | "ADDRESS_PHOTO"
   | "LISTING_DETAILS"
   | "MOVING_CONDITIONS"
   | "CONTRACT_TERMS"
@@ -67,6 +67,7 @@ export interface ViewingAvailableDateTime {
 interface TemporaryPropertyBase {
   jsonDiscriminator: PropertySuperType;
   id?: number;
+  status: FunnelSteps;
   kind: PropertySuperType; // "RENT" | "SHARE"
   genderPreference?: GenderPreference | null;
   lgbtAvailable?: boolean | null;

@@ -13,10 +13,11 @@ type StepKey =
 export function createPayloadByStep(
   step: StepKey,
   store: UseListingStoreReturn,
-  draftData?: Partial<TemporaryPropertyPost>,
+  draftData?: Partial<TemporaryPropertyPost> | null,
 ): Partial<TemporaryPropertyPost> {
   const base = {
     ...draftData,
+    stats: step,
     kind: store.listingType ?? "RENT",
     jsonDiscriminator: store.listingType ?? "RENT",
   };
