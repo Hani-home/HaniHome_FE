@@ -13,11 +13,12 @@ export type FunnelSteps =
   | "MOVING_CONDITIONS"
   | "CONTRACT_TERMS"
   | "LISTING_DESCRIPTION"
-  | "CREATE_SUCCESS";
+  | "CREATE_CONFIRM";
 
 export interface TemporaryPropertyId {
   temporaryPropertyId: number;
   createdAt: string;
+  lastStep: FunnelSteps;
 }
 
 export interface TemporaryCostDetails {
@@ -63,22 +64,22 @@ export interface ViewingAvailableDateTime {
 export interface TemporaryProperty {
   id: number;
   kind: PropertySuperType; // "RENT" | "SHARE"
-  genderPreference: GenderPreference;
-  lgbtAvailable: boolean;
-  region: PropertyRegion;
-  photoUrls: string[];
-  costDetails: TemporaryCostDetails;
-  optionItems: OptionItem[];
-  livingConditions: TemporaryLivingConditions;
-  moveInInfo: TemporaryMoveInInfo;
-  meetingDateFrom: string; //isoDate
-  meetingDateTo: string; // isoDate
-  timeSlots: TemporaryTimeSlot[];
-  viewingAvailableDateTimes: ViewingAvailableDateTime[];
-  viewingAlwaysAvailable: boolean;
-  description: string;
-  createdAt: string; // ISO date
+  genderPreference: GenderPreference | null;
+  lgbtAvailable: boolean | null;
+  region: PropertyRegion | null;
+  photoUrls: string[] | null;
+  costDetails: TemporaryCostDetails | null;
+  optionItems: OptionItem[] | null;
+  livingConditions: TemporaryLivingConditions | null;
+  moveInInfo: TemporaryMoveInInfo | null;
+  meetingDateFrom: string | null; //isoDate
+  meetingDateTo: string | null; // isoDate
+  timeSlots: TemporaryTimeSlot[] | null;
+  viewingAvailableDateTimes: ViewingAvailableDateTime[] | null;
+  viewingAlwaysAvailable: boolean | null;
+  description: string | null;
+  createdAt: string | null; // ISO date
   // 내부 구조는 kind에 따라 아래 둘 중 하나만 존재:
-  shareInternalDetails?: ShareInternalDetails;
-  rentInternalDetails?: RentInternalDetails;
+  shareInternalDetails?: ShareInternalDetails | null;
+  rentInternalDetails?: RentInternalDetails | null;
 }
