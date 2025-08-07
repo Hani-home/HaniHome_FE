@@ -43,6 +43,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     moveInInfo,
     livingConditions,
     optionItemIds,
+    setLgbtAvailable,
     setGenderPreference,
     setMoveInInfo,
     setLivingConditions,
@@ -147,6 +148,8 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
           if (draftData.moveInInfo) setMoveInInfo(draftData.moveInInfo);
           if (draftData.genderPreference)
             setGenderPreference(draftData.genderPreference);
+          if (draftData.lgbtAvailable)
+            setLgbtAvailable(draftData.lgbtAvailable);
           if (draftData.livingConditions)
             setLivingConditions(draftData.livingConditions);
           if (draftData.optionItems) {

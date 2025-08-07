@@ -1,6 +1,16 @@
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 
 import { useListingStore } from "@/stores/useListingStore";
+
+import {
+  fetchTemporaryPropertyData,
+  postTemporaryPropertyData,
+} from "@/apis/propertyApi";
+
+import { createPayloadByStep } from "@/hooks/property/createPayloadBySteps";
 
 import {
   convertUtcStringToLocalTime,
@@ -16,6 +26,8 @@ import FunnelLayout from "@/components/listings/create/common/FunnelLayout";
 import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 
 import { ContractTermsOption } from "@/types/createPropertyAnswer.type";
+import { OptionItem } from "@/types/listingDetailGet.type";
+import { TemporaryPropertyPost } from "@/types/temporaryProperty.type";
 
 import ContractTermsContent from "./ContractTermsContent";
 
@@ -29,13 +41,25 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     Record<string, ContractTermsOption>
   >({});
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-  const costDetails = useListingStore(state => state.costDetails);
-  const timeSlots = useListingStore(state => state.timeSlots);
-  const meetingDateFrom = useListingStore(state => state.meetingDateFrom);
-  const meetingDateTo = useListingStore(state => state.meetingDateTo);
-  const optionItemIds = useListingStore(state => state.optionItemIds);
-  const viewingAlwaysAvailable = useListingStore(
-    state => state.viewingAlwaysAvailable,
+
+  const store = useListingStore();
+  const {
+    costDetails,
+    timeSlots,
+    meetingDateFrom,
+    meetingDateTo,
+    optionItemIds,
+    viewingAlwaysAvailable,
+    setAllCostDetails,
+    setMeetingDateRange,
+    setViewingAlwaysAvailable,
+    setTimeSlots,
+  } = store;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const draftId = searchParams.get("draftId");
+  const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(
+    null,
   );
 
   const { openIndices, visibleIndices, toggleIndex, autoAdvance } =
@@ -54,7 +78,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           );
         }
         if (id === "timeSlots") {
-          return timeSlots.length > 0;
+          return !!(timeSlots && timeSlots.length > 0);
         }
         return !!selectedAnswers[id];
       },
@@ -81,7 +105,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
         }, 4000);
       }
     } else if (id === "timeSlots") {
-      if (timeSlots.length > 0) {
+      if (timeSlots && timeSlots.length > 0) {
         timer = setTimeout(() => {
           autoAdvance(currentIndex);
         }, 4000);
@@ -106,6 +130,38 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     viewingAlwaysAvailable,
     timeSlots,
   ]);
+
+  useEffect(() => {
+    const initDraft = async () => {
+      if (!draftId) return;
+      try {
+        const draftData = await fetchTemporaryPropertyData(Number(draftId));
+        setDraftData(draftData);
+
+        if (draftData) {
+          if (draftData.costDetails) setAllCostDetails(draftData.costDetails);
+          if (draftData.meetingDateFrom && draftData.meetingDateTo)
+            setMeetingDateRange(
+              draftData.meetingDateFrom,
+              draftData.meetingDateTo,
+            );
+          if (draftData.viewingAlwaysAvailable)
+            setViewingAlwaysAvailable(draftData.viewingAlwaysAvailable);
+          if (draftData.timeSlots) setTimeSlots(draftData.timeSlots);
+          if (draftData.optionItems) {
+            const optionItemIds = draftData.optionItems.map(
+              (item: OptionItem) => item.optionItemId,
+            );
+            store.setOptionItemIds(optionItemIds);
+          }
+          console.log("contract", draftData);
+        }
+      } catch (error) {
+        console.error("임시 저장 데이터 가져오기 실패", error);
+      }
+    };
+    initDraft();
+  }, [draftId]);
 
   const handleSelect = (id: string, value: ContractTermsOption) => {
     setSelectedAnswers(prev => ({
@@ -132,6 +188,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     }
     if (item.id === "timeSlots") {
       return (
+        timeSlots &&
         timeSlots.length > 0 &&
         timeSlots.some(
           slot => !(slot.timeFrom === null || slot.timeTo === null),
@@ -178,6 +235,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
       }
 
       case "timeSlots": {
+        if (!timeSlots) return "";
         const parts = [];
         for (const slot of timeSlots) {
           if (
@@ -210,6 +268,16 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     }
   };
 
+  const handleTemporarySave = async () => {
+    const payload = createPayloadByStep("CONTRACT_TERMS", store, draftData);
+    try {
+      await postTemporaryPropertyData(payload);
+      console.log("임시저장post:", payload);
+      router.push(`/home`);
+    } catch (e) {
+      console.error("임시 저장 실패:", e);
+    }
+  };
   return (
     <FunnelLayout>
       {COMMON_CONTRACT_TERMS.map((item, index) => (
@@ -237,15 +305,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
           buttons={[
             {
               label: "저장",
-              onClick: () => {
-                console.log(
-                  costDetails,
-                  meetingDateFrom,
-                  meetingDateTo,
-                  viewingAlwaysAvailable,
-                  timeSlots,
-                );
-              },
+              onClick: handleTemporarySave,
               variant: "outline",
               disabled: !allAnswered,
             },

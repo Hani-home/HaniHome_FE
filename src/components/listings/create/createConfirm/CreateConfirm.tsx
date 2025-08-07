@@ -54,7 +54,8 @@ const CreateConfirm = ({ onNext }: CreateConfirmProps) => {
       !moveInInfo ||
       (!viewingAlwaysAvailable && (!meetingDateFrom || !meetingDateTo)) ||
       !genderPreference ||
-      !livingConditions
+      !livingConditions ||
+      !timeSlots
     )
       return null;
 

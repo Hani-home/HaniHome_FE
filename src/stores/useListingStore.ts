@@ -56,7 +56,7 @@ interface ListingState {
   optionItemIds: number[];
   setOptionItemIds: (ids: number[]) => void;
 
-  timeSlots: TimeSlot[];
+  timeSlots: TimeSlot[] | null;
   setTimeSlots: (data: TimeSlot[]) => void;
 
   meetingDateFrom: string | null;

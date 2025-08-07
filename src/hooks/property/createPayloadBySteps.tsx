@@ -70,6 +70,7 @@ export function createPayloadByStep(
         status: step,
         moveInInfo: store.moveInInfo,
         genderPreference: store.genderPreference,
+        lgbtAvailable: store.lgbtAvailable,
         livingConditions: store.livingConditions,
         optionItemIds: store.optionItemIds,
       };

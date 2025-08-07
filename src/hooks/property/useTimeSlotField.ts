@@ -15,10 +15,21 @@ import { TimeSlot } from "@/types/listingDetailPost.type";
 type Period = (typeof PERIODS)[number];
 
 export const useTimeSlotField = (
-  value: TimeSlot[],
+  value: TimeSlot[] | null,
   onChange: (updated: TimeSlot[]) => void,
 ) => {
-  const [slots, setSlots] = useState<TimeSlot[]>(value);
+  const initialSlots: TimeSlot[] = PERIODS.map(() => ({
+    timeFrom: null,
+    timeTo: null,
+  }));
+
+  const [slots, setSlots] = useState<TimeSlot[]>(() => {
+    // value가 주어졌고 길이가 정확하면 그대로 사용
+    if (value?.length === PERIODS.length) return value;
+    // 그렇지 않으면 초기값 사용
+    return initialSlots;
+  });
+  
   const [tempTime, setTempTime] = useState<string | null>(null);
   const [activeSpinner, setActiveSpinner] = useState<{
     period: Period;
@@ -31,6 +42,10 @@ export const useTimeSlotField = (
   } | null>(null);
 
   useEffect(() => {
+    if (!value) {
+      setSlots(DEFAULT_SLOTS);
+      return;
+    }
     const isSame =
       value.length === slots.length &&
       value.every(
