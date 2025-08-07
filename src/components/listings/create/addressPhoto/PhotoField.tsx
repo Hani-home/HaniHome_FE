@@ -11,6 +11,7 @@ import {
 import { getPropertyPresignedUrl } from "@/apis/s3UploadApi";
 
 import useMultipleImageUpload from "@/hooks/common/useMultipleImageUpload";
+import { createPayloadByStep } from "@/hooks/property/createPayloadBySteps";
 import {
   usePatchProperty,
   usePropertyDetailEditList,
@@ -45,7 +46,8 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   const searchParams = useSearchParams();
   const draftId = searchParams.get("draftId");
 
-  const { listingType, region, photoUrls, setPhotoUrls } = useListingStore();
+  const store = useListingStore();
+  const { photoUrls, setPhotoUrls } = store;
 
   const [previewUrls, setPreviewUrls] = useState<string[]>(photoUrls); // 이미지 URL 미리보기
   const [, setUploadedFiles] = useState<File[]>([]); // 실제 파일 객체
@@ -117,24 +119,7 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
   }, [draftId, edit]);
 
   const handleTemporarySave = async () => {
-    let payload;
-
-    if (draftData) {
-      payload = {
-        ...draftData,
-        kind: listingType ?? draftData.kind,
-        jsonDiscriminator: listingType ?? draftData.kind,
-        region,
-        photoUrls,
-      };
-    } else {
-      payload = {
-        kind: listingType ?? undefined,
-        jsonDiscriminator: listingType ?? undefined,
-        region,
-        photoUrls,
-      };
-    }
+    const payload = createPayloadByStep("ADDRESS_PHOTO", store, draftData);
 
     try {
       await postTemporaryPropertyData(payload);
