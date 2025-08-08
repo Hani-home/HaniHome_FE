@@ -41,6 +41,7 @@ const MovingConditionsEdit = () => {
 
   const searchParams = useSearchParams();
   const open = searchParams.get("open");
+  const draftId = searchParams.get("draftId");
 
   const { data } = usePropertyDetailEditList(id ?? "");
 
@@ -238,7 +239,7 @@ const MovingConditionsEdit = () => {
 
   return (
     <div className="pb-[70px]">
-      <BackHeader />
+      <BackHeader isDraft={Boolean(draftId)} />
       <FunnelStepMenu fixedKey={fixedKey} />
       {COMMON_MOVING_CONDITIONS.map((item, index, array) => {
         return (
