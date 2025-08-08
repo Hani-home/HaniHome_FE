@@ -1,13 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
-import BackHeader from "@/components/layout/header/BackHeader";
 import AddressField from "@/components/listings/create/addressPhoto/AddressField";
 import PhotoField from "@/components/listings/create/addressPhoto/PhotoField";
 import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
+
+const BackHeader = dynamic(
+  () => import("@/components/layout/header/BackHeader"),
+  { ssr: false },
+);
 
 const AddressPhotoEdit = () => {
   const searchParams = useSearchParams();

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useRef, useState } from "react";
@@ -22,9 +23,13 @@ import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import TextareaField from "@/components/common/TextareaField";
-import BackHeader from "@/components/layout/header/BackHeader";
 
 import { TemporaryPropertyPost } from "@/types/temporaryProperty.type";
+
+const BackHeader = dynamic(
+  () => import("@/components/layout/header/BackHeader"),
+  { ssr: false },
+);
 
 interface ListingDescriptionProps {
   onNext?: () => void;

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
@@ -22,7 +23,6 @@ import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 import AlertMessage from "@/components/common/AlertMessage";
 import BottomActionBar from "@/components/common/BottomActionBar";
 import Divider from "@/components/common/Divider";
-import BackHeader from "@/components/layout/header/BackHeader";
 import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
 import ListingDetailsDropdownContent from "@/components/listings/create/listingDetails/ListingDetailsDropdownContent";
 
@@ -39,6 +39,11 @@ import {
 import { PatchPayload } from "@/types/patchPayload";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
+
+const BackHeader = dynamic(
+  () => import("@/components/layout/header/BackHeader"),
+  { ssr: false },
+);
 
 const ListingDetailsEdit = () => {
   const {

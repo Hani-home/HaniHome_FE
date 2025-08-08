@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -12,7 +13,6 @@ import {
 import toPostPropertyDetail from "@/utils/listing/toPostPropertyDetail";
 
 import BottomActionBar from "@/components/common/BottomActionBar";
-import BackHeader from "@/components/layout/header/BackHeader";
 import FunnelStepMenu from "@/components/listings/create/common/FunnelStepMenu";
 import CostDetailField from "@/components/listings/create/contractTerms/CostDetailField";
 
@@ -22,6 +22,11 @@ import { COMMON_CONTRACT_TERMS } from "@/constants/question-map";
 import { CostDetails } from "@/types/listingDetailPost.type";
 
 import DownArrow from "@/public/svgs/common/down-arrow.svg";
+
+const BackHeader = dynamic(
+  () => import("@/components/layout/header/BackHeader"),
+  { ssr: false },
+);
 
 const ContractTermsEdit = () => {
   const fixedKey = "contractTerms";
