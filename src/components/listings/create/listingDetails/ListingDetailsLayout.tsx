@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -55,7 +55,7 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(
     null,
   );
-
+  const router = useRouter();
   const section = "ListingDetails";
   const questions = useMemo(() => {
     return listingType ? QUESTION_MAP[listingType][section] : [];
@@ -166,6 +166,7 @@ const ListingDetails = ({ onNext }: ListingDetailsProps) => {
 
     try {
       await postTemporaryPropertyData(payload);
+      router.push(`/listings/create?step=listingDetails&draft=${draftId}`)
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }

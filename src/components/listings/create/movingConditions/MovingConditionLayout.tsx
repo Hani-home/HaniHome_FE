@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
@@ -49,7 +49,7 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     setOptionItemIds,
   } = store;
   const searchParams = useSearchParams();
-
+  const router = useRouter();
   const draftId = searchParams.get("draftId");
   const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(
     null,
@@ -295,6 +295,8 @@ const MovingCondition = ({ onNext }: MovingConditionProps) => {
     const payload = createPayloadByStep("MOVING_CONDITIONS", store, draftData);
     try {
       await postTemporaryPropertyData(payload);
+      router.push(`/listings/create?step=movingConditions&draftId=${draftId}`);
+      console.log("저장")
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }

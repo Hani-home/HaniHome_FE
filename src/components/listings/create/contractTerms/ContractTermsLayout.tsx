@@ -1,4 +1,6 @@
-import { useSearchParams } from "next/navigation";
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
@@ -51,6 +53,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     viewingAlwaysAvailable,
   } = store;
   const searchParams = useSearchParams();
+  const router = useRouter();
   const draftId = searchParams.get("draftId");
   const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(
     null,
@@ -266,6 +269,7 @@ const ContractTerms = ({ onNext }: ContractTermsProps) => {
     const payload = createPayloadByStep("CONTRACT_TERMS", store, draftData);
     try {
       await postTemporaryPropertyData(payload);
+      router.push(`/lisitngs/create?step=contractTemrs&draft=${draftId}`);
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }

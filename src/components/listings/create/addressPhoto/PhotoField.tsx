@@ -119,7 +119,6 @@ const PhotoField = ({ onNext, edit = false }: PhotoFieldProps) => {
 
   const handleTemporarySave = async () => {
     const payload = createPayloadByStep("ADDRESS_PHOTO", store, draftData);
-
     try {
       await postTemporaryPropertyData(payload);
       router.push(`/listings/create?step=addressPhoto&draftId=${draftId}`);

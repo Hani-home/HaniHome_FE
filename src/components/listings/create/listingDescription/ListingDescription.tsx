@@ -122,6 +122,7 @@ const ListingDescription = ({
     );
     try {
       await postTemporaryPropertyData(payload);
+      router.push(`/lisitngs/create?step=listingDescription&draft=${draftId}`);
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }

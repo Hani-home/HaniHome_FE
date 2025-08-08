@@ -302,6 +302,7 @@ const CreateConfirm = ({ onNext }: CreateConfirmProps) => {
         draftData,
       );
       await postTemporaryPropertyData(tempPayload);
+      router.push(`/lisitings/create?step=createConfirm&draft=${draftId}`);
     } catch (e) {
       console.error("임시 저장 실패:", e);
     }
