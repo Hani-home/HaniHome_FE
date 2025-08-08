@@ -50,7 +50,6 @@ interface ListingDetailsProps {
 const ListingDetails = ({ onNext }: ListingDetailsProps) => {
   const store = useListingStore();
   const { listingType, optionItemIds, setOptionItemIds } = store;
-
   const searchParams = useSearchParams();
   const draftId = searchParams.get("draftId");
   const [draftData, setDraftData] = useState<TemporaryPropertyPost | null>(

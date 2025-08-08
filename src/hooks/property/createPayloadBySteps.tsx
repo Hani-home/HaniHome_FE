@@ -17,6 +17,7 @@ export function createPayloadByStep(
 ): Partial<TemporaryPropertyPost> {
   const base = {
     ...draftData,
+    id: draftData?.id ?? undefined,
     kind: store.listingType ?? "RENT",
     jsonDiscriminator: store.listingType ?? "RENT",
     region: store.region,

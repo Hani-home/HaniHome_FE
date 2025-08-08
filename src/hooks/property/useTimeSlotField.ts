@@ -85,15 +85,11 @@ export const useTimeSlotField = (
       const localOtherVal = convertUtcStringToLocalTime(otherVal);
       if (type === "start") {
         if (val >= localOtherVal && localOtherVal !== "00:00") {
-          console.log("slots[idx]:", slots[idx]);
-          console.log(localOtherVal, val);
           setAlertMsg("시작 시간은 종료 시간보다 이전이어야 합니다.");
           return;
         }
       } else {
         if (val <= localOtherVal && val !== "00:00") {
-          console.log(localOtherVal, val);
-          console.log("slots[idx]:", slots[idx]);
           setAlertMsg("시작 시간은 종료 시간보다 이전이어야 합니다.");
           return;
         }

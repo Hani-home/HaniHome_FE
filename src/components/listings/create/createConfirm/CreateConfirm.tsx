@@ -292,7 +292,6 @@ const CreateConfirm = ({ onNext }: CreateConfirmProps) => {
       onSuccess: () => onNext(),
       onError: error => console.error("등록 실패:", error),
     });
-    console.log(payload); //Todo. 지우기
   };
 
   const handleTemporarySave = async () => {
